@@ -53,257 +53,7 @@
     z-index: 1;
     max-width: 1100px;
     margin: 0 auto;
-    padding: 2.5rem 1.25rem 3rem;
-  }
-
-  /* ===== Header ===== */
-  .header {
-    text-align: center;
-    margin-bottom: 2.5rem;
-  }
-  .header-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--teal);
-    background: var(--teal-tint);
-    padding: 0.4rem 0.85rem;
-    border-radius: 999px;
-    margin-bottom: 1rem;
-  }
-  .header-eyebrow::before {
-    content: "";
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--teal);
-  }
-  .header h1 {
-    font-size: clamp(1.85rem, 4vw, 2.6rem);
-    font-weight: 800;
-    color: var(--teal-deep);
-    margin: 0 0 0.6rem;
-    letter-spacing: -0.025em;
-    line-height: 1.1;
-  }
-  .header p {
-    color: var(--muted);
-    margin: 0 auto;
-    font-size: 1rem;
-    max-width: 540px;
-  }
-
-  /* ===== Two-column layout ===== */
-  .columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-  }
-  @media (max-width: 760px) {
-    .columns { grid-template-columns: 1fr; }
-  }
-
-  .col {
-    background: var(--card);
-    border-radius: 16px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--line);
-    overflow: hidden;
-    align-self: start;
-  }
-
-  /* Column header */
-  .col-header {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-    padding: 1.25rem 1.25rem 1rem;
-    border-bottom: 1px solid var(--line-soft);
-  }
-  .col-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 11px;
-    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-    color: #fff;
-    box-shadow: 0 4px 10px rgba(0, 109, 119, 0.22);
-  }
-  .col-icon svg {
-    width: 21px;
-    height: 21px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .col-title-block { flex: 1; }
-  .col-title {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--teal-deep);
-    margin: 0;
-    letter-spacing: -0.015em;
-  }
-  .col-sub {
-    font-size: 0.78rem;
-    color: var(--muted);
-    margin: 0.1rem 0 0;
-  }
-  .col-count {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--teal);
-    background: var(--teal-tint);
-    padding: 0.3rem 0.6rem;
-    border-radius: 999px;
-    letter-spacing: 0.04em;
-  }
-
-  /* ===== Strategy list ===== */
-  .strategies {
-    list-style: none;
-    margin: 0;
-    padding: 0.5rem 0;
-  }
-
-  .strategy {
-    border-bottom: 1px solid var(--line-soft);
-  }
-  .strategy:last-child { border-bottom: none; }
-
-  /* Strategy header (clickable) */
-  .strategy-header {
-    width: 100%;
-    text-align: left;
-    background: transparent;
-    border: 0;
-    padding: 0.85rem 1.25rem;
-    cursor: pointer;
-    font-family: inherit;
-    color: var(--ink);
-    font-size: 0.95rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    transition: background-color 0.18s ease, color 0.18s ease, padding-left 0.18s ease;
-    position: relative;
-  }
-  .strategy-header::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: transparent;
-    transition: background-color 0.18s ease;
-  }
-  .strategy-header:hover {
-    background: var(--teal-tint-2);
-    color: var(--teal-deep);
-    padding-left: 1.4rem;
-  }
-  .strategy-header:hover::before {
-    background: var(--accent);
-  }
-  .strategy-header:focus-visible {
-    outline: 2px solid var(--teal);
-    outline-offset: -2px;
-  }
-  .strategy.is-open .strategy-header {
-    background: var(--teal);
-    color: #fff;
-    padding-left: 1.4rem;
-  }
-  .strategy.is-open .strategy-header::before {
-    background: var(--teal-deep);
-  }
-  .strategy.is-open .strategy-header:hover {
-    background: var(--teal);
-  }
-
-  .chev {
-    flex-shrink: 0;
-    color: var(--muted);
-    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.18s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--teal-tint);
-  }
-  .strategy-header:hover .chev { color: var(--teal); }
-  .strategy.is-open .chev {
-    transform: rotate(180deg);
-    background: rgba(255,255,255,0.18);
-    color: #fff;
-  }
-  .chev svg {
-    width: 12px;
-    height: 12px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 2.4;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  /* Definition panel — expands inline */
-  .strategy-body {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  .strategy.is-open .strategy-body {
-    max-height: 400px; /* generous ceiling for any description */
-  }
-
-  .strategy-body-inner {
-    padding: 0 1.25rem 1.1rem 1.4rem;
-    background: linear-gradient(to bottom, var(--teal-tint) 0%, var(--teal-tint-2) 100%);
-    border-left: 3px solid var(--teal-deep);
-    margin: 0 0 0 0;
-    position: relative;
-  }
-  .strategy-body-inner::before {
-    /* small triangle pointer connecting back up to the header */
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 1.4rem;
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 6px solid var(--teal);
-  }
-  .strategy-body-inner p {
-    margin: 0;
-    padding-top: 1rem;
-    font-size: 0.92rem;
-    line-height: 1.6;
-    color: var(--ink-soft);
-  }
-
-  /* ===== Status bar (live region) ===== */
-  .status {
-    text-align: center;
-    margin-top: 1.5rem;
-    color: var(--muted);
-    font-size: 0.82rem;
-    min-height: 1.2em;
+    padding: 2rem 1.25rem 2.5rem;
   }
 
   /* ===== Fullscreen toggle button ===== */
@@ -347,12 +97,6 @@
     stroke-linejoin: round;
   }
   .fs-btn .fs-label-exit { display: none; }
-  body:fullscreen .fs-btn .fs-label-enter,
-  body:-webkit-full-screen .fs-btn .fs-label-enter { display: none; }
-  body:fullscreen .fs-btn .fs-label-exit,
-  body:-webkit-full-screen .fs-btn .fs-label-exit { display: inline; }
-
-  /* When fullscreened, give the body proper bg (otherwise some browsers go black) */
   body:fullscreen,
   body:-webkit-full-screen {
     background: var(--bg);
@@ -361,6 +105,285 @@
 
   @media (max-width: 540px) {
     .fs-btn { top: 0.6rem; right: 0.6rem; padding: 0.4rem 0.6rem; font-size: 0.72rem; }
+  }
+
+  /* ===== Header ===== */
+  .header {
+    text-align: center;
+    margin-bottom: 1.75rem;
+  }
+  .header-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--teal);
+    background: var(--teal-tint);
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    margin-bottom: 0.85rem;
+  }
+  .header-eyebrow::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+  }
+  .header h1 {
+    font-size: clamp(1.65rem, 3.5vw, 2.25rem);
+    font-weight: 800;
+    color: var(--teal-deep);
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+  .header p {
+    color: var(--muted);
+    margin: 0 auto;
+    font-size: 0.95rem;
+    max-width: 540px;
+  }
+
+  /* ===== Two-column layout ===== */
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  @media (max-width: 760px) {
+    .columns { grid-template-columns: 1fr; }
+  }
+
+  .col {
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--line);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Column header */
+  .col-header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1rem 1.15rem 0.85rem;
+    border-bottom: 1px solid var(--line-soft);
+    flex-shrink: 0;
+  }
+  .col-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 109, 119, 0.22);
+  }
+  .col-icon svg {
+    width: 19px;
+    height: 19px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .col-title-block { flex: 1; min-width: 0; }
+  .col-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--teal-deep);
+    margin: 0;
+    letter-spacing: -0.015em;
+  }
+  .col-sub {
+    font-size: 0.74rem;
+    color: var(--muted);
+    margin: 0.1rem 0 0;
+  }
+  .col-count {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--teal);
+    background: var(--teal-tint);
+    padding: 0.25rem 0.55rem;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+
+  /* ===== Strategy list ===== */
+  .strategies {
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem 0;
+    flex-shrink: 0;
+  }
+
+  .strategy {
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .strategy:last-child { border-bottom: none; }
+
+  .strategy-header {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    padding: 0.55rem 1.15rem;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--ink);
+    font-size: 0.92rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    transition: background-color 0.18s ease, color 0.18s ease, padding-left 0.18s ease;
+    position: relative;
+  }
+  .strategy-header::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: transparent;
+    transition: background-color 0.18s ease;
+  }
+  .strategy-header:hover {
+    background: var(--teal-tint-2);
+    color: var(--teal-deep);
+    padding-left: 1.3rem;
+  }
+  .strategy-header:hover::before { background: var(--accent); }
+  .strategy-header:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: -2px;
+  }
+  .strategy.is-active .strategy-header {
+    background: var(--teal);
+    color: #fff;
+    padding-left: 1.3rem;
+  }
+  .strategy.is-active .strategy-header::before {
+    background: var(--teal-deep);
+  }
+
+  .strategy-arrow {
+    flex-shrink: 0;
+    color: var(--muted);
+    transition: transform 0.22s ease, color 0.18s ease;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .strategy-header:hover .strategy-arrow { color: var(--teal); transform: translateX(2px); }
+  .strategy.is-active .strategy-arrow {
+    color: #fff;
+    transform: translateX(2px);
+  }
+  .strategy-arrow svg {
+    width: 12px;
+    height: 12px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* ===== Definition panel — pinned at bottom of column ===== */
+  .definition {
+    margin-top: auto;
+    background: linear-gradient(to bottom, var(--teal-tint) 0%, var(--teal-tint-2) 100%);
+    border-top: 1px solid var(--line-soft);
+    padding: 1rem 1.15rem 1.15rem;
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+  .definition::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, var(--teal) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .col.has-active .definition::before { opacity: 1; }
+
+  .definition-empty {
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-style: italic;
+    text-align: center;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+  .definition-empty svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+  .col.has-active .definition-empty { display: none; }
+
+  .definition-content {
+    display: none;
+    animation: fadeIn 0.25s ease;
+  }
+  .col.has-active .definition-content { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .definition-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--teal-deep);
+    margin: 0 0 0.4rem;
+    letter-spacing: -0.01em;
+  }
+  .definition-text {
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* ===== Caption ===== */
+  .caption {
+    text-align: center;
+    margin-top: 1.25rem;
+    color: var(--muted);
+    font-size: 0.78rem;
   }
 
   /* Reduced motion */
@@ -373,22 +396,22 @@
 
   /* Mobile */
   @media (max-width: 540px) {
-    .wrap { padding: 1.75rem 1rem 2rem; }
-    .col-header { padding: 1rem; }
-    .strategy-header { padding: 0.85rem 1rem; font-size: 0.92rem; }
+    .wrap { padding: 1.5rem 0.85rem 1.75rem; }
+    .col-header { padding: 0.85rem 1rem; }
+    .strategy-header { padding: 0.55rem 1rem; font-size: 0.88rem; }
     .strategy-header:hover { padding-left: 1.15rem; }
-    .strategy.is-open .strategy-header { padding-left: 1.15rem; }
-    .strategy-body-inner { padding: 0 1rem 1rem 1.15rem; }
-    .strategy-body-inner::before { left: 1.15rem; }
+    .strategy.is-active .strategy-header { padding-left: 1.15rem; }
+    .definition { padding: 0.9rem 1rem 1rem; min-height: 150px; }
   }
 </style>
 </head>
 <body>
+
 <button type="button" class="fs-btn" id="fsBtn" aria-label="Toggle fullscreen view">
   <svg class="fs-icon-enter" viewBox="0 0 24 24" aria-hidden="true"><polyline points="4 9 4 4 9 4"/><polyline points="20 9 20 4 15 4"/><polyline points="4 15 4 20 9 20"/><polyline points="20 15 20 20 15 20"/></svg>
   <svg class="fs-icon-exit" viewBox="0 0 24 24" aria-hidden="true" style="display:none;"><polyline points="9 4 4 4 4 9"/><polyline points="15 4 20 4 20 9"/><polyline points="9 20 4 20 4 15"/><polyline points="15 20 20 20 20 15"/></svg>
   <span class="fs-label-enter">Fullscreen</span>
-  <span class="fs-label-exit">Exit</span>
+  <span class="fs-label-exit" style="display:none;">Exit</span>
 </button>
 
 <div class="wrap">
@@ -402,7 +425,7 @@
   <div class="columns">
 
     <!-- ===== Instructional ===== -->
-    <section class="col" aria-labelledby="col-instructional">
+    <section class="col" data-col="instructional" aria-labelledby="col-instructional">
       <div class="col-header">
         <div class="col-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M3 4h13a3 3 0 0 1 3 3v13"/><path d="M3 4v13a3 3 0 0 0 3 3h13"/><path d="M7 9h7"/><path d="M7 13h5"/></svg>
@@ -415,110 +438,38 @@
       </div>
 
       <ul class="strategies" role="list">
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-direct-instruction">
-            <span>Direct Instruction</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-direct-instruction" role="region">
-            <div class="strategy-body-inner"><p>A teacher-centered approach where information is explicitly taught through lectures, demonstrations, and guided practice. The teacher clearly explains concepts and skills in a structured, sequential manner.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-expository-teaching">
-            <span>Expository Teaching</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-expository-teaching" role="region">
-            <div class="strategy-body-inner"><p>A method where teachers present information in an organized, systematic way. Content is delivered through explanations, descriptions, and presentations to help students understand new concepts.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-gradual-release">
-            <span>Gradual Release Model</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-gradual-release" role="region">
-            <div class="strategy-body-inner"><p>A structured approach following 'I do, We do, You do' - the teacher demonstrates, then guides students through practice together, and finally students work independently to apply their learning.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-scaffolding">
-            <span>Scaffolding</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-scaffolding" role="region">
-            <div class="strategy-body-inner"><p>Providing temporary support structures that help students reach higher levels of understanding. Support is gradually removed as students become more competent and confident.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-demonstration">
-            <span>Demonstration</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-demonstration" role="region">
-            <div class="strategy-body-inner"><p>Showing students how to perform a task or skill by modeling the process step-by-step. This visual and practical approach helps students see exactly what is expected.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-modelling">
-            <span>Modelling</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-modelling" role="region">
-            <div class="strategy-body-inner"><p>The teacher performs a task while thinking aloud, making their thought processes visible to students. This helps students understand not just what to do, but how to think through problems.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-lecture">
-            <span>Lecture</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-lecture" role="region">
-            <div class="strategy-body-inner"><p>A formal presentation of information where the teacher verbally delivers content to students. Most effective when combined with visual aids and opportunities for questions.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-explanation">
-            <span>Explanation</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-explanation" role="region">
-            <div class="strategy-body-inner"><p>Clarifying concepts, processes, or ideas by breaking them down into understandable parts. Good explanations use examples, analogies, and clear language.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-guided-learning">
-            <span>Guided Learning</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-guided-learning" role="region">
-            <div class="strategy-body-inner"><p>The teacher provides direction and support while students work through tasks. Questions and prompts help students discover solutions with appropriate assistance.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-shared-learning-intentions">
-            <span>Shared Learning Intentions</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-shared-learning-intentions" role="region">
-            <div class="strategy-body-inner"><p>Clearly communicating what students will learn and how they'll know they've succeeded. Learning goals and success criteria are made explicit and understood by all students.</p></div>
-          </div>
-        </li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="direct-instruction" aria-pressed="false"><span>Direct Instruction</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="expository-teaching" aria-pressed="false"><span>Expository Teaching</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="gradual-release" aria-pressed="false"><span>Gradual Release Model</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="scaffolding" aria-pressed="false"><span>Scaffolding</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="demonstration" aria-pressed="false"><span>Demonstration</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="modelling" aria-pressed="false"><span>Modelling</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="lecture" aria-pressed="false"><span>Lecture</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="explanation" aria-pressed="false"><span>Explanation</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="guided-learning" aria-pressed="false"><span>Guided Learning</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="shared-learning-intentions" aria-pressed="false"><span>Shared Learning Intentions</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
       </ul>
+
+      <div class="definition" aria-live="polite">
+        <p class="definition-empty">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><circle cx="12" cy="16" r="0.5" fill="currentColor"/></svg>
+          Select a strategy to view its description
+        </p>
+        <div class="definition-content" data-id="direct-instruction"><h3 class="definition-title">Direct Instruction</h3><p class="definition-text">A teacher-centered approach where information is explicitly taught through lectures, demonstrations, and guided practice. The teacher clearly explains concepts and skills in a structured, sequential manner.</p></div>
+        <div class="definition-content" data-id="expository-teaching"><h3 class="definition-title">Expository Teaching</h3><p class="definition-text">A method where teachers present information in an organized, systematic way. Content is delivered through explanations, descriptions, and presentations to help students understand new concepts.</p></div>
+        <div class="definition-content" data-id="gradual-release"><h3 class="definition-title">Gradual Release Model</h3><p class="definition-text">A structured approach following 'I do, We do, You do' - the teacher demonstrates, then guides students through practice together, and finally students work independently to apply their learning.</p></div>
+        <div class="definition-content" data-id="scaffolding"><h3 class="definition-title">Scaffolding</h3><p class="definition-text">Providing temporary support structures that help students reach higher levels of understanding. Support is gradually removed as students become more competent and confident.</p></div>
+        <div class="definition-content" data-id="demonstration"><h3 class="definition-title">Demonstration</h3><p class="definition-text">Showing students how to perform a task or skill by modeling the process step-by-step. This visual and practical approach helps students see exactly what is expected.</p></div>
+        <div class="definition-content" data-id="modelling"><h3 class="definition-title">Modelling</h3><p class="definition-text">The teacher performs a task while thinking aloud, making their thought processes visible to students. This helps students understand not just what to do, but how to think through problems.</p></div>
+        <div class="definition-content" data-id="lecture"><h3 class="definition-title">Lecture</h3><p class="definition-text">A formal presentation of information where the teacher verbally delivers content to students. Most effective when combined with visual aids and opportunities for questions.</p></div>
+        <div class="definition-content" data-id="explanation"><h3 class="definition-title">Explanation</h3><p class="definition-text">Clarifying concepts, processes, or ideas by breaking them down into understandable parts. Good explanations use examples, analogies, and clear language.</p></div>
+        <div class="definition-content" data-id="guided-learning"><h3 class="definition-title">Guided Learning</h3><p class="definition-text">The teacher provides direction and support while students work through tasks. Questions and prompts help students discover solutions with appropriate assistance.</p></div>
+        <div class="definition-content" data-id="shared-learning-intentions"><h3 class="definition-title">Shared Learning Intentions</h3><p class="definition-text">Clearly communicating what students will learn and how they'll know they've succeeded. Learning goals and success criteria are made explicit and understood by all students.</p></div>
+      </div>
     </section>
 
     <!-- ===== Collaborative ===== -->
-    <section class="col" aria-labelledby="col-collaborative">
+    <section class="col" data-col="collaborative" aria-labelledby="col-collaborative">
       <div class="col-header">
         <div class="col-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3 20v-1.5a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4V20"/><path d="M15 20v-1a3 3 0 0 1 3-3h1a3 3 0 0 1 3 3v1"/></svg>
@@ -531,184 +482,125 @@
       </div>
 
       <ul class="strategies" role="list">
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-think-pair-share">
-            <span>Think Pair Share</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-think-pair-share" role="region">
-            <div class="strategy-body-inner"><p>Students think individually about a question, discuss their thoughts with a partner, then share ideas with the larger group. This promotes reflection and peer learning.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-think-write-pair-share">
-            <span>Think, Write, Pair, Share</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-think-write-pair-share" role="region">
-            <div class="strategy-body-inner"><p>An extension of Think Pair Share where students write down their thoughts before discussing. This ensures all students formulate ideas and provides a record of thinking.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-round-robin">
-            <span>Round Robin</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-round-robin" role="region">
-            <div class="strategy-body-inner"><p>Students take turns sharing ideas or responses in a circular pattern within small groups. This ensures equal participation and gives everyone a voice.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-mix-pair-share">
-            <span>Mix Pair Share</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-mix-pair-share" role="region">
-            <div class="strategy-body-inner"><p>Students move around the room and pair up with different classmates to discuss questions or share ideas. This promotes interaction with diverse perspectives.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-inside-outside-circle">
-            <span>Inside Outside Circle</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-inside-outside-circle" role="region">
-            <div class="strategy-body-inner"><p>Students form two concentric circles facing each other. They discuss topics with their partner, then one circle rotates to create new partnerships for continued discussion.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-corners">
-            <span>Corners</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-corners" role="region">
-            <div class="strategy-body-inner"><p>Students move to different corners of the room based on their opinions, preferences, or answers. This creates visible groupings for discussion and debate.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-group-problem-solving">
-            <span>Group Problem Solving</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-group-problem-solving" role="region">
-            <div class="strategy-body-inner"><p>Students work together in teams to analyze and solve complex problems. This develops critical thinking, communication, and collaborative skills.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-peer-tutoring">
-            <span>Peer Tutoring</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-peer-tutoring" role="region">
-            <div class="strategy-body-inner"><p>Students teach and support each other's learning. More knowledgeable students help peers, reinforcing their own understanding while assisting others.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-reciprocal-teaching">
-            <span>Reciprocal Teaching</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-reciprocal-teaching" role="region">
-            <div class="strategy-body-inner"><p>Students take turns being the teacher, leading discussions and asking questions about the content. This develops comprehension and leadership skills.</p></div>
-          </div>
-        </li>
-
-        <li class="strategy">
-          <button type="button" class="strategy-header" aria-expanded="false" aria-controls="def-cooperative-learning">
-            <span>Cooperative Learning</span>
-            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
-          </button>
-          <div class="strategy-body" id="def-cooperative-learning" role="region">
-            <div class="strategy-body-inner"><p>Structured group work where students are interdependent and individually accountable. Success depends on all members contributing and learning together.</p></div>
-          </div>
-        </li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="think-pair-share" aria-pressed="false"><span>Think Pair Share</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="think-write-pair-share" aria-pressed="false"><span>Think, Write, Pair, Share</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="round-robin" aria-pressed="false"><span>Round Robin</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="mix-pair-share" aria-pressed="false"><span>Mix Pair Share</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="inside-outside-circle" aria-pressed="false"><span>Inside Outside Circle</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="corners" aria-pressed="false"><span>Corners</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="group-problem-solving" aria-pressed="false"><span>Group Problem Solving</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="peer-tutoring" aria-pressed="false"><span>Peer Tutoring</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="reciprocal-teaching" aria-pressed="false"><span>Reciprocal Teaching</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
+        <li class="strategy"><button type="button" class="strategy-header" data-id="cooperative-learning" aria-pressed="false"><span>Cooperative Learning</span><span class="strategy-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></span></button></li>
       </ul>
+
+      <div class="definition" aria-live="polite">
+        <p class="definition-empty">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><circle cx="12" cy="16" r="0.5" fill="currentColor"/></svg>
+          Select a strategy to view its description
+        </p>
+        <div class="definition-content" data-id="think-pair-share"><h3 class="definition-title">Think Pair Share</h3><p class="definition-text">Students think individually about a question, discuss their thoughts with a partner, then share ideas with the larger group. This promotes reflection and peer learning.</p></div>
+        <div class="definition-content" data-id="think-write-pair-share"><h3 class="definition-title">Think, Write, Pair, Share</h3><p class="definition-text">An extension of Think Pair Share where students write down their thoughts before discussing. This ensures all students formulate ideas and provides a record of thinking.</p></div>
+        <div class="definition-content" data-id="round-robin"><h3 class="definition-title">Round Robin</h3><p class="definition-text">Students take turns sharing ideas or responses in a circular pattern within small groups. This ensures equal participation and gives everyone a voice.</p></div>
+        <div class="definition-content" data-id="mix-pair-share"><h3 class="definition-title">Mix Pair Share</h3><p class="definition-text">Students move around the room and pair up with different classmates to discuss questions or share ideas. This promotes interaction with diverse perspectives.</p></div>
+        <div class="definition-content" data-id="inside-outside-circle"><h3 class="definition-title">Inside Outside Circle</h3><p class="definition-text">Students form two concentric circles facing each other. They discuss topics with their partner, then one circle rotates to create new partnerships for continued discussion.</p></div>
+        <div class="definition-content" data-id="corners"><h3 class="definition-title">Corners</h3><p class="definition-text">Students move to different corners of the room based on their opinions, preferences, or answers. This creates visible groupings for discussion and debate.</p></div>
+        <div class="definition-content" data-id="group-problem-solving"><h3 class="definition-title">Group Problem Solving</h3><p class="definition-text">Students work together in teams to analyze and solve complex problems. This develops critical thinking, communication, and collaborative skills.</p></div>
+        <div class="definition-content" data-id="peer-tutoring"><h3 class="definition-title">Peer Tutoring</h3><p class="definition-text">Students teach and support each other's learning. More knowledgeable students help peers, reinforcing their own understanding while assisting others.</p></div>
+        <div class="definition-content" data-id="reciprocal-teaching"><h3 class="definition-title">Reciprocal Teaching</h3><p class="definition-text">Students take turns being the teacher, leading discussions and asking questions about the content. This develops comprehension and leadership skills.</p></div>
+        <div class="definition-content" data-id="cooperative-learning"><h3 class="definition-title">Cooperative Learning</h3><p class="definition-text">Structured group work where students are interdependent and individually accountable. Success depends on all members contributing and learning together.</p></div>
+      </div>
     </section>
 
   </div>
-
-  <p class="status" id="status" aria-live="polite"></p>
 
 </div>
 
 <script>
   (function () {
-    const strategies = document.querySelectorAll('.strategy');
-    const headers = document.querySelectorAll('.strategy-header');
+    const cols = document.querySelectorAll('.col');
 
-    function closeStrategy(strategy) {
-      strategy.classList.remove('is-open');
-      strategy.querySelector('.strategy-header').setAttribute('aria-expanded', 'false');
-    }
+    cols.forEach(col => {
+      const headers = col.querySelectorAll('.strategy-header');
+      const strategies = col.querySelectorAll('.strategy');
+      const contents = col.querySelectorAll('.definition-content');
 
-    function openStrategy(strategy) {
-      // Close all others (single-open behaviour across both columns)
-      strategies.forEach(s => {
-        if (s !== strategy) closeStrategy(s);
-      });
-      strategy.classList.add('is-open');
-      strategy.querySelector('.strategy-header').setAttribute('aria-expanded', 'true');
-    }
+      headers.forEach(header => {
+        header.addEventListener('click', function () {
+          const id = this.dataset.id;
+          const wrapStrategy = this.closest('.strategy');
+          const wasActive = wrapStrategy.classList.contains('is-active');
 
-    headers.forEach(header => {
-      header.addEventListener('click', function () {
-        const strategy = this.closest('.strategy');
-        const isOpen = strategy.classList.contains('is-open');
-        if (isOpen) {
-          closeStrategy(strategy);
-        } else {
-          openStrategy(strategy);
-        }
-      });
+          // Reset all in this column
+          strategies.forEach(s => s.classList.remove('is-active'));
+          headers.forEach(h => h.setAttribute('aria-pressed', 'false'));
+          contents.forEach(c => c.classList.remove('is-shown'));
 
-      // Escape closes the open one
-      header.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-          const strategy = this.closest('.strategy');
-          if (strategy.classList.contains('is-open')) {
-            closeStrategy(strategy);
-            this.focus();
+          if (wasActive) {
+            // Toggle off
+            col.classList.remove('has-active');
+          } else {
+            // Activate clicked one
+            wrapStrategy.classList.add('is-active');
+            this.setAttribute('aria-pressed', 'true');
+            col.classList.add('has-active');
+            const targetContent = col.querySelector('.definition-content[data-id="' + id + '"]');
+            if (targetContent) targetContent.classList.add('is-shown');
           }
-        }
+        });
+
+        header.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') {
+            const wrapStrategy = this.closest('.strategy');
+            if (wrapStrategy.classList.contains('is-active')) {
+              this.click();
+            }
+          }
+        });
       });
     });
+
+    // Hide all definitions by default, show selected via class
+    document.querySelectorAll('.definition-content').forEach(c => c.style.display = 'none');
+    // Override via CSS-driven display when col.has-active and content matches
+    // Use a small live style addition for clarity
+    const styleEl = document.createElement('style');
+    styleEl.textContent = '.col.has-active .definition-content.is-shown { display: block; }';
+    document.head.appendChild(styleEl);
+
     // ===== Fullscreen toggle =====
     const fsBtn = document.getElementById('fsBtn');
     const iconEnter = fsBtn.querySelector('.fs-icon-enter');
     const iconExit = fsBtn.querySelector('.fs-icon-exit');
+    const labelEnter = fsBtn.querySelector('.fs-label-enter');
+    const labelExit = fsBtn.querySelector('.fs-label-exit');
 
     function isFullscreen() {
       return !!(document.fullscreenElement || document.webkitFullscreenElement);
     }
-
     function toggleFullscreen() {
       if (isFullscreen()) {
         if (document.exitFullscreen) document.exitFullscreen();
         else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
       } else {
-        const el = document.body;
+        const el = document.documentElement;
         if (el.requestFullscreen) el.requestFullscreen();
         else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
       }
     }
-
     fsBtn.addEventListener('click', toggleFullscreen);
 
     function updateFsIcon() {
       if (isFullscreen()) {
         iconEnter.style.display = 'none';
         iconExit.style.display = '';
+        labelEnter.style.display = 'none';
+        labelExit.style.display = '';
       } else {
         iconEnter.style.display = '';
         iconExit.style.display = 'none';
+        labelEnter.style.display = '';
+        labelExit.style.display = 'none';
       }
     }
     document.addEventListener('fullscreenchange', updateFsIcon);
