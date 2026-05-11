@@ -36,10 +36,16 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  body {
+    position: relative;
+    min-height: 100%;
+    overflow-x: hidden;
+  }
+
   /* Atmospheric background */
   body::before {
     content: "";
-    position: fixed;
+    position: absolute;
     inset: 0;
     background-image:
       radial-gradient(circle at 15% 0%, rgba(0, 109, 119, 0.06) 0%, transparent 45%),
