@@ -978,10 +978,28 @@
   const generatePdfBtn = document.getElementById('generatePdfBtn');
 
   // ===== RENDER BANK =====
+  // Fisher-Yates shuffle — proper randomisation
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // Cache shuffled order per section — only reshuffle on reset / first view
+  const shuffledBySection = {};
+  function getSectionOrder(section) {
+    if (!shuffledBySection[section]) {
+      shuffledBySection[section] = shuffle(ITEMS.filter(i => i.section === section));
+    }
+    return shuffledBySection[section];
+  }
+
   function renderBank() {
     bankItems.innerHTML = '';
-    const sectionItems = ITEMS.filter(i => i.section === currentSection);
-    // Shuffle for fairness (optional). For now keep deterministic order.
+    const sectionItems = getSectionOrder(currentSection);
     sectionItems.forEach(item => {
       if (placed[item.id]) return; // already placed → hide from bank
       const el = document.createElement('div');
@@ -1201,6 +1219,8 @@
     if (!confirm('Reset all sections? This will clear your placed answers.')) return;
     placed = {};
     selectedItemId = null;
+    // Clear shuffle cache so the bank reshuffles
+    Object.keys(shuffledBySection).forEach(k => delete shuffledBySection[k]);
     document.querySelectorAll('.dropzone').forEach(z => z.innerHTML = '');
     renderBank();
     updateProgress();
@@ -1252,7 +1272,7 @@
 <meta charset="UTF-8">
 <title>Lesson Plan - ${escapeHtmlForPrint(studentName)}</title>
 <style>
-  @page { size: A4; margin: 18mm; }
+  @page { size: A4; margin: 0; }
   * {
     box-sizing: border-box;
     -webkit-print-color-adjust: exact !important;
@@ -1267,7 +1287,7 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     color: #0f172a;
     margin: 0;
-    padding: 24px;
+    padding: 18mm;
     background: #fff;
     line-height: 1.4;
     font-size: 11pt;
@@ -1356,10 +1376,6 @@
     font-size: 8pt;
     color: #94a3b8;
     text-align: center;
-  }
-
-  @media print {
-    body { padding: 0; }
   }
 </style>
 </head>
