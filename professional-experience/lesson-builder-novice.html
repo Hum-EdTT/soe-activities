@@ -1253,7 +1253,16 @@
 <title>Lesson Plan - ${escapeHtmlForPrint(studentName)}</title>
 <style>
   @page { size: A4; margin: 18mm; }
-  * { box-sizing: border-box; }
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  html, body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     color: #0f172a;
@@ -1378,6 +1387,14 @@
   ${sectionsHtml}
 
   <p class="p-footer">This document was generated from the Lesson Builder Activity. Print or save to PDF for your records.</p>
+
+  <script>
+    // Auto-open the print dialog once the page has rendered
+    window.addEventListener('load', function() {
+      // Tiny delay ensures the layout is fully painted before the dialog opens
+      setTimeout(function() { window.print(); }, 150);
+    });
+  </script>
 </body>
 </html>`;
 
