@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hurdle Task: Lesson Builder (Novice)</title>
+<style>
+  :root {
+    /* Multi-colour scheme — one tone per section, matching the Canva original */
+    --bg: #f6f7fb;
+    --card: #ffffff;
+    --ink: #0f172a;
+    --ink-soft: #334155;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --line-soft: #f1f5f9;
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 2px 6px rgba(15, 23, 42, 0.05);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08), 0 12px 32px rgba(15, 23, 42, 0.07);
+
+    /* Section colours (border, tint, dot) */
+    --s1-border: #3b82f6; --s1-tint: #eff6ff; --s1-deep: #1d4ed8;       /* blue */
+    --s2-border: #10b981; --s2-tint: #ecfdf5; --s2-deep: #047857;       /* green */
+    --s3-border: #f59e0b; --s3-tint: #fffbeb; --s3-deep: #b45309;       /* amber */
+    --s4-border: #ef4444; --s4-tint: #fef2f2; --s4-deep: #b91c1c;       /* red */
+    --s5-border: #8b5cf6; --s5-tint: #f5f3ff; --s5-deep: #6d28d9;       /* purple */
+    --s6-border: #14b8a6; --s6-tint: #f0fdfa; --s6-deep: #0f766e;       /* teal */
+
+    /* Action colours */
+    --primary-grad: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+    --primary-deep: #4338ca;
+    --success: #10b981; --success-tint: #ecfdf5; --success-deep: #047857;
+    --error: #ef4444; --error-tint: #fef2f2; --error-deep: #b91c1c;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  /* ===== Header ===== */
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .header h1 {
+    font-size: clamp(1.85rem, 4vw, 2.6rem);
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.025em;
+  }
+  .header .sub {
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    margin: 0 0 0.3rem;
+    font-weight: 500;
+  }
+  .header .desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  /* ===== Progress bar ===== */
+  .progress-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .progress-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    flex-shrink: 0;
+  }
+  .progress-bar {
+    flex: 1;
+    min-width: 200px;
+    height: 8px;
+    background: var(--line-soft);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--primary-grad);
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    border-radius: 999px;
+  }
+  .progress-count {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary-deep);
+    flex-shrink: 0;
+  }
+
+  /* ===== Main grid: answer bank + lesson plan ===== */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 960px) {
+    .main-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ===== Answer bank ===== */
+  .answer-bank {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.25rem;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 1rem;
+  }
+  @media (max-width: 960px) {
+    .answer-bank { position: static; }
+  }
+
+  .bank-header {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: 0.4rem;
+  }
+  .bank-icon {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 50%, #ec4899 100%);
+    color: #fff;
+  }
+  .bank-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .bank-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+  }
+  .bank-hint {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  /* Section tabs */
+  .section-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  .section-tab {
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: var(--line-soft);
+    color: var(--ink-soft);
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 0.4rem 0.7rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .section-tab:hover { background: #e5e7eb; }
+  .section-tab:focus-visible { outline: 2px solid var(--primary-deep); outline-offset: 2px; }
+
+  /* Active tab uses its own section colour */
+  .section-tab[data-section="1"].is-active { background: var(--s1-tint); color: var(--s1-deep); border-color: var(--s1-border); }
+  .section-tab[data-section="2"].is-active { background: var(--s2-tint); color: var(--s2-deep); border-color: var(--s2-border); }
+  .section-tab[data-section="3"].is-active { background: var(--s3-tint); color: var(--s3-deep); border-color: var(--s3-border); }
+  .section-tab[data-section="4"].is-active { background: var(--s4-tint); color: var(--s4-deep); border-color: var(--s4-border); }
+  .section-tab[data-section="5"].is-active { background: var(--s5-tint); color: var(--s5-deep); border-color: var(--s5-border); }
+  .section-tab[data-section="6"].is-active { background: var(--s6-tint); color: var(--s6-deep); border-color: var(--s6-border); }
+
+  /* Bank items */
+  .bank-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    min-height: 100px;
+  }
+  .bank-item {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.8rem 0.95rem;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    cursor: grab;
+    user-select: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+    position: relative;
+  }
+  .bank-item:hover {
+    border-color: #cbd5e1;
+    box-shadow: var(--shadow-sm);
+  }
+  .bank-item:active { cursor: grabbing; }
+  .bank-item.is-dragging {
+    opacity: 0.4;
+  }
+  .bank-item.is-placed {
+    display: none;
+  }
+  .bank-item.is-selected {
+    border-color: var(--primary-deep);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  }
+  .bank-item .item-meta {
+    display: block;
+    font-size: 0.74rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+    font-style: italic;
+  }
+  .bank-empty {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-style: italic;
+    padding: 1.5rem 0.5rem;
+  }
+
+  /* Mobile select-tap helper text */
+  .mobile-hint {
+    display: none;
+    background: var(--s1-tint);
+    border: 1px solid var(--s1-border);
+    border-radius: 6px;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.78rem;
+    color: var(--s1-deep);
+    margin-bottom: 0.75rem;
+  }
+  .is-touch .mobile-hint { display: block; }
+
+  /* ===== Lesson plan ===== */
+  .lesson-plan {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+  }
+  .plan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .plan-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.015em;
+  }
+  .plan-sub {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0.2rem 0 0;
+  }
+  .plan-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--error-deep);
+    background: var(--error-tint);
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  /* Student info */
+  .student-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.25rem 0;
+  }
+  @media (max-width: 540px) {
+    .student-info { grid-template-columns: 1fr; }
+  }
+  .field-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .field-input {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: var(--card);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: var(--primary-deep);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+  }
+
+  /* Ignored sections (Learning Area / Curriculum Links) */
+  .ignored-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  @media (max-width: 540px) {
+    .ignored-grid { grid-template-columns: 1fr; }
+  }
+  .ignored-box {
+    background: var(--line-soft);
+    border: 1px dashed var(--line);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+  }
+  .ignored-box .field-label { color: var(--muted); }
+  .ignored-box p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-style: italic;
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  /* Section drop zones */
+  .sections {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .section {
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    border: 1px solid;
+    transition: background-color 0.2s ease;
+  }
+  .section[data-section="1"] { background: var(--s1-tint); border-color: var(--s1-border); }
+  .section[data-section="2"] { background: var(--s2-tint); border-color: var(--s2-border); }
+  .section[data-section="3"] { background: var(--s3-tint); border-color: var(--s3-border); }
+  .section[data-section="4"] { background: var(--s4-tint); border-color: var(--s4-border); }
+  .section[data-section="5"] { background: var(--s5-tint); border-color: var(--s5-border); }
+  .section[data-section="6"] { background: var(--s6-tint); border-color: var(--s6-border); }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.7rem;
+  }
+  .section-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+  .section[data-section="1"] .section-num { background: var(--s1-border); }
+  .section[data-section="2"] .section-num { background: var(--s2-border); }
+  .section[data-section="3"] .section-num { background: var(--s3-border); }
+  .section[data-section="4"] .section-num { background: var(--s4-border); }
+  .section[data-section="5"] .section-num { background: var(--s5-border); }
+  .section[data-section="6"] .section-num { background: var(--s6-border); }
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+  }
+  .section-count {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 500;
+    margin-left: 0.25rem;
+  }
+
+  .dropzone {
+    min-height: 70px;
+    border: 2px dashed;
+    border-radius: 8px;
+    padding: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  .section[data-section="1"] .dropzone { border-color: rgba(59, 130, 246, 0.4); }
+  .section[data-section="2"] .dropzone { border-color: rgba(16, 185, 129, 0.4); }
+  .section[data-section="3"] .dropzone { border-color: rgba(245, 158, 11, 0.4); }
+  .section[data-section="4"] .dropzone { border-color: rgba(239, 68, 68, 0.4); }
+  .section[data-section="5"] .dropzone { border-color: rgba(139, 92, 246, 0.4); }
+  .section[data-section="6"] .dropzone { border-color: rgba(20, 184, 166, 0.4); }
+
+  .dropzone.is-drag-over {
+    background: rgba(255, 255, 255, 0.6);
+  }
+  .section[data-section="1"] .dropzone.is-drag-over { border-color: var(--s1-border); }
+  .section[data-section="2"] .dropzone.is-drag-over { border-color: var(--s2-border); }
+  .section[data-section="3"] .dropzone.is-drag-over { border-color: var(--s3-border); }
+  .section[data-section="4"] .dropzone.is-drag-over { border-color: var(--s4-border); }
+  .section[data-section="5"] .dropzone.is-drag-over { border-color: var(--s5-border); }
+  .section[data-section="6"] .dropzone.is-drag-over { border-color: var(--s6-border); }
+
+  /* Placed item */
+  .placed-item {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    position: relative;
+    animation: fadeInUp 0.2s ease;
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .placed-text {
+    flex: 1;
+    line-height: 1.45;
+  }
+  .placed-meta {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+    font-style: italic;
+  }
+  .placed-remove {
+    background: transparent;
+    border: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--muted);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .placed-remove:hover { background: var(--line-soft); color: var(--ink); }
+  .placed-remove:focus-visible { outline: 2px solid var(--primary-deep); outline-offset: 1px; }
+  .placed-remove svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Feedback states */
+  .placed-item.is-correct {
+    background: var(--success-tint);
+    border-color: var(--success);
+    color: var(--success-deep);
+  }
+  .placed-item.is-incorrect {
+    background: var(--error-tint);
+    border-color: var(--error);
+    color: var(--error-deep);
+  }
+
+  /* ===== Action buttons ===== */
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.8rem 1.25rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--card);
+    color: var(--ink);
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  }
+  .btn:hover { background: var(--line-soft); }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 2px solid var(--primary-deep); outline-offset: 2px; }
+  .btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .btn-primary {
+    background: var(--primary-grad);
+    color: #fff;
+    border: 0;
+    flex: 1;
+    min-width: 200px;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #4338ca 0%, #7c3aed 100%);
+  }
+  .btn-next {
+    background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+    color: #fff;
+    border: 0;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  }
+  .btn-next:hover {
+    background: linear-gradient(135deg, #0891b2 0%, #2563eb 100%);
+  }
+  .btn-next[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  /* ===== Feedback banner ===== */
+  .feedback {
+    margin-top: 1.25rem;
+    border-radius: 10px;
+    padding: 1rem 1.15rem;
+    display: none;
+    align-items: flex-start;
+    gap: 0.75rem;
+    animation: fadeInUp 0.3s ease;
+  }
+  .feedback.is-shown { display: flex; }
+  .feedback.is-success {
+    background: var(--success-tint);
+    border: 1px solid var(--success);
+    color: var(--success-deep);
+  }
+  .feedback.is-partial {
+    background: var(--error-tint);
+    border: 1px solid var(--error);
+    color: var(--error-deep);
+  }
+  .feedback-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.6);
+  }
+  .feedback-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .feedback-body { flex: 1; }
+  .feedback-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem;
+  }
+  .feedback-text {
+    font-size: 0.88rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ===== Export section ===== */
+  .export-section {
+    margin-top: 1.5rem;
+    background: linear-gradient(135deg, #eef2ff 0%, #f3e8ff 100%);
+    border: 1px solid #c7d2fe;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: none;
+  }
+  .export-section.is-shown { display: block; }
+  .export-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.85rem;
+  }
+  .export-icon {
+    width: 28px; height: 28px;
+    display: grid; place-items: center;
+    color: var(--primary-deep);
+  }
+  .export-icon svg {
+    width: 22px; height: 22px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .export-title {
+    font-size: 1rem; font-weight: 700;
+    color: var(--ink); margin: 0;
+  }
+  .export-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+    text-align: left;
+    width: 100%;
+    font-family: inherit;
+  }
+  .export-card:hover {
+    border-color: var(--primary-deep);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+  }
+  .export-card:active { transform: translateY(1px); }
+  .export-card:focus-visible { outline: 2px solid var(--primary-deep); outline-offset: 2px; }
+  .export-card-title {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.95rem; font-weight: 700;
+    color: var(--primary-deep);
+    margin: 0 0 0.3rem;
+  }
+  .export-card-title svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .export-card p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Mobile tweaks */
+  @media (max-width: 540px) {
+    .wrap { padding: 1.5rem 1rem 2.5rem; }
+    .lesson-plan { padding: 1.1rem; }
+    .answer-bank { padding: 1rem; }
+    .btn-primary { width: 100%; flex: none; }
+    .actions { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <h1>Hurdle Task: Lesson Builder</h1>
+    <p class="sub">Novice vs Expert Lesson Design</p>
+    <p class="desc">Drag and drop the correct teaching strategies into the Novice lesson plan</p>
+  </header>
+
+  <!-- Progress -->
+  <div class="progress-card">
+    <span class="progress-label">Progress</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="progress-count"><span id="progressCount">0</span> of 8 sections complete</span>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- ===== Answer Bank ===== -->
+    <aside class="answer-bank">
+      <div class="bank-header">
+        <div class="bank-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="7" rx="1"/><rect x="14" y="4" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </div>
+        <h2 class="bank-title">Answer Bank</h2>
+      </div>
+      <p class="bank-hint">Click on a section below to view answers for that section</p>
+
+      <div class="mobile-hint">
+        <strong>Tip:</strong> Tap an answer to select it, then tap a section's drop zone to place it.
+      </div>
+
+      <div class="section-tabs" role="tablist">
+        <button class="section-tab is-active" data-section="1" role="tab" aria-selected="true">Learning Objectives</button>
+        <button class="section-tab" data-section="2" role="tab" aria-selected="false">Student Prior Knowledge</button>
+        <button class="section-tab" data-section="3" role="tab" aria-selected="false">Introductory Phase</button>
+        <button class="section-tab" data-section="4" role="tab" aria-selected="false">Developmental Phase</button>
+        <button class="section-tab" data-section="5" role="tab" aria-selected="false">Concluding Phase</button>
+        <button class="section-tab" data-section="6" role="tab" aria-selected="false">Rationale</button>
+      </div>
+
+      <div class="bank-items" id="bankItems" aria-live="polite"></div>
+    </aside>
+
+    <!-- ===== Lesson Plan ===== -->
+    <main class="lesson-plan">
+      <div class="plan-header">
+        <div>
+          <h2 class="plan-title">Novice Lesson Plan</h2>
+          <p class="plan-sub">Fill in each section with appropriate strategies</p>
+        </div>
+        <span class="plan-tag">Novice Format</span>
+      </div>
+
+      <div class="student-info">
+        <div>
+          <label class="field-label" for="studentName">Student Name</label>
+          <input class="field-input" type="text" id="studentName" placeholder="Enter student name">
+        </div>
+        <div>
+          <label class="field-label" for="studentId">Student ID#</label>
+          <input class="field-input" type="text" id="studentId" placeholder="Enter student ID">
+        </div>
+      </div>
+
+      <div class="ignored-grid">
+        <div class="ignored-box">
+          <span class="field-label">Learning Area</span>
+          <p>These sections appear only because they are part of a standard lesson plan, but you can safely ignore them for now</p>
+        </div>
+        <div class="ignored-box">
+          <span class="field-label">Curriculum Links</span>
+          <p>These sections appear only because they are part of a standard lesson plan, but you can safely ignore them for now</p>
+        </div>
+      </div>
+
+      <div class="sections">
+
+        <section class="section" data-section="1" data-slots="1">
+          <div class="section-head">
+            <span class="section-num">1</span>
+            <h3 class="section-title">Learning Objectives <span class="section-count">(Choose 1)</span></h3>
+          </div>
+          <div class="dropzone" data-section="1" data-slots="1"></div>
+        </section>
+
+        <section class="section" data-section="2" data-slots="1">
+          <div class="section-head">
+            <span class="section-num">2</span>
+            <h3 class="section-title">Student Prior Knowledge <span class="section-count">(Choose 1)</span></h3>
+          </div>
+          <div class="dropzone" data-section="2" data-slots="1"></div>
+        </section>
+
+        <section class="section" data-section="3" data-slots="1">
+          <div class="section-head">
+            <span class="section-num">3</span>
+            <h3 class="section-title">Introductory Phase <span class="section-count">(Choose 1)</span></h3>
+          </div>
+          <div class="dropzone" data-section="3" data-slots="1"></div>
+        </section>
+
+        <section class="section" data-section="4" data-slots="3">
+          <div class="section-head">
+            <span class="section-num">4</span>
+            <h3 class="section-title">Developmental Phase <span class="section-count">(Choose 3)</span></h3>
+          </div>
+          <div class="dropzone" data-section="4" data-slots="3"></div>
+        </section>
+
+        <section class="section" data-section="5" data-slots="1">
+          <div class="section-head">
+            <span class="section-num">5</span>
+            <h3 class="section-title">Concluding Phase <span class="section-count">(Choose 1)</span></h3>
+          </div>
+          <div class="dropzone" data-section="5" data-slots="1"></div>
+        </section>
+
+        <section class="section" data-section="6" data-slots="1">
+          <div class="section-head">
+            <span class="section-num">6</span>
+            <h3 class="section-title">Rationale <span class="section-count">(Choose 1)</span></h3>
+          </div>
+          <div class="dropzone" data-section="6" data-slots="1"></div>
+        </section>
+
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="checkBtn" type="button">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="9 12 11 14 15 10"/></svg>
+          Check Answers
+        </button>
+        <button class="btn" id="resetBtn" type="button">
+          <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Reset
+        </button>
+        <button class="btn btn-next" id="nextBtn" type="button" disabled>
+          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Next Steps
+        </button>
+      </div>
+
+      <div class="feedback" id="feedback" role="status">
+        <div class="feedback-icon" aria-hidden="true">
+          <svg id="feedbackIcon" viewBox="0 0 24 24"></svg>
+        </div>
+        <div class="feedback-body">
+          <h3 class="feedback-title" id="feedbackTitle"></h3>
+          <p class="feedback-text" id="feedbackText"></p>
+        </div>
+      </div>
+
+      <div class="export-section" id="exportSection">
+        <div class="export-head">
+          <div class="export-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <h3 class="export-title">Export Your Lesson Plan</h3>
+        </div>
+        <button class="export-card" type="button" id="generatePdfBtn">
+          <h4 class="export-card-title">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Generate Printable PDF
+          </h4>
+          <p>Opens a print-ready version. Press <strong>Ctrl+P</strong> (or <strong>Cmd+P</strong> on Mac) then select "Save as PDF"</p>
+        </button>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  // ===== DATA =====
+  // Each item: id, text, meta (subtitle), section, correct (boolean)
+  const ITEMS = [
+    // Section 1: Learning Objectives
+    { id: 's1-a', section: 1, correct: true,  text: "Students will identify the main idea in a short, teacher-modelled text by following guided steps and using a worked example.", meta: "(English, Novice)" },
+    { id: 's1-b', section: 1, correct: true,  text: "Students will accurately solve simple number problems using the teacher-modelled strategy and apply it to two guided practice examples.", meta: "(Mathematics, Novice)" },
+    { id: 's1-c', section: 1, correct: false, text: "Students will independently choose a comprehension strategy to analyse a new text and explain why they selected it." },
+    { id: 's1-d', section: 1, correct: false, text: "Students will explore multiple informal methods to solve a number problem and decide which method works best for them." },
+    { id: 's1-e', section: 1, correct: false, text: "Students will explore different ways to interpret a text and select the approach that suits their learning preferences." },
+    { id: 's1-f', section: 1, correct: false, text: "Students will follow a step-by-step demonstration to practise the basic elements of the concept, even when they have already mastered these skills." },
+
+    // Section 2: Prior Knowledge
+    { id: 's2-a', section: 2, correct: true,  text: "Students have no prior knowledge. This is biologically secondary knowledge." },
+    { id: 's2-b', section: 2, correct: true,  text: "Learners have fragmented initial ideas and no established schemas." },
+    { id: 's2-c', section: 2, correct: true,  text: "Students have primary experiences but not secondary knowledge." },
+    { id: 's2-d', section: 2, correct: false, text: "Students already know everything." },
+    { id: 's2-e', section: 2, correct: false, text: "Students can self-teach all new concepts." },
+
+    // Section 3: Introductory Phase
+    { id: 's3-a', section: 3, correct: true,  text: "Explicit teacher-led explanation." },
+    { id: 's3-b', section: 3, correct: true,  text: "Concrete example." },
+    { id: 's3-c', section: 3, correct: true,  text: "Short demonstration." },
+    { id: 's3-d', section: 3, correct: false, text: "Brainstorm their own approach." },
+    { id: 's3-e', section: 3, correct: false, text: "Choose any way to explore." },
+    { id: 's3-f', section: 3, correct: false, text: "Open-ended inquiry without modelling." },
+    { id: 's3-g', section: 3, correct: false, text: "Design an investigation." },
+    { id: 's3-h', section: 3, correct: false, text: "Explain what they already know about an unfamiliar topic." },
+
+    // Section 4: Developmental Phase
+    { id: 's4-a', section: 4, correct: true,  text: "Worked example." },
+    { id: 's4-b', section: 4, correct: true,  text: "Guided practice." },
+    { id: 's4-c', section: 4, correct: true,  text: "Structured scaffold." },
+    { id: 's4-d', section: 4, correct: true,  text: "Visual diagrams." },
+    { id: 's4-e', section: 4, correct: true,  text: "Misconception checks." },
+    { id: 's4-f', section: 4, correct: true,  text: "Repetition for early automaticity." },
+    { id: 's4-g', section: 4, correct: false, text: "Independent discovery." },
+    { id: 's4-h', section: 4, correct: false, text: "Open inquiry." },
+    { id: 's4-i', section: 4, correct: false, text: "Peer-teaching without instruction." },
+    { id: 's4-j', section: 4, correct: false, text: "Unstructured group project." },
+    { id: 's4-k', section: 4, correct: false, text: "Minimal guidance." },
+    { id: 's4-l', section: 4, correct: false, text: "Jump straight to transfer tasks." },
+
+    // Section 5: Concluding Phase
+    { id: 's5-a', section: 5, correct: true,  text: "Guided reflection." },
+    { id: 's5-b', section: 5, correct: true,  text: "Check for understanding." },
+    { id: 's5-c', section: 5, correct: false, text: "Independent metacognition." },
+    { id: 's5-d', section: 5, correct: false, text: "Students present novel strategies." },
+    { id: 's5-e', section: 5, correct: false, text: "Creative transformation tasks." },
+
+    // Section 6: Rationale
+    { id: 's6-a', section: 6, correct: true,  text: "Novices need explicit instruction and have undeveloped schemas." },
+    { id: 's6-b', section: 6, correct: true,  text: "Secondary knowledge requires deliberate teaching." },
+    { id: 's6-c', section: 6, correct: false, text: "Novices learn best through discovery." },
+    { id: 's6-d', section: 6, correct: false, text: "Novices should lead their own learning." }
+  ];
+
+  const SECTION_NAMES = {
+    1: "Learning Objectives",
+    2: "Student Prior Knowledge",
+    3: "Introductory Phase",
+    4: "Developmental Phase",
+    5: "Concluding Phase",
+    6: "Rationale"
+  };
+
+  // ===== STATE =====
+  let currentSection = 1;
+  let placed = {}; // { itemId: sectionNumber }
+  let selectedItemId = null; // for tap-to-place on mobile
+  const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (isTouch) document.body.classList.add('is-touch');
+
+  // ===== ELEMENTS =====
+  const bankItems = document.getElementById('bankItems');
+  const sectionTabs = document.querySelectorAll('.section-tab');
+  const dropzones = document.querySelectorAll('.dropzone');
+  const progressFill = document.getElementById('progressFill');
+  const progressCount = document.getElementById('progressCount');
+  const checkBtn = document.getElementById('checkBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const feedback = document.getElementById('feedback');
+  const feedbackTitle = document.getElementById('feedbackTitle');
+  const feedbackText = document.getElementById('feedbackText');
+  const feedbackIcon = document.getElementById('feedbackIcon');
+  const exportSection = document.getElementById('exportSection');
+  const generatePdfBtn = document.getElementById('generatePdfBtn');
+
+  // ===== RENDER BANK =====
+  function renderBank() {
+    bankItems.innerHTML = '';
+    const sectionItems = ITEMS.filter(i => i.section === currentSection);
+    // Shuffle for fairness (optional). For now keep deterministic order.
+    sectionItems.forEach(item => {
+      if (placed[item.id]) return; // already placed → hide from bank
+      const el = document.createElement('div');
+      el.className = 'bank-item';
+      el.setAttribute('draggable', 'true');
+      el.dataset.id = item.id;
+      el.dataset.section = item.section;
+      el.innerHTML = `<span class="bank-item-text">${escapeHtml(item.text)}</span>` +
+                     (item.meta ? `<span class="item-meta">${escapeHtml(item.meta)}</span>` : '');
+      if (item.id === selectedItemId) el.classList.add('is-selected');
+      bankItems.appendChild(el);
+    });
+
+    if (bankItems.children.length === 0) {
+      const empty = document.createElement('p');
+      empty.className = 'bank-empty';
+      empty.textContent = 'All items from this section are placed.';
+      bankItems.appendChild(empty);
+    }
+
+    attachBankListeners();
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  }
+
+  // ===== TAB SWITCHING =====
+  sectionTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      currentSection = parseInt(tab.dataset.section, 10);
+      sectionTabs.forEach(t => {
+        t.classList.toggle('is-active', t === tab);
+        t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+      });
+      selectedItemId = null;
+      renderBank();
+    });
+  });
+
+  // ===== DRAG & DROP =====
+  function attachBankListeners() {
+    bankItems.querySelectorAll('.bank-item').forEach(el => {
+      el.addEventListener('dragstart', (e) => {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', el.dataset.id);
+        el.classList.add('is-dragging');
+      });
+      el.addEventListener('dragend', () => {
+        el.classList.remove('is-dragging');
+      });
+
+      // Tap-to-select (touch & mouse both work)
+      el.addEventListener('click', () => {
+        if (selectedItemId === el.dataset.id) {
+          selectedItemId = null;
+        } else {
+          selectedItemId = el.dataset.id;
+        }
+        // Update selection class
+        bankItems.querySelectorAll('.bank-item').forEach(b => {
+          b.classList.toggle('is-selected', b.dataset.id === selectedItemId);
+        });
+      });
+    });
+  }
+
+  dropzones.forEach(zone => {
+    zone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      zone.classList.add('is-drag-over');
+    });
+    zone.addEventListener('dragleave', () => {
+      zone.classList.remove('is-drag-over');
+    });
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      zone.classList.remove('is-drag-over');
+      const id = e.dataTransfer.getData('text/plain');
+      placeItem(id, parseInt(zone.dataset.section, 10));
+    });
+
+    // Tap-to-place: if an item is selected, tapping a dropzone places it
+    zone.addEventListener('click', () => {
+      if (selectedItemId) {
+        const item = ITEMS.find(i => i.id === selectedItemId);
+        if (item) {
+          placeItem(selectedItemId, parseInt(zone.dataset.section, 10));
+          selectedItemId = null;
+        }
+      }
+    });
+  });
+
+  function placeItem(itemId, targetSection) {
+    const item = ITEMS.find(i => i.id === itemId);
+    if (!item) return;
+    const zone = document.querySelector(`.dropzone[data-section="${targetSection}"]`);
+    const slots = parseInt(zone.dataset.slots, 10);
+    const placedInZone = zone.querySelectorAll('.placed-item').length;
+
+    if (placedInZone >= slots) {
+      // Zone full — flash a quick hint by briefly highlighting
+      zone.classList.add('is-drag-over');
+      setTimeout(() => zone.classList.remove('is-drag-over'), 300);
+      return;
+    }
+
+    // If item already placed somewhere else, remove from there first
+    if (placed[itemId]) {
+      const oldZone = document.querySelector(`.dropzone[data-section="${placed[itemId]}"]`);
+      const oldEl = oldZone && oldZone.querySelector(`[data-id="${itemId}"]`);
+      if (oldEl) oldEl.remove();
+    }
+
+    placed[itemId] = targetSection;
+
+    const el = document.createElement('div');
+    el.className = 'placed-item';
+    el.dataset.id = itemId;
+    el.innerHTML = `
+      <div class="placed-text">${escapeHtml(item.text)}${item.meta ? `<span class="placed-meta">${escapeHtml(item.meta)}</span>` : ''}</div>
+      <button class="placed-remove" type="button" aria-label="Remove this item">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    `;
+    el.querySelector('.placed-remove').addEventListener('click', (e) => {
+      e.stopPropagation();
+      removeItem(itemId);
+    });
+    zone.appendChild(el);
+
+    renderBank();
+    updateProgress();
+    clearFeedback();
+  }
+
+  function removeItem(itemId) {
+    const sectionNum = placed[itemId];
+    if (!sectionNum) return;
+    const zone = document.querySelector(`.dropzone[data-section="${sectionNum}"]`);
+    const el = zone.querySelector(`[data-id="${itemId}"]`);
+    if (el) el.remove();
+    delete placed[itemId];
+    renderBank();
+    updateProgress();
+    clearFeedback();
+  }
+
+  // ===== PROGRESS =====
+  function updateProgress() {
+    const total = 8; // 1+1+1+3+1+1
+    const count = Object.keys(placed).length;
+    progressCount.textContent = count;
+    progressFill.style.width = (count / total * 100) + '%';
+  }
+
+  // ===== CHECK ANSWERS =====
+  checkBtn.addEventListener('click', () => {
+    let correct = 0;
+    let totalPlaced = 0;
+
+    // Clear previous feedback classes
+    document.querySelectorAll('.placed-item').forEach(el => {
+      el.classList.remove('is-correct', 'is-incorrect');
+    });
+
+    Object.entries(placed).forEach(([itemId, sectionNum]) => {
+      totalPlaced++;
+      const item = ITEMS.find(i => i.id === itemId);
+      const el = document.querySelector(`.placed-item[data-id="${itemId}"]`);
+      if (!item || !el) return;
+      if (item.correct && item.section === sectionNum) {
+        correct++;
+        el.classList.add('is-correct');
+      } else {
+        el.classList.add('is-incorrect');
+      }
+    });
+
+    const totalRequired = 8;
+    showFeedback(correct, totalPlaced, totalRequired);
+  });
+
+  function showFeedback(correct, placedCount, total) {
+    feedback.classList.remove('is-success', 'is-partial', 'is-shown');
+    feedback.classList.add('is-shown');
+
+    if (correct === total && placedCount === total) {
+      feedback.classList.add('is-success');
+      feedbackIcon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
+      feedbackTitle.textContent = 'Excellent work!';
+      feedbackText.textContent = `You got all ${total} correct. The Novice lesson plan demonstrates explicit instruction principles for learners with undeveloped schemas. You may now proceed to Next Steps.`;
+      nextBtn.removeAttribute('disabled');
+    } else {
+      feedback.classList.add('is-partial');
+      feedbackIcon.innerHTML = '<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>';
+      feedbackTitle.textContent = 'Keep Trying!';
+      feedbackText.textContent = `You got ${correct} out of ${total} correct. Review the items marked in red and think about which strategies best support novice learners. Remember, novices need explicit instruction and well-developed scaffolding!`;
+      nextBtn.setAttribute('disabled', 'disabled');
+    }
+  }
+
+  function clearFeedback() {
+    feedback.classList.remove('is-shown', 'is-success', 'is-partial');
+    document.querySelectorAll('.placed-item').forEach(el => {
+      el.classList.remove('is-correct', 'is-incorrect');
+    });
+    nextBtn.setAttribute('disabled', 'disabled');
+    exportSection.classList.remove('is-shown');
+  }
+
+  // ===== RESET =====
+  resetBtn.addEventListener('click', () => {
+    if (Object.keys(placed).length === 0) return;
+    if (!confirm('Reset all sections? This will clear your placed answers.')) return;
+    placed = {};
+    selectedItemId = null;
+    document.querySelectorAll('.dropzone').forEach(z => z.innerHTML = '');
+    renderBank();
+    updateProgress();
+    clearFeedback();
+  });
+
+  // ===== NEXT STEPS =====
+  nextBtn.addEventListener('click', () => {
+    exportSection.classList.add('is-shown');
+    exportSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  // ===== GENERATE PRINTABLE PDF =====
+  generatePdfBtn.addEventListener('click', () => {
+    const studentName = document.getElementById('studentName').value.trim() || 'Student';
+    const studentId = document.getElementById('studentId').value.trim() || 'N/A';
+    const date = new Date().toLocaleDateString('en-AU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    // Build content sections
+    const sectionsHtml = [1, 2, 3, 4, 5, 6].map(secNum => {
+      const zone = document.querySelector(`.dropzone[data-section="${secNum}"]`);
+      const items = Array.from(zone.querySelectorAll('.placed-item')).map(el => {
+        const id = el.dataset.id;
+        const item = ITEMS.find(i => i.id === id);
+        return item ? { text: item.text, meta: item.meta || '' } : null;
+      }).filter(Boolean);
+
+      const itemsHtml = items.map(i => `
+        <div class="p-item">
+          <span class="p-item-text">${escapeHtmlForPrint(i.text)}</span>
+          ${i.meta ? `<span class="p-item-meta">${escapeHtmlForPrint(i.meta)}</span>` : ''}
+        </div>
+      `).join('');
+
+      return `
+        <section class="p-section">
+          <div class="p-section-head">
+            <span class="p-num p-num-${secNum}">${secNum}</span>
+            <h2>${SECTION_NAMES[secNum]}</h2>
+          </div>
+          ${itemsHtml || '<div class="p-item p-item-empty">(not completed)</div>'}
+        </section>
+      `;
+    }).join('');
+
+    const printHtml = `<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<title>Lesson Plan - ${escapeHtmlForPrint(studentName)}</title>
+<style>
+  @page { size: A4; margin: 18mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: #0f172a;
+    margin: 0;
+    padding: 24px;
+    background: #fff;
+    line-height: 1.4;
+    font-size: 11pt;
+  }
+  .p-header { margin-bottom: 16px; }
+  .p-header h1 {
+    font-size: 18pt;
+    font-weight: 800;
+    margin: 0 0 4px;
+    letter-spacing: -0.02em;
+  }
+  .p-header .p-sub {
+    color: #64748b;
+    margin: 0;
+    font-size: 10pt;
+  }
+  .p-meta {
+    margin: 12px 0 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    font-size: 9.5pt;
+  }
+  .p-meta-label {
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .p-meta-value { font-weight: 600; }
+
+  .p-section { margin-bottom: 12px; page-break-inside: avoid; }
+  .p-section-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .p-num {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 9pt; font-weight: 700;
+    display: inline-grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .p-num-1 { background: #3b82f6; }
+  .p-num-2 { background: #10b981; }
+  .p-num-3 { background: #f59e0b; }
+  .p-num-4 { background: #ef4444; }
+  .p-num-5 { background: #8b5cf6; }
+  .p-num-6 { background: #14b8a6; }
+  .p-section-head h2 {
+    font-size: 11pt;
+    font-weight: 700;
+    margin: 0;
+    color: #0f172a;
+  }
+  .p-item {
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    padding: 6px 10px;
+    font-size: 10pt;
+    color: #334155;
+    margin-bottom: 4px;
+  }
+  .p-item-meta {
+    display: block;
+    font-size: 8.5pt;
+    color: #94a3b8;
+    font-style: italic;
+    margin-top: 2px;
+  }
+  .p-item-empty { color: #cbd5e1; font-style: italic; }
+
+  .p-footer {
+    margin-top: 18px;
+    padding-top: 10px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 8pt;
+    color: #94a3b8;
+    text-align: center;
+  }
+
+  @media print {
+    body { padding: 0; }
+  }
+</style>
+</head>
+<body>
+  <header class="p-header">
+    <h1>Novice Lesson Plan</h1>
+    <p class="p-sub">Lesson Builder Activity</p>
+  </header>
+
+  <div class="p-meta">
+    <div>
+      <span class="p-meta-label">Student Name</span>
+      <span class="p-meta-value">${escapeHtmlForPrint(studentName)}</span>
+    </div>
+    <div>
+      <span class="p-meta-label">Student ID</span>
+      <span class="p-meta-value">${escapeHtmlForPrint(studentId)}</span>
+    </div>
+    <div>
+      <span class="p-meta-label">Generated</span>
+      <span class="p-meta-value">${escapeHtmlForPrint(date)}</span>
+    </div>
+  </div>
+
+  ${sectionsHtml}
+
+  <p class="p-footer">This document was generated from the Lesson Builder Activity. Print or save to PDF for your records.</p>
+</body>
+</html>`;
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert('Please allow pop-ups to generate the printable view.');
+      return;
+    }
+    printWindow.document.open();
+    printWindow.document.write(printHtml);
+    printWindow.document.close();
+  });
+
+  function escapeHtmlForPrint(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  }
+
+  // ===== INIT =====
+  renderBank();
+  updateProgress();
+</script>
+
+</body>
+</html>
