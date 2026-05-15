@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rotation Activity Review</title>
+<style>
+  :root {
+    --teal: #006d77;
+    --teal-dark: #00525a;
+    --teal-deep: #003d44;
+    --teal-tint: #e6f0f1;
+    --teal-tint-2: #f2f7f7;
+    --accent: #b3d3d6;
+    --ink: #102528;
+    --ink-soft: #2c4045;
+    --muted: #5a6e71;
+    --line: #d8e3e4;
+    --line-soft: #e8eeef;
+    --bg: #f5f8f8;
+    --card: #ffffff;
+    --shadow-sm: 0 1px 2px rgba(0, 61, 68, 0.04), 0 2px 6px rgba(0, 61, 68, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 61, 68, 0.08), 0 12px 32px rgba(0, 61, 68, 0.07);
+    --primary-grad: linear-gradient(135deg, #006d77 0%, #00525a 100%);
+    --yes: #10b981; --yes-tint: #ecfdf5; --yes-deep: #047857;
+    --maybe: #f59e0b; --maybe-tint: #fffbeb; --maybe-deep: #b45309;
+    --no: #ef4444; --no-tint: #fef2f2; --no-deep: #b91c1c;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .wrap { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.25rem 3rem; }
+
+  .header { text-align: center; margin-bottom: 1.75rem; }
+  .header-eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--teal);
+    background: var(--teal-tint); padding: 0.4rem 0.85rem;
+    border-radius: 999px; margin-bottom: 0.85rem;
+  }
+  .header-eyebrow::before {
+    content: ""; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--teal);
+  }
+  .header h1 {
+    font-size: clamp(1.65rem, 3.5vw, 2.25rem);
+    font-weight: 800; color: var(--teal-deep);
+    margin: 0 0 0.5rem; letter-spacing: -0.025em; line-height: 1.15;
+  }
+  .header p {
+    color: var(--muted); margin: 0 auto;
+    font-size: 0.95rem; max-width: 620px;
+  }
+
+  .worksheet {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 1.75rem;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+  }
+  @media (max-width: 540px) { .worksheet { padding: 1.1rem; } }
+
+  .student-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  @media (max-width: 540px) { .student-info { grid-template-columns: 1fr; } }
+
+  .field-label {
+    display: block; font-size: 0.72rem;
+    font-weight: 700; color: var(--ink-soft);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .field-input {
+    width: 100%; border: 1px solid var(--line);
+    border-radius: 8px; padding: 0.65rem 0.85rem;
+    font-family: inherit; font-size: 0.95rem;
+    color: var(--ink); background: var(--card);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field-input:focus {
+    outline: none; border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(0, 109, 119, 0.15);
+  }
+
+  .section {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .section:first-of-type { padding-top: 0; }
+  .section:last-of-type { border-bottom: none; padding-bottom: 0; }
+
+  .section-head {
+    display: flex; align-items: center;
+    gap: 0.65rem; margin-bottom: 0.85rem;
+  }
+  .section-num {
+    width: 26px; height: 26px;
+    border-radius: 50%; background: var(--teal); color: #fff;
+    font-size: 0.78rem; font-weight: 700;
+    display: grid; place-items: center; flex-shrink: 0;
+  }
+  .section-title {
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--teal-deep); margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .section-prompt {
+    font-size: 0.95rem; color: var(--ink-soft);
+    margin: 0 0 0.85rem 0; line-height: 1.55;
+  }
+
+  .choice-group { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .choice-input { position: absolute; opacity: 0; pointer-events: none; }
+  .choice {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.6rem 1.1rem; border-radius: 8px;
+    border: 1.5px solid var(--line); background: var(--card);
+    font-family: inherit; font-size: 0.9rem;
+    font-weight: 600; color: var(--ink-soft);
+    cursor: pointer; user-select: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  }
+  .choice:hover { background: var(--teal-tint-2); border-color: var(--accent); }
+  .choice:active { transform: translateY(1px); }
+  .choice-input:focus-visible + .choice {
+    outline: 2px solid var(--teal); outline-offset: 2px;
+  }
+  .choice .check {
+    width: 18px; height: 18px;
+    border-radius: 50%; background: var(--line-soft);
+    display: grid; place-items: center;
+    flex-shrink: 0; transition: background-color 0.15s ease;
+  }
+  .choice .check svg {
+    width: 11px; height: 11px;
+    stroke: #fff; fill: none;
+    stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+    opacity: 0; transition: opacity 0.15s ease;
+  }
+  .choice-input[value="yes"]:checked + .choice {
+    background: var(--yes-tint); border-color: var(--yes); color: var(--yes-deep);
+  }
+  .choice-input[value="yes"]:checked + .choice .check { background: var(--yes); }
+  .choice-input[value="somewhat"]:checked + .choice {
+    background: var(--maybe-tint); border-color: var(--maybe); color: var(--maybe-deep);
+  }
+  .choice-input[value="somewhat"]:checked + .choice .check { background: var(--maybe); }
+  .choice-input[value="no"]:checked + .choice {
+    background: var(--no-tint); border-color: var(--no); color: var(--no-deep);
+  }
+  .choice-input[value="no"]:checked + .choice .check { background: var(--no); }
+  .choice-input:checked + .choice .check svg { opacity: 1; }
+
+  .field-textarea-label {
+    display: block; font-size: 0.85rem;
+    font-weight: 600; color: var(--ink-soft);
+    margin-bottom: 0.35rem;
+  }
+  .field-textarea {
+    width: 100%; min-height: 80px;
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: 0.7rem 0.9rem;
+    font-family: inherit; font-size: 0.93rem;
+    color: var(--ink); background: var(--card);
+    resize: vertical; line-height: 1.5;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field-textarea:focus {
+    outline: none; border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(0, 109, 119, 0.15);
+  }
+
+  .overall {
+    margin-top: 1.5rem; padding-top: 1.5rem;
+    border-top: 2px solid var(--line);
+  }
+  .overall-title {
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--teal-deep); margin: 0 0 0.85rem;
+    display: flex; align-items: center; gap: 0.55rem;
+  }
+  .overall-title svg {
+    width: 18px; height: 18px;
+    stroke: var(--teal); fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .overall .field-textarea { min-height: 110px; }
+
+  .actions {
+    display: flex; gap: 0.75rem;
+    margin-top: 1.75rem; flex-wrap: wrap;
+  }
+  .btn {
+    font-family: inherit; font-size: 0.93rem;
+    font-weight: 600;
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 0.75rem 1.2rem; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--card); color: var(--ink);
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  }
+  .btn:hover { background: var(--line-soft); }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .btn svg {
+    width: 16px; height: 16px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .btn-pdf {
+    background: var(--primary-grad);
+    color: #fff; border: 0;
+    box-shadow: 0 4px 12px rgba(0, 109, 119, 0.22);
+  }
+  .btn-pdf:hover {
+    background: linear-gradient(135deg, #00525a 0%, #003d44 100%);
+  }
+  .actions-note {
+    font-size: 0.78rem; color: var(--muted);
+    margin: 0.6rem 0 0; font-style: italic;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  @media (max-width: 540px) {
+    .wrap { padding: 1.5rem 1rem 2.5rem; }
+    .actions { flex-direction: column; }
+    .btn-pdf { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <span class="header-eyebrow">eWorksheet</span>
+    <h1>Rotation Activity Review</h1>
+    <p>Reflect on your experience of the Spoons and Heat rotation stations activity. Respond to each section, then save a PDF record of your completed review.</p>
+  </header>
+
+  <div class="worksheet">
+
+    <div class="student-info">
+      <div>
+        <label class="field-label" for="studentName">Name</label>
+        <input class="field-input" type="text" id="studentName" placeholder="Enter your name">
+      </div>
+      <div>
+        <label class="field-label" for="reviewDate">Date</label>
+        <input class="field-input" type="date" id="reviewDate">
+      </div>
+    </div>
+
+    <section class="section" data-section="organisation">
+      <div class="section-head"><span class="section-num">1</span><h2 class="section-title">Organisation</h2></div>
+      <p class="section-prompt">Was the activity well-organised?</p>
+      <div class="choice-group" role="radiogroup" aria-label="Organisation rating">
+        <label><input class="choice-input" type="radio" name="organisation" value="yes"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Yes</span></label>
+        <label><input class="choice-input" type="radio" name="organisation" value="somewhat"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Somewhat</span></label>
+        <label><input class="choice-input" type="radio" name="organisation" value="no"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>No</span></label>
+      </div>
+      <label class="field-textarea-label" for="organisation-comments">Comments</label>
+      <textarea class="field-textarea" id="organisation-comments" placeholder="Share your thoughts about the organisation of the activity..."></textarea>
+    </section>
+
+    <section class="section" data-section="materials">
+      <div class="section-head"><span class="section-num">2</span><h2 class="section-title">Materials and Resources</h2></div>
+      <p class="section-prompt">Were all the materials and resources ready and easy to use?</p>
+      <div class="choice-group" role="radiogroup" aria-label="Materials and resources rating">
+        <label><input class="choice-input" type="radio" name="materials" value="yes"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Yes</span></label>
+        <label><input class="choice-input" type="radio" name="materials" value="somewhat"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Somewhat</span></label>
+        <label><input class="choice-input" type="radio" name="materials" value="no"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>No</span></label>
+      </div>
+      <label class="field-textarea-label" for="materials-comments">List any materials that were missing or could be improved</label>
+      <textarea class="field-textarea" id="materials-comments" placeholder="Describe any materials issues or improvements..."></textarea>
+    </section>
+
+    <section class="section" data-section="directions">
+      <div class="section-head"><span class="section-num">3</span><h2 class="section-title">Directions and Instructions</h2></div>
+      <p class="section-prompt">Were the directions and instructions clear at each station?</p>
+      <div class="choice-group" role="radiogroup" aria-label="Directions and instructions rating">
+        <label><input class="choice-input" type="radio" name="directions" value="yes"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Yes</span></label>
+        <label><input class="choice-input" type="radio" name="directions" value="somewhat"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Somewhat</span></label>
+        <label><input class="choice-input" type="radio" name="directions" value="no"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>No</span></label>
+      </div>
+      <label class="field-textarea-label" for="directions-comments">How could the instructions be improved?</label>
+      <textarea class="field-textarea" id="directions-comments" placeholder="Suggest how directions or instructions could be clearer..."></textarea>
+    </section>
+
+    <section class="section" data-section="engagement">
+      <div class="section-head"><span class="section-num">4</span><h2 class="section-title">Engagement and Motivation</h2></div>
+      <p class="section-prompt">Did you feel engaged and motivated during the activity?</p>
+      <div class="choice-group" role="radiogroup" aria-label="Engagement and motivation rating">
+        <label><input class="choice-input" type="radio" name="engagement" value="yes"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Yes</span></label>
+        <label><input class="choice-input" type="radio" name="engagement" value="somewhat"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Somewhat</span></label>
+        <label><input class="choice-input" type="radio" name="engagement" value="no"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>No</span></label>
+      </div>
+      <label class="field-textarea-label" for="engagement-comments">What was the most interesting part?</label>
+      <textarea class="field-textarea" id="engagement-comments" placeholder="Describe what engaged you most..."></textarea>
+    </section>
+
+    <section class="section" data-section="transitions">
+      <div class="section-head"><span class="section-num">5</span><h2 class="section-title">Transitions</h2></div>
+      <p class="section-prompt">Were transitions between stations smooth and easy?</p>
+      <div class="choice-group" role="radiogroup" aria-label="Transitions rating">
+        <label><input class="choice-input" type="radio" name="transitions" value="yes"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Yes</span></label>
+        <label><input class="choice-input" type="radio" name="transitions" value="somewhat"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Somewhat</span></label>
+        <label><input class="choice-input" type="radio" name="transitions" value="no"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>No</span></label>
+      </div>
+      <label class="field-textarea-label" for="transitions-comments">How could transitions be improved?</label>
+      <textarea class="field-textarea" id="transitions-comments" placeholder="Suggest improvements to transitions between stations..."></textarea>
+    </section>
+
+    <section class="section" data-section="safety">
+      <div class="section-head"><span class="section-num">6</span><h2 class="section-title">Safety</h2></div>
+      <p class="section-prompt">Did you feel safe during the activity?</p>
+      <div class="choice-group" role="radiogroup" aria-label="Safety rating">
+        <label><input class="choice-input" type="radio" name="safety" value="yes"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Yes</span></label>
+        <label><input class="choice-input" type="radio" name="safety" value="somewhat"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Somewhat</span></label>
+        <label><input class="choice-input" type="radio" name="safety" value="no"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>No</span></label>
+      </div>
+      <label class="field-textarea-label" for="safety-comments">List any safety concerns or suggestions</label>
+      <textarea class="field-textarea" id="safety-comments" placeholder="Note any safety issues or recommendations..."></textarea>
+    </section>
+
+    <section class="section" data-section="wellbeing">
+      <div class="section-head"><span class="section-num">7</span><h2 class="section-title">Wellbeing</h2></div>
+      <p class="section-prompt">Did the activity support your wellbeing (feeling comfortable, included, and respected)?</p>
+      <div class="choice-group" role="radiogroup" aria-label="Wellbeing rating">
+        <label><input class="choice-input" type="radio" name="wellbeing" value="yes"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Yes</span></label>
+        <label><input class="choice-input" type="radio" name="wellbeing" value="somewhat"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>Somewhat</span></label>
+        <label><input class="choice-input" type="radio" name="wellbeing" value="no"><span class="choice"><span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>No</span></label>
+      </div>
+      <label class="field-textarea-label" for="wellbeing-comments">How could the activity better support wellbeing?</label>
+      <textarea class="field-textarea" id="wellbeing-comments" placeholder="Share any suggestions for supporting wellbeing..."></textarea>
+    </section>
+
+    <section class="overall">
+      <h2 class="overall-title">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Overall Comments
+      </h2>
+      <textarea class="field-textarea" id="overall-comments" placeholder="Share any final thoughts, observations, or overall reflections on the rotation activity..."></textarea>
+    </section>
+
+    <div class="actions">
+      <button class="btn btn-pdf" id="generatePdfBtn" type="button">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
+        Save Completed Worksheet (PDF)
+      </button>
+      <button class="btn" id="resetBtn" type="button">
+        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Reset
+      </button>
+    </div>
+    <p class="actions-note">Your responses are not saved automatically. Use the button above to download a PDF record of your completed worksheet.</p>
+
+  </div>
+</div>
+
+<footer style="max-width: 900px; margin: 3rem auto 0; padding: 1.25rem 1.5rem 1rem; border-top: 1px solid #e2e8f0; text-align: center; font-size: 0.78rem; color: #94a3b8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au" style="color: #64748b; text-decoration: underline;">Hum-EdTT@curtin.edu.au</a>
+</footer>
+
+<script>
+  (function () {
+    const generatePdfBtn = document.getElementById('generatePdfBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const SECTIONS = [
+      { key: 'organisation', num: 1, title: 'Organisation', prompt: 'Was the activity well-organised?', textLabel: 'Comments' },
+      { key: 'materials',     num: 2, title: 'Materials and Resources', prompt: 'Were all the materials and resources ready and easy to use?', textLabel: 'List any materials that were missing or could be improved' },
+      { key: 'directions',    num: 3, title: 'Directions and Instructions', prompt: 'Were the directions and instructions clear at each station?', textLabel: 'How could the instructions be improved?' },
+      { key: 'engagement',    num: 4, title: 'Engagement and Motivation', prompt: 'Did you feel engaged and motivated during the activity?', textLabel: 'What was the most interesting part?' },
+      { key: 'transitions',   num: 5, title: 'Transitions', prompt: 'Were transitions between stations smooth and easy?', textLabel: 'How could transitions be improved?' },
+      { key: 'safety',        num: 6, title: 'Safety', prompt: 'Did you feel safe during the activity?', textLabel: 'List any safety concerns or suggestions' },
+      { key: 'wellbeing',     num: 7, title: 'Wellbeing', prompt: 'Did the activity support your wellbeing (feeling comfortable, included, and respected)?', textLabel: 'How could the activity better support wellbeing?' }
+    ];
+
+    function getRating(key) {
+      const checked = document.querySelector(`input[name="${key}"]:checked`);
+      return checked ? checked.value : '';
+    }
+    function getText(key) {
+      const el = document.getElementById(`${key}-comments`);
+      return el ? el.value.trim() : '';
+    }
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+    function nl2br(s) { return escapeHtml(s).replace(/\n/g, '<br>'); }
+    function ratingLabel(v) {
+      if (v === 'yes') return 'Yes';
+      if (v === 'somewhat') return 'Somewhat';
+      if (v === 'no') return 'No';
+      return '';
+    }
+
+    resetBtn.addEventListener('click', () => {
+      const hasContent = document.getElementById('studentName').value
+        || document.querySelectorAll('input[type="radio"]:checked').length > 0
+        || Array.from(document.querySelectorAll('textarea')).some(t => t.value.trim());
+      if (!hasContent) return;
+      if (!confirm('Reset the worksheet? This will clear all your responses.')) return;
+      document.getElementById('studentName').value = '';
+      document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+      document.querySelectorAll('textarea').forEach(t => t.value = '');
+    });
+
+    generatePdfBtn.addEventListener('click', () => {
+      const studentName = document.getElementById('studentName').value.trim() || 'Student';
+      const dateInput = document.getElementById('reviewDate').value;
+      let displayDate = '';
+      if (dateInput) {
+        const d = new Date(dateInput);
+        if (!isNaN(d)) displayDate = d.toLocaleDateString('en-AU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      }
+      if (!displayDate) {
+        displayDate = new Date().toLocaleDateString('en-AU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      }
+
+      const sectionsHtml = SECTIONS.map(s => {
+        const rating = getRating(s.key);
+        const ratingTxt = ratingLabel(rating);
+        const text = getText(s.key);
+        const pillClass = rating ? `p-pill p-pill-${rating}` : 'p-pill p-pill-none';
+        const pillLabel = ratingTxt || '— not answered —';
+        const textHtml = text
+          ? `<div class="p-response"><div class="p-response-label">${escapeHtml(s.textLabel)}</div><div class="p-response-text">${nl2br(text)}</div></div>`
+          : `<div class="p-response p-response-empty"><div class="p-response-label">${escapeHtml(s.textLabel)}</div><div class="p-response-text">— no response —</div></div>`;
+        return `
+          <section class="p-section">
+            <div class="p-section-head">
+              <span class="p-num">${s.num}</span>
+              <h2>${escapeHtml(s.title)}</h2>
+              <span class="${pillClass}">${escapeHtml(pillLabel)}</span>
+            </div>
+            <p class="p-prompt">${escapeHtml(s.prompt)}</p>
+            ${textHtml}
+          </section>
+        `;
+      }).join('');
+
+      const overall = document.getElementById('overall-comments').value.trim();
+      const overallHtml = overall
+        ? `<div class="p-response"><div class="p-response-text">${nl2br(overall)}</div></div>`
+        : `<div class="p-response p-response-empty"><div class="p-response-text">— no overall comments —</div></div>`;
+
+      const printHtml = `<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<title>Rotation Activity Review - ${escapeHtml(studentName)}</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+  html, body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; color: #102528; margin: 0; padding: 16mm; background: #fff; line-height: 1.4; font-size: 10.5pt; }
+  .p-header { margin-bottom: 14px; }
+  .p-header h1 { font-size: 17pt; font-weight: 800; margin: 0 0 4px; color: #003d44; letter-spacing: -0.02em; }
+  .p-header .p-sub { color: #5a6e71; margin: 0; font-size: 9.5pt; }
+  .p-meta { margin: 10px 0 16px; border: 1px solid #d8e3e4; border-radius: 6px; padding: 8px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 9.5pt; }
+  .p-meta-label { font-size: 7.5pt; font-weight: 700; color: #5a6e71; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px; }
+  .p-meta-value { font-weight: 600; color: #102528; }
+  .p-section { margin-bottom: 11px; page-break-inside: avoid; }
+  .p-section-head { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; }
+  .p-num { width: 18px; height: 18px; border-radius: 50%; background: #006d77; color: #fff; font-size: 9pt; font-weight: 700; display: inline-grid; place-items: center; flex-shrink: 0; }
+  .p-section-head h2 { font-size: 11pt; font-weight: 700; margin: 0; color: #003d44; flex: 1; }
+  .p-pill { font-size: 8pt; font-weight: 700; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0; }
+  .p-pill-yes { background: #ecfdf5; color: #047857; border: 1px solid #10b981; }
+  .p-pill-somewhat { background: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+  .p-pill-no { background: #fef2f2; color: #b91c1c; border: 1px solid #ef4444; }
+  .p-pill-none { background: #f1f5f9; color: #94a3b8; border: 1px solid #cbd5e1; font-style: italic; }
+  .p-prompt { font-size: 9.5pt; color: #2c4045; margin: 0 0 5px; font-style: italic; }
+  .p-response { border: 1px solid #e8eeef; border-radius: 5px; padding: 6px 9px; background: #f5f8f8; }
+  .p-response-label { font-size: 7.5pt; font-weight: 700; color: #5a6e71; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
+  .p-response-text { font-size: 9.5pt; color: #102528; }
+  .p-response-empty .p-response-text { color: #94a3b8; font-style: italic; }
+  .p-overall { margin-top: 14px; padding-top: 10px; border-top: 2px solid #d8e3e4; page-break-inside: avoid; }
+  .p-overall h2 { font-size: 11.5pt; font-weight: 700; margin: 0 0 5px; color: #003d44; }
+  .p-footer { margin-top: 14px; padding-top: 8px; border-top: 1px solid #e8eeef; font-size: 8pt; color: #94a3b8; text-align: center; }
+</style>
+</head>
+<body>
+  <header class="p-header">
+    <h1>Rotation Activity Review</h1>
+    <p class="p-sub">Spoons and Heat Rotation Stations</p>
+  </header>
+
+  <div class="p-meta">
+    <div><span class="p-meta-label">Name</span><span class="p-meta-value">${escapeHtml(studentName)}</span></div>
+    <div><span class="p-meta-label">Date</span><span class="p-meta-value">${escapeHtml(displayDate)}</span></div>
+  </div>
+
+  ${sectionsHtml}
+
+  <section class="p-overall">
+    <h2>Overall Comments</h2>
+    ${overallHtml}
+  </section>
+
+  <p class="p-footer">Completed via the Rotation Activity Review eWorksheet.</p>
+
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() { window.print(); }, 150);
+    });
+  <\/script>
+</body>
+</html>`;
+
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        alert('Please allow pop-ups to generate the PDF record.');
+        return;
+      }
+      printWindow.document.open();
+      printWindow.document.write(printHtml);
+      printWindow.document.close();
+    });
+
+    // Default today's date
+    const dateInput = document.getElementById('reviewDate');
+    if (!dateInput.value) {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      dateInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+  })();
+</script>
+
+</body>
+</html>
