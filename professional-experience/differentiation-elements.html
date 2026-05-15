@@ -115,19 +115,25 @@
         .clr-env     { fill: #b3d3d6; }
         .clr-char    { fill: #003d44; }
 
+        /* Top accent bars — darker shade of each box's own colour */
+        .accent-content { fill: #1b6a72; }
+        .accent-process { fill: #00525a; }
+        .accent-product { fill: #a85528; }
+        .accent-env     { fill: #8eb8bd; }
+
         .stroke-content { stroke: #2a8a93; }
         .stroke-process { stroke: #006d77; }
         .stroke-product { stroke: #cc6b3a; }
-        .stroke-env     { stroke: #b3d3d6; }
+        .stroke-env     { stroke: #8eb8bd; }
 
         .box-text { fill: #ffffff; }
         .box-text-heading {
           font-weight: 700;
-          font-size: 22px;
-          letter-spacing: -0.01em;
+          font-size: 23px;
+          letter-spacing: -0.015em;
         }
         .box-text-body {
-          font-weight: 400;
+          font-weight: 500;
           font-size: 13px;
         }
         .box-text-env, .box-text-env-body { fill: #003d44; }
@@ -139,6 +145,11 @@
           letter-spacing: -0.005em;
         }
       </style>
+
+      <!-- Subtle drop shadow for the boxes -->
+      <filter id="boxShadow" x="-10%" y="-10%" width="120%" height="120%">
+        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#003d44" flood-opacity="0.15"/>
+      </filter>
     </defs>
 
     <!-- ===== Connectors ===== -->
@@ -175,9 +186,12 @@
 
     <!-- Content -->
     <g class="el-box" data-el="content" tabindex="0" role="button" aria-label="Content classroom element">
-      <rect class="box-bg clr-content" x="20" y="10" width="196" height="200" rx="3"/>
-      <text class="box-text box-text-heading" x="40" y="50">Content</text>
-      <text class="box-text box-text-body" x="40" y="86">
+      <g filter="url(#boxShadow)">
+        <rect class="box-bg clr-content" x="20" y="10" width="196" height="200" rx="3"/>
+      </g>
+      <rect class="accent-content" x="20" y="10" width="196" height="4" rx="3"/>
+      <text class="box-text box-text-heading" x="40" y="52">Content</text>
+      <text class="box-text box-text-body" x="40" y="88">
         <tspan x="40" dy="0">Content can be</tspan>
         <tspan x="40" dy="20">differentiated</tspan>
         <tspan x="40" dy="20">according to</tspan>
@@ -189,9 +203,12 @@
 
     <!-- Process -->
     <g class="el-box" data-el="process" tabindex="0" role="button" aria-label="Process classroom element">
-      <rect class="box-bg clr-process" x="248" y="10" width="196" height="200" rx="3"/>
-      <text class="box-text box-text-heading" x="268" y="50">Process</text>
-      <text class="box-text box-text-body" x="268" y="86">
+      <g filter="url(#boxShadow)">
+        <rect class="box-bg clr-process" x="248" y="10" width="196" height="200" rx="3"/>
+      </g>
+      <rect class="accent-process" x="248" y="10" width="196" height="4" rx="3"/>
+      <text class="box-text box-text-heading" x="268" y="52">Process</text>
+      <text class="box-text box-text-body" x="268" y="88">
         <tspan x="268" dy="0">Process can be</tspan>
         <tspan x="268" dy="20">differentiated</tspan>
         <tspan x="268" dy="20">according to</tspan>
@@ -203,9 +220,12 @@
 
     <!-- Product -->
     <g class="el-box" data-el="product" tabindex="0" role="button" aria-label="Product classroom element">
-      <rect class="box-bg clr-product" x="476" y="10" width="196" height="200" rx="3"/>
-      <text class="box-text box-text-heading" x="496" y="50">Product</text>
-      <text class="box-text box-text-body" x="496" y="86">
+      <g filter="url(#boxShadow)">
+        <rect class="box-bg clr-product" x="476" y="10" width="196" height="200" rx="3"/>
+      </g>
+      <rect class="accent-product" x="476" y="10" width="196" height="4" rx="3"/>
+      <text class="box-text box-text-heading" x="496" y="52">Product</text>
+      <text class="box-text box-text-body" x="496" y="88">
         <tspan x="496" dy="0">Product can be</tspan>
         <tspan x="496" dy="20">differentiated</tspan>
         <tspan x="496" dy="20">according to</tspan>
@@ -217,12 +237,15 @@
 
     <!-- Learning environment -->
     <g class="el-box" data-el="environment" tabindex="0" role="button" aria-label="Learning environment classroom element">
-      <rect class="box-bg clr-env" x="704" y="10" width="196" height="200" rx="3"/>
-      <text class="box-text box-text-heading box-text-env" x="724" y="50">
+      <g filter="url(#boxShadow)">
+        <rect class="box-bg clr-env" x="704" y="10" width="196" height="200" rx="3"/>
+      </g>
+      <rect class="accent-env" x="704" y="10" width="196" height="4" rx="3"/>
+      <text class="box-text box-text-heading box-text-env" x="724" y="42">
         <tspan x="724" dy="0">Learning</tspan>
-        <tspan x="724" dy="26">environment</tspan>
+        <tspan x="724" dy="23">environment</tspan>
       </text>
-      <text class="box-text box-text-body box-text-env-body" x="724" y="120">
+      <text class="box-text box-text-body box-text-env-body" x="724" y="108">
         <tspan x="724" dy="0">Learning</tspan>
         <tspan x="724" dy="20">environment can</tspan>
         <tspan x="724" dy="20">be differentiated</tspan>
@@ -235,17 +258,23 @@
     <!-- ===== Bottom boxes (Student characteristics) ===== -->
 
     <g class="char-box" data-char="readiness">
-      <rect class="clr-char" x="60" y="400" width="200" height="50" rx="3"/>
+      <g filter="url(#boxShadow)">
+        <rect class="clr-char" x="60" y="400" width="200" height="50" rx="3"/>
+      </g>
       <text class="char-text" x="160" y="432" text-anchor="middle">Readiness</text>
     </g>
 
     <g class="char-box" data-char="interests">
-      <rect class="clr-char" x="360" y="400" width="200" height="50" rx="3"/>
+      <g filter="url(#boxShadow)">
+        <rect class="clr-char" x="360" y="400" width="200" height="50" rx="3"/>
+      </g>
       <text class="char-text" x="460" y="432" text-anchor="middle">Interests</text>
     </g>
 
     <g class="char-box" data-char="learning-profile">
-      <rect class="clr-char" x="660" y="400" width="220" height="50" rx="3"/>
+      <g filter="url(#boxShadow)">
+        <rect class="clr-char" x="660" y="400" width="220" height="50" rx="3"/>
+      </g>
       <text class="char-text" x="770" y="432" text-anchor="middle">Learning profile</text>
     </g>
 
