@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMART Goal Sequence: Reflective Checklist</title>
+<style>
+  :root {
+    /* PE unit teal palette */
+    --teal: #006d77;
+    --teal-dark: #00525a;
+    --teal-deep: #003d44;
+    --teal-tint: #e6f0f1;
+    --teal-tint-2: #f2f7f7;
+    --accent: #b3d3d6;
+
+    --bg: #f5f8f8;
+    --card: #ffffff;
+    --ink: #102528;
+    --ink-soft: #2c4045;
+    --muted: #5a6e71;
+    --line: #d8e3e4;
+    --line-soft: #e8eeef;
+    --shadow-sm: 0 1px 2px rgba(0, 61, 68, 0.04), 0 2px 6px rgba(0, 61, 68, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 61, 68, 0.08), 0 12px 32px rgba(0, 61, 68, 0.07);
+
+    /* Three teal-family accents for the parts — different enough to differentiate, related enough to feel cohesive */
+    --p1-border: #006d77; --p1-tint: #e6f0f1; --p1-deep: #00525a;   /* primary teal */
+    --p2-border: #3b6b73; --p2-tint: #e9eef0; --p2-deep: #294d54;   /* slate teal */
+    --p3-border: #4a7c6f; --p3-tint: #ebf1ee; --p3-deep: #335a51;   /* sage teal */
+
+    /* Primary action uses teal gradient instead of indigo/purple */
+    --primary-grad: linear-gradient(135deg, #006d77 0%, #00525a 100%);
+    --primary-deep: #00525a;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  /* ===== Header ===== */
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .header h1 {
+    font-size: clamp(1.65rem, 3.5vw, 2.25rem);
+    font-weight: 800;
+    color: var(--teal-deep);
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+  .header .sub {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* ===== Progress ===== */
+  .progress-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .progress-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    flex-shrink: 0;
+  }
+  .progress-bar {
+    flex: 1;
+    min-width: 180px;
+    height: 8px;
+    background: var(--line-soft);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--primary-grad);
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    border-radius: 999px;
+  }
+  .progress-count {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--teal-deep);
+    flex-shrink: 0;
+  }
+
+  /* ===== Tabs ===== */
+  .tabs {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 0;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+  .tab-list {
+    display: flex;
+    border-bottom: 1px solid var(--line);
+    background: var(--line-soft);
+  }
+  .tab-btn {
+    flex: 1;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    background: transparent;
+    color: var(--muted);
+    border: 0;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.2s ease;
+    position: relative;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+  .tab-btn:hover { background: rgba(255, 255, 255, 0.6); color: var(--ink-soft); }
+  .tab-btn:focus-visible {
+    outline: 2px solid var(--primary-deep);
+    outline-offset: -2px;
+  }
+  .tab-btn[data-tab="1"].is-active { color: var(--p1-deep); background: var(--p1-tint); border-bottom-color: var(--p1-border); }
+  .tab-btn[data-tab="2"].is-active { color: var(--p2-deep); background: var(--p2-tint); border-bottom-color: var(--p2-border); }
+  .tab-btn[data-tab="3"].is-active { color: var(--p3-deep); background: var(--p3-tint); border-bottom-color: var(--p3-border); }
+
+  .tab-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    background: var(--muted);
+    transition: background-color 0.2s ease;
+  }
+  .tab-btn[data-tab="1"].is-active .tab-num { background: var(--p1-border); }
+  .tab-btn[data-tab="2"].is-active .tab-num { background: var(--p2-border); }
+  .tab-btn[data-tab="3"].is-active .tab-num { background: var(--p3-border); }
+
+  .tab-status {
+    margin-left: auto;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.65);
+    color: var(--muted);
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+  .tab-btn.is-complete .tab-status {
+    background: var(--teal-tint);
+    color: var(--teal-deep);
+  }
+  .tab-btn.is-complete .tab-status::before {
+    content: "✓ ";
+  }
+
+  @media (max-width: 640px) {
+    .tab-btn { padding: 0.85rem 0.75rem; font-size: 0.85rem; }
+    .tab-btn span:nth-child(2) { display: none; }
+  }
+
+  /* ===== Tab panels ===== */
+  .tab-panel {
+    display: none;
+    padding: 1.5rem 1.75rem 1.75rem;
+    animation: fadeIn 0.25s ease;
+  }
+  .tab-panel.is-active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel-intro {
+    margin: 0 0 1.25rem;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  /* ===== Checklist groups & items ===== */
+  .group {
+    margin-bottom: 1.25rem;
+  }
+  .group:last-child { margin-bottom: 0; }
+
+  .group-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 0.55rem;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .group-letter {
+    display: inline-grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .tab-panel[data-tab="1"] .group-letter { background: var(--p1-border); }
+  .tab-panel[data-tab="2"] .group-letter { background: var(--p2-border); }
+  .tab-panel[data-tab="3"] .group-letter { background: var(--p3-border); }
+
+  .group-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin: 0 0 0.5rem 2.05rem;
+    font-style: italic;
+  }
+
+  .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    user-select: none;
+    margin-bottom: 0.3rem;
+  }
+  .item:hover { background: var(--line-soft); }
+  .item:last-child { margin-bottom: 0; }
+
+  /* Custom checkbox */
+  .item input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+  .check-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    border: 2px solid var(--muted);
+    background: var(--card);
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    margin-top: 1px;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+  .check-box svg {
+    width: 12px;
+    height: 12px;
+    stroke: #fff;
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.15s ease, transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .item.is-checked .check-box {
+    background: var(--p1-border);
+    border-color: var(--p1-border);
+  }
+  .tab-panel[data-tab="2"] .item.is-checked .check-box {
+    background: var(--p2-border);
+    border-color: var(--p2-border);
+  }
+  .tab-panel[data-tab="3"] .item.is-checked .check-box {
+    background: var(--p3-border);
+    border-color: var(--p3-border);
+  }
+  .item.is-checked .check-box svg {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .item.is-checked .item-text {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgba(100, 116, 139, 0.4);
+  }
+  .item:focus-within .check-box {
+    box-shadow: 0 0 0 3px rgba(0, 109, 119, 0.15);
+  }
+
+  .item-text {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    transition: color 0.15s ease;
+  }
+
+  /* ===== Tab navigation buttons ===== */
+  .tab-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+  .nav-btn {
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    background: var(--card);
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .nav-btn:hover {
+    background: var(--line-soft);
+    border-color: var(--muted);
+    color: var(--ink);
+  }
+  .nav-btn:focus-visible { outline: 2px solid var(--primary-deep); outline-offset: 2px; }
+  .nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .nav-btn:disabled:hover {
+    background: var(--card);
+    border-color: var(--line);
+    color: var(--ink-soft);
+  }
+  .nav-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* ===== Actions ===== */
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.75rem 1.2rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--card);
+    color: var(--ink);
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  }
+  .btn:hover { background: var(--line-soft); }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 2px solid var(--primary-deep); outline-offset: 2px; }
+  .btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .btn-pdf {
+    background: var(--primary-grad);
+    color: #fff;
+    border: 0;
+    box-shadow: 0 4px 12px rgba(0, 109, 119, 0.22);
+  }
+  .btn-pdf:hover {
+    background: linear-gradient(135deg, #00525a 0%, #003d44 100%);
+  }
+  .btn-pdf:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .actions-note {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin: 0.5rem 0 0;
+    font-style: italic;
+  }
+
+  /* ===== Completion banner ===== */
+  .completion {
+    display: none;
+    margin-top: 1.25rem;
+    background: linear-gradient(135deg, var(--teal-tint) 0%, var(--accent) 100%);
+    border: 1px solid var(--teal);
+    border-radius: 10px;
+    padding: 1rem 1.15rem;
+    align-items: flex-start;
+    gap: 0.75rem;
+    animation: fadeIn 0.3s ease;
+  }
+  .completion.is-shown { display: flex; }
+  .completion-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.75);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+    color: var(--teal-deep);
+  }
+  .completion-icon svg {
+    width: 20px; height: 20px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .completion-body { flex: 1; }
+  .completion-title {
+    font-size: 1rem; font-weight: 700;
+    color: var(--teal-deep); margin: 0 0 0.2rem;
+  }
+  .completion-text {
+    font-size: 0.88rem; color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  @media (max-width: 540px) {
+    .wrap { padding: 1.5rem 1rem 2.5rem; }
+    .tab-panel { padding: 1.1rem; }
+    .actions { flex-direction: column; }
+    .btn-pdf { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <h1>SMART Goal Sequence: Reflective Checklist</h1>
+    <p class="sub">Use this checklist to evaluate each goal in your SMART goal sequence. Work through each part and tick items as you confirm them.</p>
+  </header>
+
+  <!-- Progress -->
+  <div class="progress-card">
+    <span class="progress-label">Progress</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="progress-count"><span id="progressCount">0</span> of <span id="progressTotal">13</span> complete</span>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+
+    <div class="tab-list" role="tablist">
+      <button class="tab-btn is-active" data-tab="1" role="tab" aria-selected="true">
+        <span class="tab-num">1</span>
+        <span>SMART Criteria</span>
+        <span class="tab-status">0/5</span>
+      </button>
+      <button class="tab-btn" data-tab="2" role="tab" aria-selected="false">
+        <span class="tab-num">2</span>
+        <span>ACARA Alignment</span>
+        <span class="tab-status">0/2</span>
+      </button>
+      <button class="tab-btn" data-tab="3" role="tab" aria-selected="false">
+        <span class="tab-num">3</span>
+        <span>Pedagogical Reflection</span>
+        <span class="tab-status">0/6</span>
+      </button>
+    </div>
+
+    <!-- ===== Part 1: SMART Criteria ===== -->
+    <div class="tab-panel is-active" data-tab="1" role="tabpanel">
+      <p class="panel-intro">For each goal in your sequence, confirm that it meets each of the SMART criteria below.</p>
+
+      <div class="group">
+        <h3 class="group-title"><span class="group-letter">S</span> Specific</h3>
+        <label class="item"><input type="checkbox" data-id="s1-specific"><span class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span class="item-text">Is the goal clearly focused on one learning outcome?</span></label>
+      </div>
+
+      <div class="group">
+        <h3 class="group-title"><span class="group-letter">M</span> Measurable</h3>
+        <label class="item"><input type="checkbox" data-id="s1-measurable"><span class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span class="item-text">Can student achievement be assessed objectively?</span></label>
+      </div>
+
+      <div class="group">
+        <h3 class="group-title"><span class="group-letter">A</span> Achievable</h3>
+        <label class="item"><input type="checkbox" data-id="s1-achievable"><span class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span class="item-text">Is the goal realistic within the lesson timeframe and resources?</span></label>
+      </div>
+
+      <div class="group">
+        <h3 class="group-title"><span class="group-letter">R</span> Relevant</h3>
+        <label class="item"><input type="checkbox" data-id="s1-relevant"><span class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span class="item-text">Does it align with curriculum requirements and lesson objectives?</span></label>
+      </div>
+
+      <div class="group">
+        <h3 class="group-title"><span class="group-letter">T</span> Time-bound</h3>
+        <label class="item"><input type="checkbox" data-id="s1-timebound"><span class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span class="item-text">Is there a clear timeframe for completion?</span></label>
+      </div>
+
+      <div class="tab-nav">
+        <span></span>
+        <button class="nav-btn" data-nav-next="2" type="button">Next: ACARA Alignment <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+      </div>
+    </div>
+
+    <!-- ===== Part 2: ACARA Alignment ===== -->
+    <div class="tab-panel" data-tab="2" role="tabpanel">
+      <p class="panel-intro">Confirm constructive alignment with the Australian Curriculum (ACARA) for each goal.</p>
+
+      <div class="group">
+        <h3 class="group-title">Does each goal align with:</h3>
+        <p class="group-desc">ACARA Content Descriptor</p>
+        <label class="item"><input type="checkbox" data-id="s2-descriptor"><span class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span class="item-text">Have you explicitly linked the goal to the relevant content descriptor from the Australian Curriculum?</span></label>
+
+        <p class="group-desc" style="margin-top: 0.85rem;">Key Knowledge, Skills, and Understandings</p>
+        <label class="item"><input type="checkbox" data-id="s2-kksu"><span class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span class="item-text">Does the goal reflect what the descriptor requires students to learn?</span></label>
+      </div>
+
+      <div class="tab-nav">
+        <button class="nav-btn" data-nav-prev="1" type="button"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg> Previous: SMART Criteria</button>
+        <button class="nav-btn" data-nav-next="3" type="button">Next: Pedagogical Reflection <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+      </div>
+    </div>
+
+    <!-- ===== Part 3: Pedagogical Reflection ===== -->
+    <div class="tab-panel" data-tab="3" role="tabpanel">
+      <p class="panel-intro">For each goal, check alignment with the following pedagogical theories.</p>
+
+      <div class="group">
+        <h3 class="group-title">Behaviorism</h3>
+        <label class="item"><input type="checkbox" data-id="s3-behaviorism"><span class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span class="item-text">Observable behaviours and reinforcement strategies evident?</span></label>
+      </div>
+
+      <div class="group">
+        <h3 class="group-title">Social Constructivism</h3>
+        <label class="item"><input type="checkbox" data-id="s3-socialconstr"><span class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span class="item-text">Collaboration and co-construction of knowledge encouraged?</span></label>
+      </div>
+
+      <div class="group">
+        <h3 class="group-title">Humanism</h3>
+        <label class="item"><input type="checkbox" data-id="s3-humanism"><span class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span class="item-text">Supports autonomy and personal growth?</span></label>
+      </div>
+
+      <div class="group">
+        <h3 class="group-title">Psychological Constructivism</h3>
+        <label class="item"><input type="checkbox" data-id="s3-psychconstr"><span class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span class="item-text">Builds on prior knowledge and cognitive processes?</span></label>
+      </div>
+
+      <div class="group">
+        <h3 class="group-title">Social Justice Pedagogy</h3>
+        <label class="item"><input type="checkbox" data-id="s3-socialjust"><span class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span class="item-text">Promotes equity, inclusion, and cultural responsiveness?</span></label>
+      </div>
+
+      <div class="group">
+        <h3 class="group-title">Critical Pedagogy</h3>
+        <label class="item"><input type="checkbox" data-id="s3-critical"><span class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><span class="item-text">Encourages questioning assumptions and power structures?</span></label>
+      </div>
+
+      <div class="tab-nav">
+        <button class="nav-btn" data-nav-prev="2" type="button"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg> Previous: ACARA Alignment</button>
+        <span></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Completion banner -->
+  <div class="completion" id="completion" role="status">
+    <div class="completion-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="completion-body">
+      <h3 class="completion-title">All items checked!</h3>
+      <p class="completion-text">You've worked through each part of the checklist. Optionally, you can save a record of your completed checklist as a PDF below.</p>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <button class="btn btn-pdf" id="generatePdfBtn" type="button">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
+      Save Completion Record (PDF)
+    </button>
+    <button class="btn" id="resetBtn" type="button">
+      <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      Reset
+    </button>
+  </div>
+  <p class="actions-note">The PDF export is optional — useful if you'd like a record of your reflection. Saving is not required to complete the activity.</p>
+
+</div>
+
+<!-- ===== EdTech footer ===== -->
+<footer style="max-width: 880px; margin: 3rem auto 0; padding: 1.25rem 1.5rem 1rem; border-top: 1px solid #e2e8f0; text-align: center; font-size: 0.78rem; color: #94a3b8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au" style="color: #64748b; text-decoration: underline;">Hum-EdTT@curtin.edu.au</a>
+</footer>
+
+<script>
+  // ===== Elements =====
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+  const items = document.querySelectorAll('.item');
+  const checkboxes = document.querySelectorAll('.item input[type="checkbox"]');
+  const navNextBtns = document.querySelectorAll('[data-nav-next]');
+  const navPrevBtns = document.querySelectorAll('[data-nav-prev]');
+  const progressFill = document.getElementById('progressFill');
+  const progressCount = document.getElementById('progressCount');
+  const progressTotal = document.getElementById('progressTotal');
+  const completion = document.getElementById('completion');
+  const generatePdfBtn = document.getElementById('generatePdfBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  const total = checkboxes.length;
+  progressTotal.textContent = total;
+
+  // ===== Tab switching =====
+  function switchTab(tabNum) {
+    tabBtns.forEach(b => {
+      const isActive = b.dataset.tab === String(tabNum);
+      b.classList.toggle('is-active', isActive);
+      b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+    tabPanels.forEach(p => {
+      p.classList.toggle('is-active', p.dataset.tab === String(tabNum));
+    });
+  }
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  });
+
+  navNextBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchTab(btn.dataset.navNext);
+      // Scroll back to top of the tabs so the user lands at the start of the next part
+      document.querySelector('.tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+  navPrevBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchTab(btn.dataset.navPrev);
+      document.querySelector('.tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // ===== Checkbox interaction =====
+  items.forEach(item => {
+    const cb = item.querySelector('input[type="checkbox"]');
+    // Clicking anywhere on the label toggles (native label behaviour) — we just sync the visual state
+    cb.addEventListener('change', () => {
+      item.classList.toggle('is-checked', cb.checked);
+      updateProgress();
+    });
+  });
+
+  // ===== Progress tracking =====
+  function updateProgress() {
+    const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+    progressCount.textContent = checked;
+    progressFill.style.width = (checked / total * 100) + '%';
+
+    // Per-tab counts
+    [1, 2, 3].forEach(tabNum => {
+      const panel = document.querySelector(`.tab-panel[data-tab="${tabNum}"]`);
+      const tabBtn = document.querySelector(`.tab-btn[data-tab="${tabNum}"]`);
+      const status = tabBtn.querySelector('.tab-status');
+      const panelTotal = panel.querySelectorAll('input[type="checkbox"]').length;
+      const panelChecked = panel.querySelectorAll('input[type="checkbox"]:checked').length;
+      status.textContent = `${panelChecked}/${panelTotal}`;
+      tabBtn.classList.toggle('is-complete', panelChecked === panelTotal);
+    });
+
+    // Completion banner
+    completion.classList.toggle('is-shown', checked === total);
+  }
+
+  // ===== Reset =====
+  resetBtn.addEventListener('click', () => {
+    const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+    if (checkedCount === 0) return;
+    if (!confirm('Reset all checkboxes? This will clear your progress.')) return;
+    checkboxes.forEach(cb => {
+      cb.checked = false;
+      cb.closest('.item').classList.remove('is-checked');
+    });
+    updateProgress();
+    switchTab(1);
+  });
+
+  // ===== Generate PDF =====
+  function escapeHtmlForPrint(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  }
+
+  generatePdfBtn.addEventListener('click', () => {
+    const date = new Date().toLocaleDateString('en-AU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+
+    // Build sections HTML by reading the live page state
+    const sectionsHtml = [1, 2, 3].map(tabNum => {
+      const panel = document.querySelector(`.tab-panel[data-tab="${tabNum}"]`);
+      const tabBtn = document.querySelector(`.tab-btn[data-tab="${tabNum}"]`);
+      const titleText = tabBtn.querySelector('span:nth-child(2)').textContent;
+      const groupsHtml = Array.from(panel.querySelectorAll('.group')).map(group => {
+        const groupTitleEl = group.querySelector('.group-title');
+        const groupTitle = groupTitleEl ? groupTitleEl.textContent.trim() : '';
+        const descs = Array.from(group.querySelectorAll('.group-desc')).map(d => d.textContent.trim());
+        const itemsHtml = Array.from(group.querySelectorAll('.item')).map(it => {
+          const cb = it.querySelector('input[type="checkbox"]');
+          const text = it.querySelector('.item-text').textContent.trim();
+          const mark = cb.checked
+            ? '<span class="p-mark p-mark-on">✓</span>'
+            : '<span class="p-mark p-mark-off"></span>';
+          return `<div class="p-item">${mark}<span class="p-item-text${cb.checked ? '' : ' p-item-unchecked'}">${escapeHtmlForPrint(text)}</span></div>`;
+        }).join('');
+        const descHtml = descs.length
+          ? descs.map(d => `<p class="p-group-desc">${escapeHtmlForPrint(d)}</p>`).join('')
+          : '';
+        return `<div class="p-group"><h3>${escapeHtmlForPrint(groupTitle)}</h3>${descHtml}${itemsHtml}</div>`;
+      }).join('');
+
+      return `
+        <section class="p-section p-section-${tabNum}">
+          <div class="p-section-head">
+            <span class="p-num p-num-${tabNum}">${tabNum}</span>
+            <h2>${escapeHtmlForPrint(titleText)}</h2>
+          </div>
+          ${groupsHtml}
+        </section>
+      `;
+    }).join('');
+
+    const printHtml = `<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<title>Reflective Checklist - Completion Record</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  html, body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: #0f172a;
+    margin: 0;
+    padding: 18mm;
+    background: #fff;
+    line-height: 1.4;
+    font-size: 10.5pt;
+  }
+  .p-header { margin-bottom: 14px; }
+  .p-header h1 {
+    font-size: 17pt;
+    font-weight: 800;
+    margin: 0 0 4px;
+    letter-spacing: -0.02em;
+  }
+  .p-header .p-sub {
+    color: #64748b;
+    margin: 0;
+    font-size: 9.5pt;
+  }
+  .p-meta {
+    margin: 10px 0 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 9.5pt;
+  }
+  .p-meta-label {
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .p-meta-value { font-weight: 600; }
+
+  .p-section { margin-bottom: 14px; page-break-inside: avoid; }
+  .p-section-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .p-num {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 9pt; font-weight: 700;
+    display: inline-grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .p-num-1 { background: #006d77; }
+  .p-num-2 { background: #3b6b73; }
+  .p-num-3 { background: #4a7c6f; }
+  .p-section-head h2 {
+    font-size: 11pt;
+    font-weight: 700;
+    margin: 0;
+    color: #0f172a;
+  }
+  .p-group { margin-bottom: 8px; }
+  .p-group h3 {
+    font-size: 10pt;
+    font-weight: 700;
+    margin: 6px 0 3px;
+    color: #0f172a;
+  }
+  .p-group-desc {
+    font-size: 8.5pt;
+    color: #64748b;
+    font-style: italic;
+    margin: 2px 0 3px;
+  }
+  .p-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    padding: 3px 0;
+    font-size: 9.5pt;
+    color: #334155;
+  }
+  .p-mark {
+    width: 13px; height: 13px;
+    border-radius: 3px;
+    border: 1.5px solid #94a3b8;
+    flex-shrink: 0;
+    display: inline-grid;
+    place-items: center;
+    margin-top: 1px;
+    font-size: 9pt;
+    line-height: 1;
+    font-weight: 800;
+  }
+  .p-mark-on {
+    background: #006d77;
+    border-color: #006d77;
+    color: #fff;
+  }
+  .p-item-unchecked { color: #94a3b8; }
+
+  .p-footer {
+    margin-top: 14px;
+    padding-top: 8px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 8pt;
+    color: #94a3b8;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <header class="p-header">
+    <h1>Reflective Checklist — Completion Record</h1>
+    <p class="p-sub">SMART Goal Sequence</p>
+  </header>
+
+  <div class="p-meta">
+    <div>
+      <span class="p-meta-label">Generated</span>
+      <span class="p-meta-value">${escapeHtmlForPrint(date)}</span>
+    </div>
+    <div>
+      <span class="p-meta-label">Items completed</span>
+      <span class="p-meta-value">${checkedCount} of ${total}</span>
+    </div>
+  </div>
+
+  ${sectionsHtml}
+
+  <p class="p-footer">This is a record of your reflective checklist completion. Save or print for your records.</p>
+
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() { window.print(); }, 150);
+    });
+  <\/script>
+</body>
+</html>`;
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert('Please allow pop-ups to generate the PDF record.');
+      return;
+    }
+    printWindow.document.open();
+    printWindow.document.write(printHtml);
+    printWindow.document.close();
+  });
+
+  // ===== Init =====
+  updateProgress();
+</script>
+
+</body>
+</html>
