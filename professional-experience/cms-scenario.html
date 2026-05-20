@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMS Scenario: Managing Escalation</title>
+<style>
+  :root {
+    --teal: #006d77;
+    --teal-dark: #00525a;
+    --teal-deep: #003d44;
+    --teal-tint: #e6f0f1;
+    --teal-tint-2: #f2f7f7;
+    --accent: #b3d3d6;
+    --ink: #102528;
+    --ink-soft: #2c4045;
+    --muted: #5a6e71;
+    --line: #d8e3e4;
+    --line-soft: #e8eeef;
+    --bg: #f5f8f8;
+    --card: #ffffff;
+    --shadow-sm: 0 1px 2px rgba(0, 61, 68, 0.04), 0 2px 6px rgba(0, 61, 68, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 61, 68, 0.08), 0 12px 32px rgba(0, 61, 68, 0.07);
+    --primary-grad: linear-gradient(135deg, #006d77 0%, #00525a 100%);
+
+    /* Role colours */
+    --teacher: #006d77; --teacher-tint: #e6f0f1; --teacher-deep: #003d44;
+    --student: #5a7a8a; --student-tint: #eef2f5; --student-deep: #3a5564;
+    --allies:  #cc6b3a; --allies-tint:  #fbf0e9; --allies-deep:  #a85528;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 2.5rem 1.25rem 3rem; }
+
+  /* ===== Header ===== */
+  .header { text-align: center; margin-bottom: 1.5rem; }
+  .header-eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--teal);
+    background: var(--teal-tint); padding: 0.4rem 0.85rem;
+    border-radius: 999px; margin-bottom: 0.85rem;
+  }
+  .header-eyebrow::before {
+    content: ""; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--teal);
+  }
+  .header h1 {
+    font-size: clamp(1.55rem, 3.2vw, 2.1rem);
+    font-weight: 800; color: var(--teal-deep);
+    margin: 0 0 0.4rem; letter-spacing: -0.025em; line-height: 1.15;
+  }
+  .header p {
+    color: var(--muted); margin: 0 auto;
+    font-size: 0.95rem; max-width: 620px;
+  }
+
+  /* ===== Stage progress nav ===== */
+  .stage-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 1.75rem;
+    padding: 0.5rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    overflow-x: auto;
+  }
+  .stage-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+  }
+  .stage-pill:hover { background: var(--teal-tint); color: var(--teal-deep); }
+  .stage-pill:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .stage-pill.is-active {
+    background: var(--teal);
+    color: #fff;
+  }
+  .stage-pill-num {
+    display: grid; place-items: center;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--line-soft);
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .stage-pill.is-active .stage-pill-num {
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+  }
+  .stage-pill.is-complete:not(.is-active) .stage-pill-num {
+    background: var(--teal);
+    color: #fff;
+  }
+  .stage-pill-num svg {
+    width: 11px; height: 11px;
+    stroke: currentColor; fill: none;
+    stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .stage-divider {
+    width: 18px; height: 1px;
+    background: var(--line);
+    flex-shrink: 0;
+  }
+
+  /* ===== Stage card ===== */
+  .stage {
+    display: none;
+    background: var(--card);
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    animation: fadeIn 0.28s ease;
+  }
+  .stage.is-active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .stage-header {
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid var(--line);
+    background: var(--teal-tint-2);
+  }
+  @media (max-width: 540px) { .stage-header { padding: 1rem 1.1rem; } }
+
+  .stage-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+  }
+  .stage-meta-num {
+    background: var(--teal);
+    color: #fff;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+  }
+  .stage-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--teal-deep);
+    margin: 0;
+    letter-spacing: -0.015em;
+  }
+  .stage-objective {
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    margin: 0.4rem 0 0;
+    font-style: italic;
+  }
+
+  .stage-body {
+    padding: 1.5rem 1.75rem;
+  }
+  @media (max-width: 540px) { .stage-body { padding: 1.25rem 1.1rem; } }
+
+  .stage-section { margin-bottom: 1.5rem; }
+  .stage-section:last-of-type { margin-bottom: 0; }
+
+  .section-label {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin: 0 0 0.6rem;
+  }
+  .section-label svg {
+    width: 14px; height: 14px;
+    stroke: var(--teal); fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .stage-body p {
+    margin: 0 0 0.85rem;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .stage-body p:last-child { margin-bottom: 0; }
+  .stage-body strong { color: var(--teal-deep); }
+
+  .stage-body ul {
+    margin: 0 0 0.85rem;
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .stage-body ul li {
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .stage-body ul li::marker {
+    color: var(--teal);
+  }
+
+  /* Resource link card */
+  .resource-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1rem;
+    background: var(--teal-tint);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--teal-deep);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  }
+  .resource-link:hover {
+    background: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  .resource-link svg {
+    width: 16px; height: 16px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+  .resource-meta {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 0.4rem;
+    font-style: italic;
+  }
+
+  /* ===== Role cards ===== */
+  .roles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+  }
+  @media (max-width: 720px) {
+    .roles { grid-template-columns: 1fr; }
+  }
+  .role-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--muted);
+    border-radius: 10px;
+    padding: 0.95rem 1.1rem;
+  }
+  .role-card[data-role="teacher"] { border-top-color: var(--teacher); background: var(--teacher-tint); }
+  .role-card[data-role="student"] { border-top-color: var(--student); background: var(--student-tint); }
+  .role-card[data-role="allies"]  { border-top-color: var(--allies);  background: var(--allies-tint); }
+
+  .role-name {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 0.55rem;
+  }
+  .role-card[data-role="teacher"] .role-name { color: var(--teacher-deep); }
+  .role-card[data-role="student"] .role-name { color: var(--student-deep); }
+  .role-card[data-role="allies"]  .role-name { color: var(--allies-deep); }
+
+  .role-icon {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .role-card[data-role="teacher"] .role-icon { background: var(--teacher); }
+  .role-card[data-role="student"] .role-icon { background: var(--student); }
+  .role-card[data-role="allies"]  .role-icon { background: var(--allies); }
+  .role-icon svg {
+    width: 12px; height: 12px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .role-goal {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin: 0 0 0.6rem;
+    line-height: 1.5;
+  }
+  .role-goal strong { font-weight: 700; }
+
+  .role-snapshot-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 0.3rem;
+  }
+  .role-snapshot {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .role-snapshot li {
+    font-size: 0.83rem;
+    color: var(--ink-soft);
+    line-height: 1.45;
+  }
+  .role-card[data-role="teacher"] .role-snapshot li::marker { color: var(--teacher); }
+  .role-card[data-role="student"] .role-snapshot li::marker { color: var(--student); }
+  .role-card[data-role="allies"]  .role-snapshot li::marker { color: var(--allies); }
+
+  /* ===== Reflection block ===== */
+  .reflection {
+    background: var(--teal-tint-2);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--teal);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-top: 1.25rem;
+  }
+  .reflection-label {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--teal-deep);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 0.45rem;
+  }
+  .reflection-label svg {
+    width: 13px; height: 13px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .reflection-q {
+    font-size: 0.95rem;
+    color: var(--ink);
+    font-weight: 500;
+    margin: 0 0 0.65rem;
+    line-height: 1.5;
+  }
+  .reflection textarea {
+    width: 100%; min-height: 85px;
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: 0.7rem 0.9rem;
+    font-family: inherit; font-size: 0.92rem;
+    color: var(--ink); background: var(--card);
+    resize: vertical; line-height: 1.55;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .reflection textarea:focus {
+    outline: none; border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(0, 109, 119, 0.15);
+  }
+  .reflection-hint {
+    font-size: 0.76rem; color: var(--muted);
+    margin: 0.5rem 0 0;
+    font-style: italic;
+  }
+
+  /* ===== Stage controls (prev/next) ===== */
+  .stage-footer {
+    border-top: 1px solid var(--line);
+    padding: 1.25rem 1.75rem 1.5rem;
+  }
+  @media (max-width: 540px) {
+    .stage-footer { padding: 1.1rem 1.1rem 1.25rem; }
+  }
+  .stage-controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .control-btn {
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background: var(--card);
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.7rem 1.1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .control-btn:hover:not(:disabled) {
+    background: var(--teal-tint);
+    border-color: var(--accent);
+    color: var(--teal-deep);
+  }
+  .control-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .control-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .control-btn svg {
+    width: 14px; height: 14px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .control-btn-next {
+    background: var(--primary-grad);
+    color: #fff;
+    border: 0;
+    box-shadow: 0 4px 12px rgba(0, 109, 119, 0.22);
+  }
+  .control-btn-next:hover:not(:disabled) {
+    background: linear-gradient(135deg, #00525a 0%, #003d44 100%);
+    color: #fff;
+  }
+
+  /* ===== Actions bar at the very bottom ===== */
+  .actions {
+    display: flex; gap: 0.75rem;
+    margin-top: 1.5rem; flex-wrap: wrap;
+  }
+  .btn {
+    font-family: inherit; font-size: 0.93rem;
+    font-weight: 600;
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 0.75rem 1.2rem; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--card); color: var(--ink);
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  }
+  .btn:hover { background: var(--line-soft); }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .btn svg {
+    width: 16px; height: 16px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .btn-pdf {
+    background: var(--primary-grad);
+    color: #fff; border: 0;
+    box-shadow: 0 4px 12px rgba(0, 109, 119, 0.22);
+  }
+  .btn-pdf:hover {
+    background: linear-gradient(135deg, #00525a 0%, #003d44 100%);
+  }
+  .actions-note {
+    font-size: 0.78rem; color: var(--muted);
+    margin: 0.6rem 0 0; font-style: italic;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  @media (max-width: 540px) {
+    .wrap { padding: 1.5rem 1rem 2.5rem; }
+    .stage-title { font-size: 1.15rem; }
+    .actions { flex-direction: column; }
+    .btn-pdf { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <span class="header-eyebrow">Scenario-Based Learning</span>
+    <h1>CMS Scenario: Managing Escalation</h1>
+    <p>Work through a classroom management scenario one stage at a time. Reflect on each stage as the situation unfolds.</p>
+  </header>
+
+  <!-- ===== Stage navigation ===== -->
+  <nav class="stage-nav" role="tablist" aria-label="Scenario stages">
+    <button class="stage-pill" type="button" data-stage="1" role="tab"><span class="stage-pill-num">1</span>Introduction</button>
+    <span class="stage-divider"></span>
+    <button class="stage-pill" type="button" data-stage="2" role="tab"><span class="stage-pill-num">2</span>Scenario</button>
+    <span class="stage-divider"></span>
+    <button class="stage-pill" type="button" data-stage="3" role="tab"><span class="stage-pill-num">3</span>Escalation</button>
+    <span class="stage-divider"></span>
+    <button class="stage-pill" type="button" data-stage="4" role="tab"><span class="stage-pill-num">4</span>Breaking Point</button>
+    <span class="stage-divider"></span>
+    <button class="stage-pill" type="button" data-stage="5" role="tab"><span class="stage-pill-num">5</span>Debrief</button>
+  </nav>
+
+  <!-- ===== STAGE 1: Introduction & Context ===== -->
+  <section class="stage" data-stage="1" role="tabpanel">
+    <div class="stage-header">
+      <div class="stage-meta"><span class="stage-meta-num">Stage 1 of 5</span>Introduction &amp; Context</div>
+      <h2 class="stage-title">Setting the Scene</h2>
+      <p class="stage-objective">Objective: Help students understand the importance of calm, respectful classroom management.</p>
+    </div>
+
+    <div class="stage-body">
+
+      <div class="stage-section">
+        <p class="section-label">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          Context
+        </p>
+        <p>This scenario asks you to apply the <strong>CMS Bumps Model</strong> — a framework for keeping classroom responses proportionate to behaviour. The goal is to keep responses as low-key as possible, only "bumping up" when the existing strategy is no longer effective.</p>
+        <p>Before working through the scenario, review the overview of the CMS Bumps Model:</p>
+        <a class="resource-link" href="https://curtin.sharepoint.com/:p:/s/SOEITECourseContent/IQCgNITBxXw5SIztRKw6bgG5AU07hRAJI1CJBg8Wph5568M?e=Zh7qIf&nav=eyJzSWQiOjEwMzcsImNJZCI6MTc1NTYyMzAxNX0" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          CMS Bumps Model Overview (PowerPoint)
+        </a>
+        <span class="resource-meta">Opens at Slide 7 in a new tab.</span>
+      </div>
+
+      <div class="stage-section">
+        <p class="section-label">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          Why this matters
+        </p>
+        <p>In real classroom situations, the way you respond to early behaviours sets the tone for what comes next. Jumping straight to high-level responses can escalate a situation that could otherwise have been managed quietly. Working through this scenario will help you see how each "bump" works in practice.</p>
+      </div>
+
+      <div class="reflection">
+        <p class="reflection-label">
+          <svg viewBox="0 0 24 24"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/><circle cx="12" cy="12" r="10"/></svg>
+          Reflective Question
+        </p>
+        <p class="reflection-q">Why do you think staying calm is the first step in managing challenging behaviour?</p>
+        <textarea data-reflection="1" placeholder="Type your reflection here..."></textarea>
+        <p class="reflection-hint">Your reflection is saved in this session. Use the PDF export to keep a record.</p>
+      </div>
+    </div>
+
+    <div class="stage-footer">
+      <div class="stage-controls">
+        <button class="control-btn" type="button" data-go="prev" disabled>
+          <svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg> Previous
+        </button>
+        <button class="control-btn control-btn-next" type="button" data-go="next">
+          Continue to Scenario <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STAGE 2: Scenario ===== -->
+  <section class="stage" data-stage="2" role="tabpanel">
+    <div class="stage-header">
+      <div class="stage-meta"><span class="stage-meta-num">Stage 2 of 5</span>The Scenario</div>
+      <h2 class="stage-title">The Hat Refusal</h2>
+      <p class="stage-objective">Three roles play out the opening of the scenario. Pay attention to each character's goal and behaviour.</p>
+    </div>
+
+    <div class="stage-body">
+
+      <div class="stage-section">
+        <p class="section-label">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          The Setup
+        </p>
+        <p>A group of primary students have just returned from lunch. One of them is wearing a hat. The teacher asks the student to remove the hat when they sit at their desk.</p>
+      </div>
+
+      <div class="stage-section">
+        <p class="section-label">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          The Roles
+        </p>
+
+        <div class="roles">
+
+          <!-- Teacher -->
+          <div class="role-card" data-role="teacher">
+            <p class="role-name">
+              <span class="role-icon"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
+              Teacher
+            </p>
+            <p class="role-goal"><strong>Goal:</strong> Address the student's refusal to remove their hat in a respectful and effective manner.</p>
+            <p class="role-snapshot-label">Behaviour Snapshot</p>
+            <ul class="role-snapshot">
+              <li>Initially underprepared and unsure of strategy.</li>
+              <li>May raise voice or use sarcasm when frustrated.</li>
+              <li>Focus drifts from behaviour to personal confrontation.</li>
+            </ul>
+          </div>
+
+          <!-- Student -->
+          <div class="role-card" data-role="student">
+            <p class="role-name">
+              <span class="role-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+              Student
+            </p>
+            <p class="role-goal"><strong>Goal:</strong> Keep the hat at any cost and avoid looking bad in front of friends.</p>
+            <p class="role-snapshot-label">Behaviour Snapshot</p>
+            <ul class="role-snapshot">
+              <li>Rolls eyes when approached.</li>
+              <li>Argues every time the teacher asks to remove the hat.</li>
+              <li>Attempts to recruit allies for support.</li>
+            </ul>
+          </div>
+
+          <!-- Allies -->
+          <div class="role-card" data-role="allies">
+            <p class="role-name">
+              <span class="role-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              Allies
+            </p>
+            <p class="role-goal"><strong>Goal:</strong> Support the student and help them keep the hat.</p>
+            <p class="role-snapshot-label">Behaviour Snapshot</p>
+            <ul class="role-snapshot">
+              <li>Giggles and makes side comments.</li>
+              <li>Encourages student with phrases like "yeah!" or "That's unfair!"</li>
+              <li>Reacts dramatically when tension rises ("oooh!" or "Someone's in trouble").</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="reflection">
+        <p class="reflection-label">
+          <svg viewBox="0 0 24 24"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/><circle cx="12" cy="12" r="10"/></svg>
+          Reflective Question
+        </p>
+        <p class="reflection-q">If you were the student, how would you feel about being asked to remove your hat? Why might allies join in?</p>
+        <textarea data-reflection="2" placeholder="Type your reflection here..."></textarea>
+      </div>
+    </div>
+
+    <div class="stage-footer">
+      <div class="stage-controls">
+        <button class="control-btn" type="button" data-go="prev">
+          <svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg> Previous
+        </button>
+        <button class="control-btn control-btn-next" type="button" data-go="next">
+          Continue to Escalation <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STAGE 3: Scenario Escalation ===== -->
+  <section class="stage" data-stage="3" role="tabpanel">
+    <div class="stage-header">
+      <div class="stage-meta"><span class="stage-meta-num">Stage 3 of 5</span>Escalation</div>
+      <h2 class="stage-title">Tension Rises</h2>
+      <p class="stage-objective">The situation escalates as the student refuses to give the hat back. Each character's behaviour intensifies.</p>
+    </div>
+
+    <div class="stage-body">
+
+      <div class="stage-section">
+        <p class="section-label">
+          <svg viewBox="0 0 24 24"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+          How each character behaves
+        </p>
+
+        <div class="roles">
+
+          <div class="role-card" data-role="teacher">
+            <p class="role-name">
+              <span class="role-icon"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
+              Teacher
+            </p>
+            <ul class="role-snapshot">
+              <li>Becomes visibly tense, body language stiffens.</li>
+              <li>May try to assert authority by raising voice or insisting on compliance.</li>
+            </ul>
+          </div>
+
+          <div class="role-card" data-role="student">
+            <p class="role-name">
+              <span class="role-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+              Student
+            </p>
+            <ul class="role-snapshot">
+              <li>Escalates defiance, uses sarcasm or dismissive gestures.</li>
+              <li>Leverages peer support to maintain status.</li>
+            </ul>
+          </div>
+
+          <div class="role-card" data-role="allies">
+            <p class="role-name">
+              <span class="role-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              Allies
+            </p>
+            <ul class="role-snapshot">
+              <li>Amplify disruption with laughter and verbal support.</li>
+              <li>Create a "crowd effect" that pressures the teacher further.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="reflection">
+        <p class="reflection-label">
+          <svg viewBox="0 0 24 24"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/><circle cx="12" cy="12" r="10"/></svg>
+          Reflective Question
+        </p>
+        <p class="reflection-q">What behaviours escalated the situation? Could these have been avoided? Why or why not?</p>
+        <textarea data-reflection="3" placeholder="Type your reflection here..."></textarea>
+      </div>
+    </div>
+
+    <div class="stage-footer">
+      <div class="stage-controls">
+        <button class="control-btn" type="button" data-go="prev">
+          <svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg> Previous
+        </button>
+        <button class="control-btn control-btn-next" type="button" data-go="next">
+          Continue to Breaking Point <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STAGE 4: Breaking Point ===== -->
+  <section class="stage" data-stage="4" role="tabpanel">
+    <div class="stage-header">
+      <div class="stage-meta"><span class="stage-meta-num">Stage 4 of 5</span>Breaking Point</div>
+      <h2 class="stage-title">The Situation Erupts</h2>
+      <p class="stage-objective">The scenario reaches its peak. The teacher must find a way to regain calm without further escalation.</p>
+    </div>
+
+    <div class="stage-body">
+
+      <div class="stage-section">
+        <p class="section-label">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          What happens
+        </p>
+        <p>The student takes the hat off, throws it on the floor, and storms out of the classroom. The allies are laughing and jeering, while the teacher stands in shock.</p>
+      </div>
+
+      <div class="stage-section">
+        <p class="section-label">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Behaviour Snapshot
+        </p>
+
+        <div class="roles">
+
+          <div class="role-card" data-role="teacher">
+            <p class="role-name">
+              <span class="role-icon"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
+              Teacher
+            </p>
+            <ul class="role-snapshot">
+              <li>Frozen, unsure how to respond, emotional control tested.</li>
+            </ul>
+          </div>
+
+          <div class="role-card" data-role="student">
+            <p class="role-name">
+              <span class="role-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+              Student
+            </p>
+            <ul class="role-snapshot">
+              <li>Displays dramatic exit to maintain peer status, escalates to full defiance.</li>
+            </ul>
+          </div>
+
+          <div class="role-card" data-role="allies">
+            <p class="role-name">
+              <span class="role-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              Allies
+            </p>
+            <ul class="role-snapshot">
+              <li>Heighten chaos with laughter and mocking comments, reinforcing the disruption.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="reflection">
+        <p class="reflection-label">
+          <svg viewBox="0 0 24 24"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/><circle cx="12" cy="12" r="10"/></svg>
+          Reflective Question
+        </p>
+        <p class="reflection-q">At this breaking point, which CMS strategies could help the teacher regain calm and control without escalating further?</p>
+        <textarea data-reflection="4" placeholder="Type your reflection here..."></textarea>
+      </div>
+    </div>
+
+    <div class="stage-footer">
+      <div class="stage-controls">
+        <button class="control-btn" type="button" data-go="prev">
+          <svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg> Previous
+        </button>
+        <button class="control-btn control-btn-next" type="button" data-go="next">
+          Continue to Debrief <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STAGE 5: Debrief & Analysis ===== -->
+  <section class="stage" data-stage="5" role="tabpanel">
+    <div class="stage-header">
+      <div class="stage-meta"><span class="stage-meta-num">Stage 5 of 5</span>Debrief &amp; Analysis</div>
+      <h2 class="stage-title">Making Sense of It</h2>
+      <p class="stage-objective">Reflect on the full scenario, link it back to CMS principles, and plan how you'd approach it differently.</p>
+    </div>
+
+    <div class="stage-body">
+
+      <div class="stage-section">
+        <p class="section-label">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Discussion Points
+        </p>
+        <ul>
+          <li>How did each character feel throughout the scenario?</li>
+          <li><strong>Teacher's escalation triggers</strong> — what set off the teacher's heightened response?</li>
+          <li><strong>Student's tactics</strong> — what behaviours did the student use to maintain status?</li>
+          <li><strong>Allies' role</strong> — how did the allies amplify the situation?</li>
+          <li>Link the dynamics back to the CMS Bumps principles you reviewed in Stage 1.</li>
+        </ul>
+      </div>
+
+      <div class="reflection">
+        <p class="reflection-label">
+          <svg viewBox="0 0 24 24"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/><circle cx="12" cy="12" r="10"/></svg>
+          Reflective Question 1
+        </p>
+        <p class="reflection-q">Which CMS step was most difficult to apply in this scenario? Why?</p>
+        <textarea data-reflection="5a" placeholder="Type your reflection here..."></textarea>
+      </div>
+
+      <div class="reflection">
+        <p class="reflection-label">
+          <svg viewBox="0 0 24 24"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/><circle cx="12" cy="12" r="10"/></svg>
+          Reflective Question 2
+        </p>
+        <p class="reflection-q">What will you do differently in your next classroom challenge?</p>
+        <textarea data-reflection="5b" placeholder="Type your reflection here..."></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-pdf" id="generatePdfBtn" type="button">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
+          Save Reflections (PDF)
+        </button>
+        <button class="btn" id="resetBtn" type="button">
+          <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Reset All
+        </button>
+      </div>
+      <p class="actions-note">Your reflections are not saved automatically. Use the button above to download a PDF record of all your reflection responses from this scenario.</p>
+    </div>
+
+    <div class="stage-footer">
+      <div class="stage-controls">
+        <button class="control-btn" type="button" data-go="prev">
+          <svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg> Previous
+        </button>
+        <button class="control-btn" type="button" data-go="first">
+          <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg> Restart Scenario
+        </button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer style="max-width: 920px; margin: 3rem auto 0; padding: 1.25rem 1.5rem 1rem; border-top: 1px solid #e2e8f0; text-align: center; font-size: 0.78rem; color: #94a3b8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au" style="color: #64748b; text-decoration: underline;">Hum-EdTT@curtin.edu.au</a>
+</footer>
+
+<script>
+  (function () {
+    const stages = document.querySelectorAll('.stage');
+    const pills = document.querySelectorAll('.stage-pill');
+    const STAGE_COUNT = 5;
+    let currentStage = 1;
+
+    function setStage(n) {
+      n = Math.max(1, Math.min(STAGE_COUNT, n));
+      currentStage = n;
+      stages.forEach(s => s.classList.toggle('is-active', parseInt(s.dataset.stage, 10) === n));
+      pills.forEach(p => p.classList.toggle('is-active', parseInt(p.dataset.stage, 10) === n));
+      // Scroll to top of stage when navigating
+      const activeStage = document.querySelector('.stage.is-active');
+      if (activeStage) {
+        const rect = activeStage.getBoundingClientRect();
+        if (rect.top < 0 || rect.top > window.innerHeight * 0.3) {
+          activeStage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+      // Update completion indicators (any stage with a non-empty reflection is "complete")
+      updateCompletionIndicators();
+    }
+
+    function updateCompletionIndicators() {
+      // For each stage, check if any of its textareas have content
+      for (let i = 1; i <= STAGE_COUNT; i++) {
+        const stage = document.querySelector(`.stage[data-stage="${i}"]`);
+        if (!stage) continue;
+        const textareas = stage.querySelectorAll('textarea[data-reflection]');
+        const hasContent = Array.from(textareas).some(t => t.value.trim());
+        const pill = document.querySelector(`.stage-pill[data-stage="${i}"]`);
+        if (pill) {
+          pill.classList.toggle('is-complete', hasContent);
+          // Replace the number with a checkmark when complete (visually)
+          const numEl = pill.querySelector('.stage-pill-num');
+          if (numEl) {
+            if (hasContent && i !== currentStage) {
+              numEl.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+            } else {
+              numEl.textContent = String(i);
+            }
+          }
+        }
+      }
+    }
+
+    // Pill navigation
+    pills.forEach(p => {
+      p.addEventListener('click', () => setStage(parseInt(p.dataset.stage, 10)));
+    });
+
+    // Prev/Next/First buttons
+    document.querySelectorAll('.control-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const dir = btn.dataset.go;
+        if (dir === 'next') setStage(currentStage + 1);
+        else if (dir === 'prev') setStage(currentStage - 1);
+        else if (dir === 'first') setStage(1);
+      });
+    });
+
+    // Reflection inputs — update completion indicators on change
+    document.querySelectorAll('textarea[data-reflection]').forEach(t => {
+      t.addEventListener('input', updateCompletionIndicators);
+    });
+
+    // Initial state
+    setStage(1);
+
+    // ===== Reset =====
+    const resetBtn = document.getElementById('resetBtn');
+    resetBtn.addEventListener('click', () => {
+      const textareas = document.querySelectorAll('textarea[data-reflection]');
+      const hasContent = Array.from(textareas).some(t => t.value.trim());
+      if (!hasContent) return;
+      if (!confirm('Reset all your reflections? This will clear every response across the five stages.')) return;
+      textareas.forEach(t => t.value = '');
+      updateCompletionIndicators();
+    });
+
+    // ===== PDF Export =====
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+    function nl2br(s) { return escapeHtml(s).replace(/\n/g, '<br>'); }
+    function getReflection(key) {
+      const t = document.querySelector(`textarea[data-reflection="${key}"]`);
+      return t ? t.value.trim() : '';
+    }
+
+    const REFLECTIONS = [
+      { stage: 1, key: '1',  title: 'Stage 1: Introduction & Context', q: 'Why do you think staying calm is the first step in managing challenging behaviour?' },
+      { stage: 2, key: '2',  title: 'Stage 2: The Scenario',           q: 'If you were the student, how would you feel about being asked to remove your hat? Why might allies join in?' },
+      { stage: 3, key: '3',  title: 'Stage 3: Escalation',              q: 'What behaviours escalated the situation? Could these have been avoided? Why or why not?' },
+      { stage: 4, key: '4',  title: 'Stage 4: Breaking Point',          q: 'At this breaking point, which CMS strategies could help the teacher regain calm and control without escalating further?' },
+      { stage: 5, key: '5a', title: 'Stage 5: Debrief — Question 1',   q: 'Which CMS step was most difficult to apply in this scenario? Why?' },
+      { stage: 5, key: '5b', title: 'Stage 5: Debrief — Question 2',   q: 'What will you do differently in your next classroom challenge?' }
+    ];
+
+    document.getElementById('generatePdfBtn').addEventListener('click', () => {
+      const date = new Date().toLocaleDateString('en-AU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+      const reflectionsHtml = REFLECTIONS.map(r => {
+        const response = getReflection(r.key);
+        const responseHtml = response
+          ? `<div class="p-response">${nl2br(response)}</div>`
+          : `<div class="p-response p-response-empty">— no response —</div>`;
+        return `
+          <section class="p-reflection">
+            <h2>${escapeHtml(r.title)}</h2>
+            <p class="p-q">${escapeHtml(r.q)}</p>
+            ${responseHtml}
+          </section>
+        `;
+      }).join('');
+
+      const printHtml = `<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<title>CMS Scenario Reflections - Managing Escalation</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+  html, body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: #102528; margin: 0; padding: 16mm; background: #fff;
+    line-height: 1.4; font-size: 10.5pt;
+  }
+  .p-header { margin-bottom: 14px; }
+  .p-header h1 { font-size: 17pt; font-weight: 800; margin: 0 0 4px; color: #003d44; letter-spacing: -0.02em; }
+  .p-header .p-sub { color: #5a6e71; margin: 0; font-size: 9.5pt; }
+  .p-meta {
+    margin: 10px 0 16px;
+    border: 1px solid #d8e3e4; border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 9.5pt;
+  }
+  .p-meta-label {
+    font-size: 7.5pt; font-weight: 700; color: #5a6e71;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    display: inline-block; margin-right: 6px;
+  }
+  .p-meta-value { font-weight: 600; color: #102528; }
+
+  .p-reflection { margin-bottom: 14px; page-break-inside: avoid; }
+  .p-reflection h2 {
+    font-size: 11pt; font-weight: 700;
+    margin: 0 0 4px; color: #003d44;
+  }
+  .p-q {
+    font-size: 9.5pt;
+    color: #2c4045;
+    margin: 0 0 6px;
+    font-style: italic;
+  }
+  .p-response {
+    border: 1px solid #e8eeef;
+    border-left: 3px solid #006d77;
+    border-radius: 4px;
+    padding: 7px 10px;
+    background: #f5f8f8;
+    font-size: 9.5pt;
+    color: #102528;
+    white-space: pre-wrap;
+  }
+  .p-response-empty {
+    color: #94a3b8;
+    font-style: italic;
+    border-left-color: #cbd5d6;
+  }
+  .p-footer {
+    margin-top: 14px;
+    padding-top: 8px;
+    border-top: 1px solid #e8eeef;
+    font-size: 8pt; color: #94a3b8;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <header class="p-header">
+    <h1>CMS Scenario Reflections</h1>
+    <p class="p-sub">Managing Escalation — The Hat Refusal</p>
+  </header>
+
+  <div class="p-meta">
+    <span class="p-meta-label">Date</span>
+    <span class="p-meta-value">${escapeHtml(date)}</span>
+  </div>
+
+  ${reflectionsHtml}
+
+  <p class="p-footer">Completed via the CMS Scenario: Managing Escalation activity.</p>
+
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() { window.print(); }, 150);
+    });
+  <\/script>
+</body>
+</html>`;
+
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        alert('Please allow pop-ups to generate the PDF record.');
+        return;
+      }
+      printWindow.document.open();
+      printWindow.document.write(printHtml);
+      printWindow.document.close();
+    });
+  })();
+</script>
+
+</body>
+</html>
