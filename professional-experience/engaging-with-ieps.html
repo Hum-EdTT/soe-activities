@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engaging with IEPs</title>
+<style>
+  :root {
+    --teal: #006d77;
+    --teal-dark: #00525a;
+    --teal-deep: #003d44;
+    --teal-tint: #e6f0f1;
+    --teal-tint-2: #f2f7f7;
+    --accent: #b3d3d6;
+    --ink: #102528;
+    --ink-soft: #2c4045;
+    --muted: #5a6e71;
+    --line: #d8e3e4;
+    --line-soft: #e8eeef;
+    --bg: #f5f8f8;
+    --card: #ffffff;
+    --shadow-sm: 0 1px 2px rgba(0, 61, 68, 0.04), 0 2px 6px rgba(0, 61, 68, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 61, 68, 0.08), 0 12px 32px rgba(0, 61, 68, 0.07);
+    --primary-grad: linear-gradient(135deg, #006d77 0%, #00525a 100%);
+
+    /* Stream accents — teal-family with distinct hues per stream */
+    --eald-border: #2a8a93; --eald-tint: #e6f0f1; --eald-deep: #1b6a72;
+    --dis-border:  #cc6b3a; --dis-tint:  #fbf0e9; --dis-deep:  #a85528;
+    --trauma-border: #6d4a8a; --trauma-tint: #efe9f4; --trauma-deep: #523770;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 2.5rem 1.25rem 3rem; }
+
+  /* ===== Header ===== */
+  .header { text-align: center; margin-bottom: 1.75rem; }
+  .header-eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--teal);
+    background: var(--teal-tint); padding: 0.4rem 0.85rem;
+    border-radius: 999px; margin-bottom: 0.85rem;
+  }
+  .header-eyebrow::before {
+    content: ""; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--teal);
+  }
+  .header h1 {
+    font-size: clamp(1.65rem, 3.5vw, 2.25rem);
+    font-weight: 800; color: var(--teal-deep);
+    margin: 0 0 0.5rem; letter-spacing: -0.025em; line-height: 1.15;
+  }
+  .header p {
+    color: var(--muted); margin: 0 auto;
+    font-size: 0.95rem; max-width: 680px;
+  }
+
+  /* ===== Instructions panel ===== */
+  .instructions {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--teal);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .instructions p {
+    margin: 0; font-size: 0.92rem;
+    color: var(--ink-soft); line-height: 1.6;
+  }
+  .instructions strong { color: var(--teal-deep); }
+
+  /* ===== Stream selector ===== */
+  .stream-selector {
+    margin-bottom: 1.5rem;
+  }
+  .selector-label {
+    display: block;
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--ink-soft);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .stream-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.85rem;
+  }
+  @media (max-width: 720px) {
+    .stream-cards { grid-template-columns: 1fr; }
+  }
+  .stream-card {
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.1s ease, box-shadow 0.18s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .stream-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: var(--muted);
+    transition: background-color 0.18s ease;
+  }
+  .stream-card[data-stream="eald"]::before { background: var(--eald-border); }
+  .stream-card[data-stream="disability"]::before { background: var(--dis-border); }
+  .stream-card[data-stream="trauma"]::before { background: var(--trauma-border); }
+
+  .stream-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent);
+  }
+  .stream-card:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+  .stream-card.is-active[data-stream="eald"] {
+    border-color: var(--eald-border); background: var(--eald-tint);
+  }
+  .stream-card.is-active[data-stream="disability"] {
+    border-color: var(--dis-border); background: var(--dis-tint);
+  }
+  .stream-card.is-active[data-stream="trauma"] {
+    border-color: var(--trauma-border); background: var(--trauma-tint);
+  }
+
+  .stream-name {
+    font-size: 1.05rem; font-weight: 700;
+    color: var(--teal-deep);
+    margin: 0.4rem 0 0.15rem;
+  }
+  .stream-meta {
+    font-size: 0.8rem; color: var(--muted);
+    margin: 0 0 0.5rem;
+  }
+  .stream-tag {
+    display: inline-block;
+    font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+  }
+  .stream-card[data-stream="eald"] .stream-tag {
+    background: var(--eald-tint); color: var(--eald-deep);
+  }
+  .stream-card[data-stream="disability"] .stream-tag {
+    background: var(--dis-tint); color: var(--dis-deep);
+  }
+  .stream-card[data-stream="trauma"] .stream-tag {
+    background: var(--trauma-tint); color: var(--trauma-deep);
+  }
+  .stream-card.is-active .stream-tag {
+    background: rgba(255,255,255,0.7);
+  }
+
+  /* ===== IEP card ===== */
+  .iep {
+    display: none;
+    background: var(--card);
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    animation: fadeIn 0.28s ease;
+  }
+  .iep.is-active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .iep-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 2px solid var(--line);
+    background: var(--teal-tint-2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .iep[data-stream="eald"] .iep-header { background: var(--eald-tint); border-bottom-color: var(--eald-border); }
+  .iep[data-stream="disability"] .iep-header { background: var(--dis-tint); border-bottom-color: var(--dis-border); }
+  .iep[data-stream="trauma"] .iep-header { background: var(--trauma-tint); border-bottom-color: var(--trauma-border); }
+
+  .iep-name {
+    font-size: 1.25rem; font-weight: 700;
+    color: var(--teal-deep); margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .iep-meta-bar {
+    display: flex; gap: 1.5rem;
+    flex-wrap: wrap; align-items: center;
+    font-size: 0.85rem; color: var(--ink-soft);
+  }
+  .iep-meta-bar strong {
+    color: var(--teal-deep);
+    font-weight: 700;
+  }
+
+  /* IEP body */
+  .iep-body { padding: 1.5rem; }
+  @media (max-width: 540px) { .iep-body { padding: 1.1rem; } }
+
+  .iep-section { margin-bottom: 1.5rem; }
+  .iep-section:last-of-type { margin-bottom: 0; }
+
+  .section-label {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin: 0 0 0.55rem;
+  }
+  .section-label .badge {
+    display: inline-block;
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    background: var(--teal);
+    color: #fff;
+    font-size: 0.65rem; font-weight: 700;
+    text-align: center;
+    line-height: 18px;
+  }
+  .iep[data-stream="eald"] .section-label .badge { background: var(--eald-border); }
+  .iep[data-stream="disability"] .section-label .badge { background: var(--dis-border); }
+  .iep[data-stream="trauma"] .section-label .badge { background: var(--trauma-border); }
+
+  /* Read-only content (Goals, example Strategies, example Evaluation) */
+  .readonly-block {
+    background: var(--teal-tint-2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--teal);
+    border-radius: 8px;
+    padding: 0.85rem 1.1rem;
+    margin-bottom: 0.8rem;
+  }
+  .iep[data-stream="eald"] .readonly-block { border-left-color: var(--eald-border); background: var(--eald-tint); }
+  .iep[data-stream="disability"] .readonly-block { border-left-color: var(--dis-border); background: var(--dis-tint); }
+  .iep[data-stream="trauma"] .readonly-block { border-left-color: var(--trauma-border); background: var(--trauma-tint); }
+
+  .readonly-block ul {
+    margin: 0; padding: 0 0 0 1.15rem;
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .readonly-block ol {
+    margin: 0; padding: 0 0 0 1.5rem;
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .readonly-block li {
+    font-size: 0.9rem; line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .readonly-block li::marker {
+    color: var(--teal);
+  }
+  .iep[data-stream="eald"] .readonly-block li::marker { color: var(--eald-deep); }
+  .iep[data-stream="disability"] .readonly-block li::marker { color: var(--dis-deep); }
+  .iep[data-stream="trauma"] .readonly-block li::marker { color: var(--trauma-deep); }
+
+  /* Input area */
+  .input-label {
+    display: block;
+    font-size: 0.85rem; font-weight: 600;
+    color: var(--ink-soft);
+    margin: 0.75rem 0 0.35rem;
+  }
+  .input-hint {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin: 0 0 0.4rem;
+    font-style: italic;
+  }
+  .field-textarea {
+    width: 100%;
+    min-height: 110px;
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: 0.75rem 0.9rem;
+    font-family: inherit; font-size: 0.92rem;
+    color: var(--ink); background: var(--card);
+    resize: vertical; line-height: 1.55;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field-textarea:focus {
+    outline: none; border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(0, 109, 119, 0.15);
+  }
+
+  /* Signature lines (visual only) */
+  .signature-block {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  @media (max-width: 540px) {
+    .signature-block { grid-template-columns: 1fr; gap: 1rem; }
+  }
+  .sig-row {
+    display: flex; align-items: baseline; gap: 0.6rem;
+    font-size: 0.85rem; color: var(--muted);
+  }
+  .sig-label { flex-shrink: 0; font-weight: 600; }
+  .sig-line {
+    flex: 1;
+    border-bottom: 1px solid var(--line);
+    height: 1.2rem;
+  }
+  .sig-date {
+    flex-shrink: 0; font-weight: 600;
+    margin-left: 0.5rem;
+  }
+  .sig-date-line {
+    display: inline-block;
+    width: 80px;
+    border-bottom: 1px solid var(--line);
+    height: 1.2rem;
+    margin-left: 0.3rem;
+    vertical-align: bottom;
+  }
+
+  /* ===== Actions ===== */
+  .actions {
+    display: flex; gap: 0.75rem;
+    margin-top: 1.5rem; flex-wrap: wrap;
+  }
+  .btn {
+    font-family: inherit; font-size: 0.93rem;
+    font-weight: 600;
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 0.75rem 1.2rem; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--card); color: var(--ink);
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  }
+  .btn:hover { background: var(--line-soft); }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .btn svg {
+    width: 16px; height: 16px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .btn-pdf {
+    background: var(--primary-grad);
+    color: #fff; border: 0;
+    box-shadow: 0 4px 12px rgba(0, 109, 119, 0.22);
+  }
+  .btn-pdf:hover {
+    background: linear-gradient(135deg, #00525a 0%, #003d44 100%);
+  }
+  .actions-note {
+    font-size: 0.78rem; color: var(--muted);
+    margin: 0.6rem 0 0; font-style: italic;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem 2.5rem;
+    color: var(--muted);
+    background: var(--card);
+    border: 2px dashed var(--line);
+    border-radius: 12px;
+  }
+  .empty-state-icon {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--teal-tint);
+    color: var(--teal);
+    display: grid; place-items: center;
+    margin: 0 auto 0.85rem;
+  }
+  .empty-state-icon svg {
+    width: 24px; height: 24px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .empty-state p { margin: 0; font-size: 0.95rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  @media (max-width: 540px) {
+    .wrap { padding: 1.5rem 1rem 2.5rem; }
+    .actions { flex-direction: column; }
+    .btn-pdf { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <span class="header-eyebrow">Interactive Document</span>
+    <h1>Engaging with IEPs</h1>
+    <p>Apply differentiation strategies for students with diverse needs by working through one of three case-study Individual Education Plans.</p>
+  </header>
+
+  <div class="instructions">
+    <p>Based on the 'pick your own pathway' option from Topic 7, you will be provided with a series of partially pre-filled Primary IEP templates from an <strong>EAL/D</strong>, <strong>Trauma</strong> and <strong>Disability</strong> stream. Choose one IEP template below, review the provided information, then add your own differentiation strategies and evaluation methods based on your understanding of the student's needs. When complete, save a PDF record of your IEP.</p>
+  </div>
+
+  <!-- ===== Stream selector ===== -->
+  <div class="stream-selector">
+    <span class="selector-label">Choose your pathway</span>
+    <div class="stream-cards" role="tablist">
+      <button class="stream-card" type="button" data-stream="eald" role="tab" aria-selected="false">
+        <span class="stream-tag">EAL/D Stream</span>
+        <h2 class="stream-name">Yi</h2>
+        <p class="stream-meta">Year 6 — HASS</p>
+      </button>
+      <button class="stream-card" type="button" data-stream="disability" role="tab" aria-selected="false">
+        <span class="stream-tag">Disability Stream</span>
+        <h2 class="stream-name">Oliver</h2>
+        <p class="stream-meta">Year 4 — Media Arts</p>
+      </button>
+      <button class="stream-card" type="button" data-stream="trauma" role="tab" aria-selected="false">
+        <span class="stream-tag">Trauma Stream</span>
+        <h2 class="stream-name">Lily</h2>
+        <p class="stream-meta">Year 4 — English</p>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== Empty state (no stream chosen yet) ===== -->
+  <div class="empty-state" id="emptyState">
+    <div class="empty-state-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+    </div>
+    <p>Choose a pathway above to begin working on the IEP.</p>
+  </div>
+
+  <!-- ===== EAL/D — Yi ===== -->
+  <div class="iep" data-stream="eald" id="iep-eald" role="tabpanel" aria-labelledby="tab-eald">
+    <div class="iep-header">
+      <h2 class="iep-name">Name: Yi</h2>
+      <div class="iep-meta-bar">
+        <span><strong>Year:</strong> 6</span>
+        <span><strong>Learning Area:</strong> HASS</span>
+        <span><strong>Stream:</strong> EAL/D</span>
+      </div>
+    </div>
+
+    <div class="iep-body">
+
+      <div class="iep-section">
+        <p class="section-label"><span class="badge">G</span>Goals</p>
+        <div class="readonly-block">
+          <ul>
+            <li>Develop confidence and accuracy in English grammar and spelling within HASS tasks.</li>
+            <li>Demonstrate understanding of key HASS concepts using both oral and written English.</li>
+            <li>Apply logical and analytical skills to HASS inquiry and research tasks.</li>
+            <li>Build vocabulary related to HASS topics.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="iep-section">
+        <p class="section-label"><span class="badge">S</span>Classroom Actions / Strategies</p>
+        <div class="readonly-block">
+          <ul>
+            <li>Provide scaffolded writing frames and grammar support for HASS assignments.</li>
+            <li>Use visual aids, glossaries, and word walls for key HASS vocabulary.</li>
+            <li>Allow oral presentations or multimodal responses as alternatives to written tasks.</li>
+            <li>Pair Yi with supportive peers for collaborative group work.</li>
+            <li>Integrate music and sports themes into HASS projects to connect with Yi's interests.</li>
+            <li>Offer regular feedback and celebrate progress in English language use.</li>
+          </ul>
+        </div>
+        <label class="input-label" for="eald-strategies">Your additional strategies</label>
+        <p class="input-hint">Add further differentiation strategies you would apply based on your understanding of Yi's EAL/D needs.</p>
+        <textarea class="field-textarea" id="eald-strategies" placeholder="Add your own classroom action / strategy ideas here..."></textarea>
+      </div>
+
+      <div class="iep-section">
+        <p class="section-label"><span class="badge">E</span>Evaluation</p>
+        <div class="readonly-block">
+          <ul>
+            <li>Monitor written work for improvements in grammar and spelling.</li>
+            <li>Assess oral and multimodal presentations for content understanding.</li>
+            <li>Track vocabulary acquisition through quizzes and classroom activities.</li>
+            <li>Gather feedback from Yi and peers about group work experiences.</li>
+            <li>Review progress with Yi, family, and teachers each term.</li>
+          </ul>
+        </div>
+        <label class="input-label" for="eald-evaluation">Your additional evaluation methods</label>
+        <p class="input-hint">Add further ways you would evaluate Yi's progress.</p>
+        <textarea class="field-textarea" id="eald-evaluation" placeholder="Add your own evaluation ideas here..."></textarea>
+      </div>
+
+      <div class="signature-block">
+        <div class="sig-row">
+          <span class="sig-label">Parent/s:</span><span class="sig-line"></span>
+          <span class="sig-date">Date:</span><span class="sig-date-line"></span>
+        </div>
+        <div class="sig-row">
+          <span class="sig-label">Teachers:</span><span class="sig-line"></span>
+          <span class="sig-date">Date:</span><span class="sig-date-line"></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== Disability — Oliver ===== -->
+  <div class="iep" data-stream="disability" id="iep-disability" role="tabpanel" aria-labelledby="tab-disability">
+    <div class="iep-header">
+      <h2 class="iep-name">Name: Oliver</h2>
+      <div class="iep-meta-bar">
+        <span><strong>Year:</strong> 4</span>
+        <span><strong>Learning Area:</strong> Media Arts</span>
+        <span><strong>Stream:</strong> Disability</span>
+      </div>
+    </div>
+
+    <div class="iep-body">
+
+      <div class="iep-section">
+        <p class="section-label"><span class="badge">G</span>Goals</p>
+        <div class="readonly-block">
+          <ol>
+            <li>Develop skills in creating and sharing media artworks, using digital tools and visual storytelling.</li>
+            <li>Increase Oliver's ability to participate in group media projects with predictable routines.</li>
+            <li>Support Oliver's sensory and emotional regulation during Media Arts activities.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="iep-section">
+        <p class="section-label"><span class="badge">S</span>Classroom Actions / Strategies</p>
+        <div class="readonly-block">
+          <ul>
+            <li>Provide visual schedules and clear, step-by-step instructions for each activity.</li>
+            <li>Use Oliver's interests (space, marine animals, digital art) as themes for media projects.</li>
+            <li>Allow extra processing time and check for understanding using visual cues.</li>
+            <li>Offer choices between individual and small group work.</li>
+            <li>Prepare a quiet space or sensory tools for self-regulation.</li>
+            <li>Use social stories or visual scripts to support transitions and changes in routine.</li>
+            <li>Limit sensory overload by controlling lighting, noise, and textures in the workspace.</li>
+            <li>Scaffold open-ended tasks with templates, examples, and guided questions.</li>
+            <li>Explicitly teach and model how to interpret visual and audio codes or conventions.</li>
+          </ul>
+        </div>
+        <label class="input-label" for="disability-strategies">Your additional strategies</label>
+        <p class="input-hint">Add further differentiation strategies you would apply based on your understanding of Oliver's needs.</p>
+        <textarea class="field-textarea" id="disability-strategies" placeholder="Add your own classroom action / strategy ideas here..."></textarea>
+      </div>
+
+      <div class="iep-section">
+        <p class="section-label"><span class="badge">E</span>Evaluation</p>
+        <div class="readonly-block">
+          <ul>
+            <li>Monitor Oliver's engagement and participation in media projects.</li>
+            <li>Collect work samples and teacher observations.</li>
+            <li>Use checklists or rubrics for skill development.</li>
+            <li>Gather feedback from Oliver about his comfort and enjoyment.</li>
+            <li>Review progress with parents and support staff each term.</li>
+          </ul>
+        </div>
+        <label class="input-label" for="disability-evaluation">Your additional evaluation methods</label>
+        <p class="input-hint">Add further ways you would evaluate Oliver's progress.</p>
+        <textarea class="field-textarea" id="disability-evaluation" placeholder="Add your own evaluation ideas here..."></textarea>
+      </div>
+
+      <div class="signature-block">
+        <div class="sig-row">
+          <span class="sig-label">Parent/s:</span><span class="sig-line"></span>
+          <span class="sig-date">Date:</span><span class="sig-date-line"></span>
+        </div>
+        <div class="sig-row">
+          <span class="sig-label">Teachers:</span><span class="sig-line"></span>
+          <span class="sig-date">Date:</span><span class="sig-date-line"></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== Trauma — Lily ===== -->
+  <div class="iep" data-stream="trauma" id="iep-trauma" role="tabpanel" aria-labelledby="tab-trauma">
+    <div class="iep-header">
+      <h2 class="iep-name">Name: Lily</h2>
+      <div class="iep-meta-bar">
+        <span><strong>Year:</strong> 4</span>
+        <span><strong>Learning Area:</strong> English</span>
+        <span><strong>Stream:</strong> Trauma</span>
+      </div>
+    </div>
+
+    <div class="iep-body">
+
+      <div class="iep-section">
+        <p class="section-label"><span class="badge">G</span>Goals</p>
+        <div class="readonly-block">
+          <ol>
+            <li>Increase Lily's participation and confidence in class discussions and activities.</li>
+            <li>Support Lily's emotional regulation and resilience, especially during transitions and group work.</li>
+            <li>Develop Lily's ability to interpret and respond to feedback constructively.</li>
+            <li>Strengthen Lily's comprehension and written expression through scaffolded tasks.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="iep-section">
+        <p class="section-label"><span class="badge">S</span>Classroom Actions / Strategies</p>
+        <div class="readonly-block">
+          <ul>
+            <li>Provide clear routines and advanced notice of changes to minimise distress.</li>
+            <li>Use gentle prompts and allow extra wait time for Lily to respond.</li>
+            <li>Offer choices for participation (e.g. small group, pair work, written responses).</li>
+            <li>Use visual schedules and quiet spaces for self-regulation.</li>
+            <li>Model and role-play positive ways to receive and give feedback.</li>
+          </ul>
+        </div>
+        <label class="input-label" for="trauma-strategies">Your additional strategies</label>
+        <p class="input-hint">Add further differentiation strategies you would apply based on your understanding of Lily's needs.</p>
+        <textarea class="field-textarea" id="trauma-strategies" placeholder="Add your own classroom action / strategy ideas here..."></textarea>
+      </div>
+
+      <div class="iep-section">
+        <p class="section-label"><span class="badge">E</span>Evaluation</p>
+        <div class="readonly-block">
+          <ul>
+            <li>Monitor participation and engagement in class activities.</li>
+            <li>Collect work samples and self-reflections.</li>
+            <li>Observe Lily's responses to feedback and transitions.</li>
+            <li>Review progress in comprehension and writing tasks.</li>
+            <li>Seek feedback from Lily and her family on support effectiveness.</li>
+          </ul>
+        </div>
+        <label class="input-label" for="trauma-evaluation">Your additional evaluation methods</label>
+        <p class="input-hint">Add further ways you would evaluate Lily's progress.</p>
+        <textarea class="field-textarea" id="trauma-evaluation" placeholder="Add your own evaluation ideas here..."></textarea>
+      </div>
+
+      <div class="signature-block">
+        <div class="sig-row">
+          <span class="sig-label">Parent/s:</span><span class="sig-line"></span>
+          <span class="sig-date">Date:</span><span class="sig-date-line"></span>
+        </div>
+        <div class="sig-row">
+          <span class="sig-label">Teachers:</span><span class="sig-line"></span>
+          <span class="sig-date">Date:</span><span class="sig-date-line"></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== Actions (only visible once an IEP is open) ===== -->
+  <div class="actions" id="actionsBar" style="display:none;">
+    <button class="btn btn-pdf" id="generatePdfBtn" type="button">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
+      Save Completed IEP (PDF)
+    </button>
+    <button class="btn" id="resetBtn" type="button">
+      <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      Reset
+    </button>
+  </div>
+  <p class="actions-note" id="actionsNote" style="display:none;">Your responses are not saved automatically. Use the button above to download a PDF record of your completed IEP.</p>
+
+</div>
+
+<footer style="max-width: 980px; margin: 3rem auto 0; padding: 1.25rem 1.5rem 1rem; border-top: 1px solid #e2e8f0; text-align: center; font-size: 0.78rem; color: #94a3b8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au" style="color: #64748b; text-decoration: underline;">Hum-EdTT@curtin.edu.au</a>
+</footer>
+
+<script>
+  (function () {
+    const cards = document.querySelectorAll('.stream-card');
+    const ieps = document.querySelectorAll('.iep');
+    const emptyState = document.getElementById('emptyState');
+    const actionsBar = document.getElementById('actionsBar');
+    const actionsNote = document.getElementById('actionsNote');
+    const generatePdfBtn = document.getElementById('generatePdfBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const STREAM_DATA = {
+      eald: {
+        name: 'Yi',
+        year: '6',
+        learningArea: 'HASS',
+        streamLabel: 'EAL/D Stream',
+        goals: [
+          'Develop confidence and accuracy in English grammar and spelling within HASS tasks.',
+          'Demonstrate understanding of key HASS concepts using both oral and written English.',
+          'Apply logical and analytical skills to HASS inquiry and research tasks.',
+          'Build vocabulary related to HASS topics.'
+        ],
+        goalsOrdered: false,
+        strategies: [
+          'Provide scaffolded writing frames and grammar support for HASS assignments.',
+          'Use visual aids, glossaries, and word walls for key HASS vocabulary.',
+          'Allow oral presentations or multimodal responses as alternatives to written tasks.',
+          'Pair Yi with supportive peers for collaborative group work.',
+          "Integrate music and sports themes into HASS projects to connect with Yi's interests.",
+          'Offer regular feedback and celebrate progress in English language use.'
+        ],
+        evaluation: [
+          'Monitor written work for improvements in grammar and spelling.',
+          'Assess oral and multimodal presentations for content understanding.',
+          'Track vocabulary acquisition through quizzes and classroom activities.',
+          'Gather feedback from Yi and peers about group work experiences.',
+          'Review progress with Yi, family, and teachers each term.'
+        ]
+      },
+      disability: {
+        name: 'Oliver',
+        year: '4',
+        learningArea: 'Media Arts',
+        streamLabel: 'Disability Stream',
+        goals: [
+          'Develop skills in creating and sharing media artworks, using digital tools and visual storytelling.',
+          "Increase Oliver's ability to participate in group media projects with predictable routines.",
+          "Support Oliver's sensory and emotional regulation during Media Arts activities."
+        ],
+        goalsOrdered: true,
+        strategies: [
+          'Provide visual schedules and clear, step-by-step instructions for each activity.',
+          "Use Oliver's interests (space, marine animals, digital art) as themes for media projects.",
+          'Allow extra processing time and check for understanding using visual cues.',
+          'Offer choices between individual and small group work.',
+          'Prepare a quiet space or sensory tools for self-regulation.',
+          'Use social stories or visual scripts to support transitions and changes in routine.',
+          'Limit sensory overload by controlling lighting, noise, and textures in the workspace.',
+          'Scaffold open-ended tasks with templates, examples, and guided questions.',
+          'Explicitly teach and model how to interpret visual and audio codes or conventions.'
+        ],
+        evaluation: [
+          "Monitor Oliver's engagement and participation in media projects.",
+          'Collect work samples and teacher observations.',
+          'Use checklists or rubrics for skill development.',
+          'Gather feedback from Oliver about his comfort and enjoyment.',
+          'Review progress with parents and support staff each term.'
+        ]
+      },
+      trauma: {
+        name: 'Lily',
+        year: '4',
+        learningArea: 'English',
+        streamLabel: 'Trauma Stream',
+        goals: [
+          "Increase Lily's participation and confidence in class discussions and activities.",
+          "Support Lily's emotional regulation and resilience, especially during transitions and group work.",
+          "Develop Lily's ability to interpret and respond to feedback constructively.",
+          "Strengthen Lily's comprehension and written expression through scaffolded tasks."
+        ],
+        goalsOrdered: true,
+        strategies: [
+          'Provide clear routines and advanced notice of changes to minimise distress.',
+          'Use gentle prompts and allow extra wait time for Lily to respond.',
+          'Offer choices for participation (e.g. small group, pair work, written responses).',
+          'Use visual schedules and quiet spaces for self-regulation.',
+          'Model and role-play positive ways to receive and give feedback.'
+        ],
+        evaluation: [
+          'Monitor participation and engagement in class activities.',
+          'Collect work samples and self-reflections.',
+          "Observe Lily's responses to feedback and transitions.",
+          'Review progress in comprehension and writing tasks.',
+          'Seek feedback from Lily and her family on support effectiveness.'
+        ]
+      }
+    };
+
+    let currentStream = null;
+
+    function showStream(streamKey) {
+      currentStream = streamKey;
+      cards.forEach(c => {
+        const isActive = c.dataset.stream === streamKey;
+        c.classList.toggle('is-active', isActive);
+        c.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+      ieps.forEach(i => i.classList.toggle('is-active', i.dataset.stream === streamKey));
+      emptyState.style.display = 'none';
+      actionsBar.style.display = '';
+      actionsNote.style.display = '';
+    }
+
+    cards.forEach(card => {
+      card.addEventListener('click', () => showStream(card.dataset.stream));
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', () => {
+      if (!currentStream) return;
+      const sTextarea = document.getElementById(`${currentStream}-strategies`);
+      const eTextarea = document.getElementById(`${currentStream}-evaluation`);
+      const hasContent = (sTextarea && sTextarea.value.trim()) || (eTextarea && eTextarea.value.trim());
+      if (!hasContent) return;
+      if (!confirm('Reset your responses for this IEP? This will clear your additional strategies and evaluation methods.')) return;
+      if (sTextarea) sTextarea.value = '';
+      if (eTextarea) eTextarea.value = '';
+    });
+
+    // ===== PDF Export =====
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+    function nl2br(s) { return escapeHtml(s).replace(/\n/g, '<br>'); }
+
+    generatePdfBtn.addEventListener('click', () => {
+      if (!currentStream) return;
+      const data = STREAM_DATA[currentStream];
+      const userStrategies = document.getElementById(`${currentStream}-strategies`).value.trim();
+      const userEvaluation = document.getElementById(`${currentStream}-evaluation`).value.trim();
+      const date = new Date().toLocaleDateString('en-AU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+      const goalsHtml = data.goalsOrdered
+        ? `<ol>${data.goals.map(g => `<li>${escapeHtml(g)}</li>`).join('')}</ol>`
+        : `<ul>${data.goals.map(g => `<li>${escapeHtml(g)}</li>`).join('')}</ul>`;
+      const strategiesHtml = `<ul>${data.strategies.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>`;
+      const evaluationHtml = `<ul>${data.evaluation.map(e => `<li>${escapeHtml(e)}</li>`).join('')}</ul>`;
+
+      const userStrategiesHtml = userStrategies
+        ? `<div class="p-user-block"><div class="p-user-label">Additional strategies added by student teacher:</div><div class="p-user-text">${nl2br(userStrategies)}</div></div>`
+        : `<div class="p-user-block p-user-empty"><div class="p-user-label">Additional strategies added by student teacher:</div><div class="p-user-text">— none added —</div></div>`;
+      const userEvalHtml = userEvaluation
+        ? `<div class="p-user-block"><div class="p-user-label">Additional evaluation methods added by student teacher:</div><div class="p-user-text">${nl2br(userEvaluation)}</div></div>`
+        : `<div class="p-user-block p-user-empty"><div class="p-user-label">Additional evaluation methods added by student teacher:</div><div class="p-user-text">— none added —</div></div>`;
+
+      const printHtml = `<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<title>IEP - ${escapeHtml(data.name)} (${escapeHtml(data.streamLabel)})</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+  html, body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: #102528; margin: 0; padding: 16mm; background: #fff;
+    line-height: 1.4; font-size: 10pt;
+  }
+  .p-header { margin-bottom: 12px; }
+  .p-header h1 { font-size: 16pt; font-weight: 800; margin: 0 0 3px; color: #003d44; letter-spacing: -0.02em; }
+  .p-header .p-sub { color: #5a6e71; margin: 0; font-size: 9.5pt; }
+  .p-meta {
+    margin: 8px 0 14px;
+    border: 1px solid #d8e3e4; border-radius: 5px;
+    padding: 7px 10px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px;
+    font-size: 9pt;
+  }
+  .p-meta-label {
+    font-size: 7pt; font-weight: 700; color: #5a6e71;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    display: block; margin-bottom: 2px;
+  }
+  .p-meta-value { font-weight: 600; color: #102528; }
+
+  .p-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    table-layout: fixed;
+  }
+  .p-table th {
+    background: #e6f0f1;
+    color: #003d44;
+    font-weight: 700;
+    font-size: 9.5pt;
+    padding: 6px 8px;
+    text-align: left;
+    border: 1px solid #d8e3e4;
+  }
+  .p-table th.col-area { width: 14%; }
+  .p-table th.col-goals { width: 26%; }
+  .p-table th.col-strat { width: 34%; }
+  .p-table th.col-eval { width: 26%; }
+  .p-table td {
+    border: 1px solid #d8e3e4;
+    padding: 7px 9px;
+    vertical-align: top;
+    font-size: 9pt;
+    line-height: 1.45;
+  }
+  .p-table ul, .p-table ol {
+    margin: 0;
+    padding: 0 0 0 16px;
+  }
+  .p-table li {
+    margin-bottom: 3px;
+  }
+  .p-table li:last-child { margin-bottom: 0; }
+  .p-table .col-area-cell {
+    font-weight: 600;
+    background: #f5f8f8;
+  }
+
+  .p-user-block {
+    margin-top: 6px;
+    padding: 5px 7px;
+    background: #f5f8f8;
+    border: 1px dashed #b3d3d6;
+    border-radius: 4px;
+  }
+  .p-user-label {
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: #00525a;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 3px;
+  }
+  .p-user-text {
+    font-size: 9pt;
+    color: #102528;
+    white-space: pre-wrap;
+  }
+  .p-user-empty .p-user-text { color: #94a3b8; font-style: italic; }
+
+  .p-signatures {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    font-size: 9pt;
+    color: #5a6e71;
+  }
+  .p-sig-row { display: flex; align-items: baseline; gap: 6px; }
+  .p-sig-label { font-weight: 600; flex-shrink: 0; }
+  .p-sig-line { flex: 1; border-bottom: 1px solid #cbd5d6; height: 14px; }
+  .p-sig-date { font-weight: 600; flex-shrink: 0; margin-left: 6px; }
+  .p-sig-date-line { display: inline-block; width: 70px; border-bottom: 1px solid #cbd5d6; height: 14px; }
+
+  .p-footer {
+    margin-top: 14px;
+    padding-top: 8px;
+    border-top: 1px solid #e8eeef;
+    font-size: 7.5pt;
+    color: #94a3b8;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <header class="p-header">
+    <h1>Individual Education Plan</h1>
+    <p class="p-sub">${escapeHtml(data.streamLabel)}</p>
+  </header>
+
+  <div class="p-meta">
+    <div><span class="p-meta-label">Name</span><span class="p-meta-value">${escapeHtml(data.name)}</span></div>
+    <div><span class="p-meta-label">Year</span><span class="p-meta-value">${escapeHtml(data.year)}</span></div>
+    <div><span class="p-meta-label">Learning Area</span><span class="p-meta-value">${escapeHtml(data.learningArea)}</span></div>
+    <div><span class="p-meta-label">Generated</span><span class="p-meta-value">${escapeHtml(date)}</span></div>
+  </div>
+
+  <table class="p-table">
+    <thead>
+      <tr>
+        <th class="col-area">Learning Area</th>
+        <th class="col-goals">Goals</th>
+        <th class="col-strat">Classroom Actions / Strategies</th>
+        <th class="col-eval">Evaluation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-area-cell">${escapeHtml(data.learningArea)}</td>
+        <td>${goalsHtml}</td>
+        <td>${strategiesHtml}${userStrategiesHtml}</td>
+        <td>${evaluationHtml}${userEvalHtml}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="p-signatures">
+    <div class="p-sig-row">
+      <span class="p-sig-label">Parent/s:</span><span class="p-sig-line"></span>
+      <span class="p-sig-date">Date:</span><span class="p-sig-date-line"></span>
+    </div>
+    <div class="p-sig-row">
+      <span class="p-sig-label">Teachers:</span><span class="p-sig-line"></span>
+      <span class="p-sig-date">Date:</span><span class="p-sig-date-line"></span>
+    </div>
+  </div>
+
+  <p class="p-footer">Completed via the Engaging with IEPs activity.</p>
+
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() { window.print(); }, 150);
+    });
+  <\/script>
+</body>
+</html>`;
+
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        alert('Please allow pop-ups to generate the PDF record.');
+        return;
+      }
+      printWindow.document.open();
+      printWindow.document.write(printHtml);
+      printWindow.document.close();
+    });
+  })();
+</script>
+
+</body>
+</html>
