@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parent-Teacher Conference: Self-Assessment Rubric</title>
+<style>
+  :root {
+    --teal: #006d77;
+    --teal-dark: #00525a;
+    --teal-deep: #003d44;
+    --teal-tint: #e6f0f1;
+    --teal-tint-2: #f2f7f7;
+    --accent: #b3d3d6;
+    --ink: #102528;
+    --ink-soft: #2c4045;
+    --muted: #5a6e71;
+    --line: #d8e3e4;
+    --line-soft: #e8eeef;
+    --bg: #f5f8f8;
+    --card: #ffffff;
+    --shadow-sm: 0 1px 2px rgba(0, 61, 68, 0.04), 0 2px 6px rgba(0, 61, 68, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 61, 68, 0.08), 0 12px 32px rgba(0, 61, 68, 0.07);
+    --primary-grad: linear-gradient(135deg, #006d77 0%, #00525a 100%);
+
+    /* Rubric level colours */
+    --excellent: #10b981; --excellent-tint: #ecfdf5; --excellent-deep: #047857;
+    --good: #f59e0b; --good-tint: #fffbeb; --good-deep: #b45309;
+    --improvement: #ef4444; --improvement-tint: #fef2f2; --improvement-deep: #b91c1c;
+
+    /* Stream colours */
+    --eald-border: #2a8a93; --eald-tint: #e6f0f1; --eald-deep: #1b6a72;
+    --dis-border:  #cc6b3a; --dis-tint:  #fbf0e9; --dis-deep:  #a85528;
+    --trauma-border: #6d4a8a; --trauma-tint: #efe9f4; --trauma-deep: #523770;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 2.5rem 1.25rem 3rem; }
+
+  /* ===== Header ===== */
+  .header { text-align: center; margin-bottom: 1.75rem; }
+  .header-eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--teal);
+    background: var(--teal-tint); padding: 0.4rem 0.85rem;
+    border-radius: 999px; margin-bottom: 0.85rem;
+  }
+  .header-eyebrow::before {
+    content: ""; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--teal);
+  }
+  .header h1 {
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight: 800; color: var(--teal-deep);
+    margin: 0 0 0.4rem; letter-spacing: -0.025em; line-height: 1.15;
+  }
+  .header p {
+    color: var(--muted); margin: 0 auto;
+    font-size: 0.95rem; max-width: 620px;
+  }
+
+  /* ===== Instructions ===== */
+  .instructions {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--teal);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .instructions p {
+    margin: 0; font-size: 0.92rem;
+    color: var(--ink-soft); line-height: 1.6;
+  }
+  .instructions strong { color: var(--teal-deep); }
+
+  /* ===== Rubric card ===== */
+  .rubric {
+    background: var(--card);
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    padding: 1.5rem;
+  }
+  @media (max-width: 540px) { .rubric { padding: 1.1rem; } }
+
+  /* Top meta row */
+  .meta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--line);
+  }
+  @media (max-width: 600px) { .meta-row { grid-template-columns: 1fr; } }
+
+  .field-label {
+    display: block;
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--ink-soft);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .field-input {
+    width: 100%; border: 1px solid var(--line);
+    border-radius: 8px; padding: 0.6rem 0.85rem;
+    font-family: inherit; font-size: 0.93rem;
+    color: var(--ink); background: var(--card);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field-input:focus {
+    outline: none; border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(0, 109, 119, 0.15);
+  }
+  .field-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a6e71' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.65rem center;
+    background-size: 16px;
+    padding-right: 2rem;
+    cursor: pointer;
+  }
+
+  /* ===== Criterion blocks ===== */
+  .criterion {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .criterion:last-of-type { border-bottom: none; padding-bottom: 0.5rem; }
+  .criterion:first-of-type { padding-top: 0.5rem; }
+
+  .criterion-head {
+    display: flex; align-items: center; gap: 0.6rem;
+    margin-bottom: 0.85rem;
+  }
+  .criterion-num {
+    width: 26px; height: 26px;
+    border-radius: 50%; background: var(--teal); color: #fff;
+    font-size: 0.78rem; font-weight: 700;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .criterion-title {
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--teal-deep); margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  /* ===== Score options ===== */
+  .score-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.7rem;
+    margin-bottom: 0.85rem;
+  }
+  @media (max-width: 600px) { .score-options { grid-template-columns: 1fr; } }
+
+  .score-input { position: absolute; opacity: 0; pointer-events: none; }
+  .score {
+    display: flex; flex-direction: column;
+    padding: 0.85rem 1rem; border-radius: 10px;
+    border: 1.5px solid var(--line); background: var(--card);
+    cursor: pointer; user-select: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    position: relative;
+  }
+  .score:hover {
+    background: var(--teal-tint-2);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .score:active { transform: translateY(0); }
+  .score-input:focus-visible + .score {
+    outline: 2px solid var(--teal); outline-offset: 2px;
+  }
+
+  .score-head {
+    display: flex; align-items: center; gap: 0.4rem;
+    margin-bottom: 0.4rem;
+  }
+  .score-level {
+    font-size: 0.78rem; font-weight: 800;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    flex: 1;
+  }
+  .score-value {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--line-soft);
+    color: var(--muted);
+    font-size: 0.78rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .score-desc {
+    font-size: 0.82rem; line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* Checked states */
+  .score-input[data-level="3"]:checked + .score {
+    background: var(--excellent-tint);
+    border-color: var(--excellent);
+  }
+  .score-input[data-level="3"]:checked + .score .score-level { color: var(--excellent-deep); }
+  .score-input[data-level="3"]:checked + .score .score-value {
+    background: var(--excellent); color: #fff;
+  }
+
+  .score-input[data-level="2"]:checked + .score {
+    background: var(--good-tint);
+    border-color: var(--good);
+  }
+  .score-input[data-level="2"]:checked + .score .score-level { color: var(--good-deep); }
+  .score-input[data-level="2"]:checked + .score .score-value {
+    background: var(--good); color: #fff;
+  }
+
+  .score-input[data-level="1"]:checked + .score {
+    background: var(--improvement-tint);
+    border-color: var(--improvement);
+  }
+  .score-input[data-level="1"]:checked + .score .score-level { color: var(--improvement-deep); }
+  .score-input[data-level="1"]:checked + .score .score-value {
+    background: var(--improvement); color: #fff;
+  }
+
+  /* Reflection */
+  .reflection-label {
+    display: block;
+    font-size: 0.82rem; font-weight: 600;
+    color: var(--ink-soft);
+    margin: 0.85rem 0 0.3rem;
+  }
+  .reflection-hint {
+    font-size: 0.76rem;
+    color: var(--muted);
+    margin: 0 0 0.4rem;
+    font-style: italic;
+  }
+  .field-textarea {
+    width: 100%; min-height: 65px;
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: 0.6rem 0.85rem;
+    font-family: inherit; font-size: 0.9rem;
+    color: var(--ink); background: var(--card);
+    resize: vertical; line-height: 1.5;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field-textarea:focus {
+    outline: none; border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(0, 109, 119, 0.15);
+  }
+
+  /* ===== Summary ===== */
+  .summary {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--line);
+  }
+  .summary-row {
+    display: flex; align-items: center; gap: 0.85rem;
+    font-size: 0.95rem; color: var(--ink-soft);
+  }
+  .summary-label { font-weight: 600; }
+  .summary-score {
+    font-size: 1.4rem; font-weight: 800;
+    color: var(--teal-deep);
+    letter-spacing: -0.01em;
+  }
+  .summary-max {
+    font-size: 0.9rem; font-weight: 600;
+    color: var(--muted);
+  }
+  .summary-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--line-soft);
+    border-radius: 999px;
+    overflow: hidden;
+    min-width: 100px;
+  }
+  .summary-fill {
+    height: 100%;
+    background: var(--primary-grad);
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    border-radius: 999px;
+  }
+
+  /* ===== Actions ===== */
+  .actions {
+    display: flex; gap: 0.75rem;
+    margin-top: 1.5rem; flex-wrap: wrap;
+  }
+  .btn {
+    font-family: inherit; font-size: 0.93rem;
+    font-weight: 600;
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 0.75rem 1.2rem; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--card); color: var(--ink);
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  }
+  .btn:hover { background: var(--line-soft); }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .btn svg {
+    width: 16px; height: 16px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .btn-pdf {
+    background: var(--primary-grad);
+    color: #fff; border: 0;
+    box-shadow: 0 4px 12px rgba(0, 109, 119, 0.22);
+  }
+  .btn-pdf:hover {
+    background: linear-gradient(135deg, #00525a 0%, #003d44 100%);
+  }
+  .actions-note {
+    font-size: 0.78rem; color: var(--muted);
+    margin: 0.6rem 0 0; font-style: italic;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  @media (max-width: 540px) {
+    .wrap { padding: 1.5rem 1rem 2.5rem; }
+    .actions { flex-direction: column; }
+    .btn-pdf { width: 100%; justify-content: center; }
+    .criterion-title { font-size: 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <span class="header-eyebrow">Self-Assessment Rubric</span>
+    <h1>Parent-Teacher Conference</h1>
+    <p>Self-assess your recorded parent-teacher conference using the rubric below. Complete this rubric once for each recording (two times total).</p>
+  </header>
+
+  <div class="instructions">
+    <p>After recording your parent-teacher conference, use this rubric to self-assess against four criteria. For each criterion, select the level that best describes your performance. You can optionally add reflective notes. When complete, save your self-assessment as a PDF and attach it to your Padlet post. <strong>Complete this rubric once per recording</strong> — one for each of the two IEP streams you chose.</p>
+  </div>
+
+  <div class="rubric">
+
+    <!-- ===== Meta row ===== -->
+    <div class="meta-row">
+      <div>
+        <label class="field-label" for="studentName">Your Name</label>
+        <input class="field-input" type="text" id="studentName" placeholder="Enter your name">
+      </div>
+      <div>
+        <label class="field-label" for="streamSelect">IEP Stream for this Recording</label>
+        <select class="field-input field-select" id="streamSelect">
+          <option value="">— Select a stream —</option>
+          <option value="EAL/D Stream (Yi)">EAL/D Stream (Yi)</option>
+          <option value="Disability Stream (Oliver)">Disability Stream (Oliver)</option>
+          <option value="Trauma Stream (Lily)">Trauma Stream (Lily)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ===== Criterion 1: Role Authenticity ===== -->
+    <section class="criterion" data-criterion="role">
+      <div class="criterion-head">
+        <span class="criterion-num">1</span>
+        <h2 class="criterion-title">Role Authenticity</h2>
+      </div>
+      <div class="score-options" role="radiogroup" aria-label="Role Authenticity score">
+        <label>
+          <input class="score-input" type="radio" name="role" value="3" data-level="3">
+          <span class="score">
+            <span class="score-head"><span class="score-level">Excellent</span><span class="score-value">3</span></span>
+            <span class="score-desc">Fully adopted the teacher role; tone and language were professional and empathetic.</span>
+          </span>
+        </label>
+        <label>
+          <input class="score-input" type="radio" name="role" value="2" data-level="2">
+          <span class="score">
+            <span class="score-head"><span class="score-level">Good</span><span class="score-value">2</span></span>
+            <span class="score-desc">Mostly authentic; minor lapses in tone or clarity.</span>
+          </span>
+        </label>
+        <label>
+          <input class="score-input" type="radio" name="role" value="1" data-level="1">
+          <span class="score">
+            <span class="score-head"><span class="score-level">Needs Improvement</span><span class="score-value">1</span></span>
+            <span class="score-desc">Limited authenticity; sounded scripted or disconnected.</span>
+          </span>
+        </label>
+      </div>
+      <label class="reflection-label" for="role-reflection">Reflection <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+      <p class="reflection-hint">What worked well, and what would you do differently next time?</p>
+      <textarea class="field-textarea" id="role-reflection" placeholder="Your reflection on role authenticity..."></textarea>
+    </section>
+
+    <!-- ===== Criterion 2: Clarity of Explanation ===== -->
+    <section class="criterion" data-criterion="clarity">
+      <div class="criterion-head">
+        <span class="criterion-num">2</span>
+        <h2 class="criterion-title">Clarity of Explanation</h2>
+      </div>
+      <div class="score-options" role="radiogroup" aria-label="Clarity of Explanation score">
+        <label>
+          <input class="score-input" type="radio" name="clarity" value="3" data-level="3">
+          <span class="score">
+            <span class="score-head"><span class="score-level">Excellent</span><span class="score-value">3</span></span>
+            <span class="score-desc">Strategies explained clearly, logically, and in parent-friendly language.</span>
+          </span>
+        </label>
+        <label>
+          <input class="score-input" type="radio" name="clarity" value="2" data-level="2">
+          <span class="score">
+            <span class="score-head"><span class="score-level">Good</span><span class="score-value">2</span></span>
+            <span class="score-desc">Mostly clear; some jargon or minor gaps in explanation.</span>
+          </span>
+        </label>
+        <label>
+          <input class="score-input" type="radio" name="clarity" value="1" data-level="1">
+          <span class="score">
+            <span class="score-head"><span class="score-level">Needs Improvement</span><span class="score-value">1</span></span>
+            <span class="score-desc">Explanation unclear or overly technical; parents may struggle to understand.</span>
+          </span>
+        </label>
+      </div>
+      <label class="reflection-label" for="clarity-reflection">Reflection <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+      <p class="reflection-hint">How clearly did you communicate the strategies?</p>
+      <textarea class="field-textarea" id="clarity-reflection" placeholder="Your reflection on clarity..."></textarea>
+    </section>
+
+    <!-- ===== Criterion 3: Accuracy of IEP Strategies ===== -->
+    <section class="criterion" data-criterion="accuracy">
+      <div class="criterion-head">
+        <span class="criterion-num">3</span>
+        <h2 class="criterion-title">Accuracy of IEP Strategies</h2>
+      </div>
+      <div class="score-options" role="radiogroup" aria-label="Accuracy of IEP Strategies score">
+        <label>
+          <input class="score-input" type="radio" name="accuracy" value="3" data-level="3">
+          <span class="score">
+            <span class="score-head"><span class="score-level">Excellent</span><span class="score-value">3</span></span>
+            <span class="score-desc">All strategies were accurate, relevant, and aligned with the chosen stream.</span>
+          </span>
+        </label>
+        <label>
+          <input class="score-input" type="radio" name="accuracy" value="2" data-level="2">
+          <span class="score">
+            <span class="score-head"><span class="score-level">Good</span><span class="score-value">2</span></span>
+            <span class="score-desc">Most strategies were accurate; minor inaccuracies or missing details.</span>
+          </span>
+        </label>
+        <label>
+          <input class="score-input" type="radio" name="accuracy" value="1" data-level="1">
+          <span class="score">
+            <span class="score-head"><span class="score-level">Needs Improvement</span><span class="score-value">1</span></span>
+            <span class="score-desc">Strategies unclear or incorrect; lacked alignment with stream.</span>
+          </span>
+        </label>
+      </div>
+      <label class="reflection-label" for="accuracy-reflection">Reflection <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+      <p class="reflection-hint">How well did your strategies align with the IEP and stream?</p>
+      <textarea class="field-textarea" id="accuracy-reflection" placeholder="Your reflection on accuracy..."></textarea>
+    </section>
+
+    <!-- ===== Criterion 4: Cultural & Context Sensitivity ===== -->
+    <section class="criterion" data-criterion="sensitivity">
+      <div class="criterion-head">
+        <span class="criterion-num">4</span>
+        <h2 class="criterion-title">Cultural &amp; Context Sensitivity</h2>
+      </div>
+      <div class="score-options" role="radiogroup" aria-label="Cultural and Context Sensitivity score">
+        <label>
+          <input class="score-input" type="radio" name="sensitivity" value="3" data-level="3">
+          <span class="score">
+            <span class="score-head"><span class="score-level">Excellent</span><span class="score-value">3</span></span>
+            <span class="score-desc">Demonstrated strong awareness of cultural/linguistic or trauma considerations.</span>
+          </span>
+        </label>
+        <label>
+          <input class="score-input" type="radio" name="sensitivity" value="2" data-level="2">
+          <span class="score">
+            <span class="score-head"><span class="score-level">Good</span><span class="score-value">2</span></span>
+            <span class="score-desc">Some sensitivity shown; could improve inclusivity or empathy.</span>
+          </span>
+        </label>
+        <label>
+          <input class="score-input" type="radio" name="sensitivity" value="1" data-level="1">
+          <span class="score">
+            <span class="score-head"><span class="score-level">Needs Improvement</span><span class="score-value">1</span></span>
+            <span class="score-desc">Limited sensitivity; overlooked key cultural or trauma factors.</span>
+          </span>
+        </label>
+      </div>
+      <label class="reflection-label" for="sensitivity-reflection">Reflection <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+      <p class="reflection-hint">Were there cultural, linguistic, or trauma considerations you handled well or could improve?</p>
+      <textarea class="field-textarea" id="sensitivity-reflection" placeholder="Your reflection on sensitivity..."></textarea>
+    </section>
+
+    <!-- ===== Summary ===== -->
+    <div class="summary">
+      <div class="summary-row">
+        <span class="summary-label">Total Score:</span>
+        <span class="summary-score" id="totalScore">0</span>
+        <span class="summary-max">/ 12</span>
+        <div class="summary-bar"><div class="summary-fill" id="summaryFill"></div></div>
+      </div>
+    </div>
+
+    <!-- ===== Actions ===== -->
+    <div class="actions">
+      <button class="btn btn-pdf" id="generatePdfBtn" type="button">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
+        Save Self-Assessment (PDF)
+      </button>
+      <button class="btn" id="resetBtn" type="button">
+        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Reset
+      </button>
+    </div>
+    <p class="actions-note">Save your PDF and attach it to your Padlet post. Repeat this rubric for your second recording (different IEP stream).</p>
+
+  </div>
+
+</div>
+
+<footer style="max-width: 920px; margin: 3rem auto 0; padding: 1.25rem 1.5rem 1rem; border-top: 1px solid #e2e8f0; text-align: center; font-size: 0.78rem; color: #94a3b8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au" style="color: #64748b; text-decoration: underline;">Hum-EdTT@curtin.edu.au</a>
+</footer>
+
+<script>
+  (function () {
+    const generatePdfBtn = document.getElementById('generatePdfBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const totalScoreEl = document.getElementById('totalScore');
+    const summaryFill = document.getElementById('summaryFill');
+
+    const CRITERIA = [
+      { key: 'role', num: 1, title: 'Role Authenticity', reflectionPrompt: 'What worked well, and what would you do differently next time?' },
+      { key: 'clarity', num: 2, title: 'Clarity of Explanation', reflectionPrompt: 'How clearly did you communicate the strategies?' },
+      { key: 'accuracy', num: 3, title: 'Accuracy of IEP Strategies', reflectionPrompt: 'How well did your strategies align with the IEP and stream?' },
+      { key: 'sensitivity', num: 4, title: 'Cultural & Context Sensitivity', reflectionPrompt: 'Were there cultural, linguistic, or trauma considerations you handled well or could improve?' }
+    ];
+
+    const LEVEL_LABELS = {
+      '3': { name: 'Excellent', desc: { role: 'Fully adopted the teacher role; tone and language were professional and empathetic.', clarity: 'Strategies explained clearly, logically, and in parent-friendly language.', accuracy: 'All strategies were accurate, relevant, and aligned with the chosen stream.', sensitivity: 'Demonstrated strong awareness of cultural/linguistic or trauma considerations.' } },
+      '2': { name: 'Good', desc: { role: 'Mostly authentic; minor lapses in tone or clarity.', clarity: 'Mostly clear; some jargon or minor gaps in explanation.', accuracy: 'Most strategies were accurate; minor inaccuracies or missing details.', sensitivity: 'Some sensitivity shown; could improve inclusivity or empathy.' } },
+      '1': { name: 'Needs Improvement', desc: { role: 'Limited authenticity; sounded scripted or disconnected.', clarity: 'Explanation unclear or overly technical; parents may struggle to understand.', accuracy: 'Strategies unclear or incorrect; lacked alignment with stream.', sensitivity: 'Limited sensitivity; overlooked key cultural or trauma factors.' } }
+    };
+
+    function getScore(key) {
+      const checked = document.querySelector(`input[name="${key}"]:checked`);
+      return checked ? parseInt(checked.value, 10) : 0;
+    }
+    function getReflection(key) {
+      const el = document.getElementById(`${key}-reflection`);
+      return el ? el.value.trim() : '';
+    }
+
+    function updateSummary() {
+      const total = CRITERIA.reduce((sum, c) => sum + getScore(c.key), 0);
+      totalScoreEl.textContent = total;
+      summaryFill.style.width = (total / 12 * 100) + '%';
+    }
+
+    document.querySelectorAll('input[type="radio"]').forEach(r => {
+      r.addEventListener('change', updateSummary);
+    });
+
+    // ===== Reset =====
+    resetBtn.addEventListener('click', () => {
+      const hasContent = document.getElementById('studentName').value
+        || document.getElementById('streamSelect').value
+        || document.querySelectorAll('input[type="radio"]:checked').length > 0
+        || Array.from(document.querySelectorAll('textarea')).some(t => t.value.trim());
+      if (!hasContent) return;
+      if (!confirm('Reset the rubric? This will clear all your responses.')) return;
+      document.getElementById('studentName').value = '';
+      document.getElementById('streamSelect').value = '';
+      document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+      document.querySelectorAll('textarea').forEach(t => t.value = '');
+      updateSummary();
+    });
+
+    // ===== PDF Export =====
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+    function nl2br(s) { return escapeHtml(s).replace(/\n/g, '<br>'); }
+
+    generatePdfBtn.addEventListener('click', () => {
+      const studentName = document.getElementById('studentName').value.trim() || 'Student';
+      const stream = document.getElementById('streamSelect').value.trim() || '— not specified —';
+      const date = new Date().toLocaleDateString('en-AU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const total = CRITERIA.reduce((sum, c) => sum + getScore(c.key), 0);
+
+      const criteriaHtml = CRITERIA.map(c => {
+        const score = getScore(c.key);
+        const reflection = getReflection(c.key);
+        const levelInfo = score ? LEVEL_LABELS[String(score)] : null;
+        const levelClass = score ? `p-level-${score}` : 'p-level-none';
+        const levelText = levelInfo ? `${levelInfo.name} (${score})` : '— not scored —';
+        const descText = levelInfo ? levelInfo.desc[c.key] : '';
+
+        const reflectionHtml = reflection
+          ? `<div class="p-reflection"><div class="p-reflection-label">Reflection</div><div class="p-reflection-text">${nl2br(reflection)}</div></div>`
+          : '';
+
+        return `
+          <section class="p-criterion">
+            <div class="p-criterion-head">
+              <span class="p-num">${c.num}</span>
+              <h2>${escapeHtml(c.title)}</h2>
+              <span class="p-level ${levelClass}">${escapeHtml(levelText)}</span>
+            </div>
+            ${descText ? `<p class="p-desc">${escapeHtml(descText)}</p>` : ''}
+            ${reflectionHtml}
+          </section>
+        `;
+      }).join('');
+
+      const printHtml = `<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<title>Parent-Teacher Conference Self-Assessment - ${escapeHtml(studentName)}</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+  html, body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: #102528; margin: 0; padding: 16mm; background: #fff;
+    line-height: 1.4; font-size: 10.5pt;
+  }
+  .p-header { margin-bottom: 14px; }
+  .p-header h1 { font-size: 16pt; font-weight: 800; margin: 0 0 4px; color: #003d44; letter-spacing: -0.02em; }
+  .p-header .p-sub { color: #5a6e71; margin: 0; font-size: 9.5pt; }
+  .p-meta {
+    margin: 10px 0 16px;
+    border: 1px solid #d8e3e4; border-radius: 6px;
+    padding: 8px 12px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+    font-size: 9.5pt;
+  }
+  .p-meta-label {
+    font-size: 7.5pt; font-weight: 700; color: #5a6e71;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    display: block; margin-bottom: 2px;
+  }
+  .p-meta-value { font-weight: 600; color: #102528; }
+  .p-criterion { margin-bottom: 11px; page-break-inside: avoid; }
+  .p-criterion-head {
+    display: flex; align-items: center; gap: 7px;
+    margin-bottom: 4px;
+  }
+  .p-num {
+    width: 18px; height: 18px;
+    border-radius: 50%; background: #006d77; color: #fff;
+    font-size: 9pt; font-weight: 700;
+    display: inline-grid; place-items: center; flex-shrink: 0;
+  }
+  .p-criterion-head h2 {
+    font-size: 11pt; font-weight: 700; margin: 0;
+    color: #003d44; flex: 1;
+  }
+  .p-level {
+    font-size: 8pt; font-weight: 700;
+    padding: 2px 8px; border-radius: 999px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  .p-level-3 { background: #ecfdf5; color: #047857; border: 1px solid #10b981; }
+  .p-level-2 { background: #fffbeb; color: #b45309; border: 1px solid #f59e0b; }
+  .p-level-1 { background: #fef2f2; color: #b91c1c; border: 1px solid #ef4444; }
+  .p-level-none { background: #f1f5f9; color: #94a3b8; border: 1px solid #cbd5e1; font-style: italic; }
+  .p-desc {
+    font-size: 9.5pt; color: #2c4045;
+    margin: 0 0 5px; font-style: italic;
+  }
+  .p-reflection {
+    border: 1px solid #e8eeef; border-radius: 5px;
+    padding: 6px 9px; background: #f5f8f8;
+    margin-top: 3px;
+  }
+  .p-reflection-label {
+    font-size: 7.5pt; font-weight: 700; color: #5a6e71;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    margin-bottom: 3px;
+  }
+  .p-reflection-text { font-size: 9.5pt; color: #102528; white-space: pre-wrap; }
+
+  .p-total {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: #e6f0f1;
+    border: 1px solid #006d77;
+    border-radius: 6px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .p-total-label { font-size: 10pt; font-weight: 700; color: #003d44; }
+  .p-total-score { font-size: 16pt; font-weight: 800; color: #006d77; letter-spacing: -0.01em; }
+  .p-total-max { font-size: 9.5pt; color: #5a6e71; font-weight: 600; }
+
+  .p-footer {
+    margin-top: 14px;
+    padding-top: 8px;
+    border-top: 1px solid #e8eeef;
+    font-size: 8pt; color: #94a3b8;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <header class="p-header">
+    <h1>Parent-Teacher Conference Self-Assessment</h1>
+    <p class="p-sub">Recorded conference reflection</p>
+  </header>
+
+  <div class="p-meta">
+    <div><span class="p-meta-label">Name</span><span class="p-meta-value">${escapeHtml(studentName)}</span></div>
+    <div><span class="p-meta-label">IEP Stream</span><span class="p-meta-value">${escapeHtml(stream)}</span></div>
+    <div><span class="p-meta-label">Date</span><span class="p-meta-value">${escapeHtml(date)}</span></div>
+  </div>
+
+  ${criteriaHtml}
+
+  <div class="p-total">
+    <span class="p-total-label">Total Score:</span>
+    <span class="p-total-score">${total}</span>
+    <span class="p-total-max">/ 12</span>
+  </div>
+
+  <p class="p-footer">Completed via the Parent-Teacher Conference Self-Assessment rubric.</p>
+
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() { window.print(); }, 150);
+    });
+  <\/script>
+</body>
+</html>`;
+
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        alert('Please allow pop-ups to generate the PDF record.');
+        return;
+      }
+      printWindow.document.open();
+      printWindow.document.write(printHtml);
+      printWindow.document.close();
+    });
+
+    updateSummary();
+  })();
+</script>
+
+</body>
+</html>
