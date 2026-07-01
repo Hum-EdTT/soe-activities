@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Understanding &amp; Teaching Neurodivergent Students</title>
+<style>
+  :root {
+    --teal: #006d77;
+    --teal-dark: #00525a;
+    --teal-deep: #003d44;
+    --teal-tint: #e6f0f1;
+    --teal-tint-2: #f2f7f7;
+    --accent: #b3d3d6;
+    --ink: #102528;
+    --ink-soft: #2c4045;
+    --muted: #5a6e71;
+    --line: #d8e3e4;
+    --line-soft: #e8eeef;
+    --bg: #f5f8f8;
+    --card: #ffffff;
+    --shadow-sm: 0 1px 2px rgba(0, 61, 68, 0.04), 0 2px 6px rgba(0, 61, 68, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 61, 68, 0.08), 0 12px 32px rgba(0, 61, 68, 0.07);
+    --primary-grad: linear-gradient(135deg, #006d77 0%, #00525a 100%);
+
+    /* Condition accents */
+    --asd-border: #2a8a93; --asd-tint: #e6f0f1; --asd-deep: #1b6a72;
+    --adhd-border: #cc6b3a; --adhd-tint: #fbf0e9; --adhd-deep: #a85528;
+    --dys-border: #6d4a8a; --dys-tint: #efe9f4; --dys-deep: #523770;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .wrap { max-width: 960px; margin: 0 auto; padding: 2.5rem 1.25rem 2rem; }
+
+  /* ===== Header ===== */
+  .header { text-align: center; margin-bottom: 1.5rem; }
+  .header-eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--teal);
+    background: var(--teal-tint); padding: 0.4rem 0.85rem;
+    border-radius: 999px; margin-bottom: 0.85rem;
+  }
+  .header-eyebrow::before {
+    content: ""; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--teal);
+  }
+  .header h1 {
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight: 800; color: var(--teal-deep);
+    margin: 0 0 0.4rem; letter-spacing: -0.025em; line-height: 1.15;
+  }
+  .header p {
+    color: var(--muted); margin: 0 auto;
+    font-size: 0.95rem; max-width: 640px;
+  }
+
+  /* ===== Instructions ===== */
+  .instructions {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--teal);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .instructions p {
+    margin: 0; font-size: 0.92rem;
+    color: var(--ink-soft); line-height: 1.6;
+  }
+  .instructions p + p { margin-top: 0.5rem; }
+  .instructions strong { color: var(--teal-deep); }
+
+  /* ===== Condition selector ===== */
+  .selector {
+    margin-bottom: 1.5rem;
+  }
+  .selector-label {
+    display: block;
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--ink-soft);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .condition-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.7rem;
+  }
+  @media (max-width: 640px) { .condition-tabs { grid-template-columns: 1fr; } }
+
+  .tab-card {
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.1s ease, box-shadow 0.18s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .tab-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: var(--muted);
+    transition: background-color 0.18s ease;
+  }
+  .tab-card[data-condition="asd"]::before  { background: var(--asd-border); }
+  .tab-card[data-condition="adhd"]::before { background: var(--adhd-border); }
+  .tab-card[data-condition="dys"]::before  { background: var(--dys-border); }
+
+  .tab-card:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--accent);
+  }
+  .tab-card:focus-visible {
+    outline: 2px solid var(--teal); outline-offset: 2px;
+  }
+  .tab-card.is-active[data-condition="asd"]  { border-color: var(--asd-border);  background: var(--asd-tint); }
+  .tab-card.is-active[data-condition="adhd"] { border-color: var(--adhd-border); background: var(--adhd-tint); }
+  .tab-card.is-active[data-condition="dys"]  { border-color: var(--dys-border);  background: var(--dys-tint); }
+
+  .tab-title {
+    font-size: 1rem; font-weight: 700;
+    color: var(--teal-deep);
+    margin: 0.4rem 0 0.1rem;
+  }
+  .tab-sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin: 0;
+  }
+  .tab-progress {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.25rem;
+  }
+  .tab-progress-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--line-soft);
+    transition: background-color 0.2s ease;
+  }
+  .tab-progress-dot.is-filled {
+    background: var(--teal);
+  }
+  .tab-card[data-condition="asd"].is-active .tab-progress-dot.is-filled  { background: var(--asd-border); }
+  .tab-card[data-condition="adhd"].is-active .tab-progress-dot.is-filled { background: var(--adhd-border); }
+  .tab-card[data-condition="dys"].is-active .tab-progress-dot.is-filled  { background: var(--dys-border); }
+
+  /* ===== Condition panel ===== */
+  .panel {
+    display: none;
+    background: var(--card);
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    animation: fadeIn 0.28s ease;
+  }
+  .panel.is-active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel-header {
+    padding: 1.1rem 1.5rem;
+    border-bottom: 2px solid var(--line);
+    background: var(--teal-tint-2);
+  }
+  .panel[data-condition="asd"] .panel-header  { background: var(--asd-tint);  border-bottom-color: var(--asd-border); }
+  .panel[data-condition="adhd"] .panel-header { background: var(--adhd-tint); border-bottom-color: var(--adhd-border); }
+  .panel[data-condition="dys"] .panel-header  { background: var(--dys-tint);  border-bottom-color: var(--dys-border); }
+
+  .panel-title {
+    font-size: 1.25rem; font-weight: 700;
+    color: var(--teal-deep); margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .panel-body { padding: 1.5rem; }
+  @media (max-width: 540px) { .panel-body { padding: 1.1rem; } }
+
+  /* Section: Resources (read-only) */
+  .section { margin-bottom: 1.5rem; }
+  .section:last-child { margin-bottom: 0; }
+
+  .section-label {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin: 0 0 0.55rem;
+  }
+  .section-label .badge {
+    display: inline-block;
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    background: var(--teal);
+    color: #fff;
+    font-size: 0.65rem; font-weight: 700;
+    text-align: center;
+    line-height: 18px;
+  }
+  .panel[data-condition="asd"] .section-label .badge  { background: var(--asd-border); }
+  .panel[data-condition="adhd"] .section-label .badge { background: var(--adhd-border); }
+  .panel[data-condition="dys"] .section-label .badge  { background: var(--dys-border); }
+
+  .resources-block {
+    background: var(--teal-tint-2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--teal);
+    border-radius: 8px;
+    padding: 0.85rem 1.1rem;
+  }
+  .panel[data-condition="asd"] .resources-block  { border-left-color: var(--asd-border);  background: var(--asd-tint); }
+  .panel[data-condition="adhd"] .resources-block { border-left-color: var(--adhd-border); background: var(--adhd-tint); }
+  .panel[data-condition="dys"] .resources-block  { border-left-color: var(--dys-border);  background: var(--dys-tint); }
+
+  .resources-block ul {
+    margin: 0; padding: 0 0 0 1.15rem;
+    display: flex; flex-direction: column; gap: 0.45rem;
+  }
+  .resources-block li {
+    font-size: 0.9rem; line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .resources-block li::marker { color: var(--teal); }
+  .panel[data-condition="asd"] .resources-block li::marker  { color: var(--asd-deep); }
+  .panel[data-condition="adhd"] .resources-block li::marker { color: var(--adhd-deep); }
+  .panel[data-condition="dys"] .resources-block li::marker  { color: var(--dys-deep); }
+
+  .resources-block a {
+    color: var(--teal-deep);
+    font-weight: 600;
+    text-decoration: underline;
+  }
+  .resources-block a:hover { color: var(--teal); }
+
+  /* Fillable fields */
+  .fill-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  @media (max-width: 720px) { .fill-grid { grid-template-columns: 1fr; } }
+
+  .fill-field { margin: 0; }
+  .fill-label {
+    display: block;
+    font-size: 0.88rem; font-weight: 700;
+    color: var(--teal-deep);
+    margin: 0 0 0.3rem;
+  }
+  .fill-hint {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin: 0 0 0.4rem;
+    font-style: italic;
+    line-height: 1.45;
+  }
+  .field-textarea {
+    width: 100%;
+    min-height: 120px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.9rem;
+    font-family: inherit;
+    font-size: 0.92rem;
+    color: var(--ink);
+    background: var(--card);
+    resize: vertical;
+    line-height: 1.55;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field-textarea:focus {
+    outline: none; border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(0, 109, 119, 0.15);
+  }
+
+  /* ===== Actions ===== */
+  .actions {
+    display: flex; gap: 0.75rem;
+    margin-top: 1.5rem; flex-wrap: wrap;
+  }
+  .btn {
+    font-family: inherit; font-size: 0.93rem;
+    font-weight: 600;
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 0.75rem 1.2rem; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--card); color: var(--ink);
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  }
+  .btn:hover { background: var(--line-soft); }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .btn svg {
+    width: 16px; height: 16px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .btn-pdf {
+    background: var(--primary-grad);
+    color: #fff; border: 0;
+    box-shadow: 0 4px 12px rgba(0, 109, 119, 0.22);
+  }
+  .btn-pdf:hover {
+    background: linear-gradient(135deg, #00525a 0%, #003d44 100%);
+  }
+  .actions-note {
+    font-size: 0.78rem; color: var(--muted);
+    margin: 0.6rem 0 0; font-style: italic;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  @media (max-width: 540px) {
+    .wrap { padding: 1.5rem 1rem 1.75rem; }
+    .actions { flex-direction: column; }
+    .btn-pdf { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <span class="header-eyebrow">Group Activity</span>
+    <h1>Understanding &amp; Teaching Neurodivergent Students</h1>
+  </header>
+
+  <!-- ===== Condition selector ===== -->
+  <div class="selector">
+    <span class="selector-label">Choose a neurodivergent condition</span>
+    <div class="condition-tabs" role="tablist">
+      <button class="tab-card is-active" type="button" data-condition="asd" role="tab" aria-selected="true">
+        <h2 class="tab-title">Autism Spectrum Disorder</h2>
+        <p class="tab-sub">ASD</p>
+        <div class="tab-progress" data-progress="asd">
+          <span class="tab-progress-dot"></span>
+          <span class="tab-progress-dot"></span>
+          <span class="tab-progress-dot"></span>
+          <span class="tab-progress-dot"></span>
+        </div>
+      </button>
+      <button class="tab-card" type="button" data-condition="adhd" role="tab" aria-selected="false">
+        <h2 class="tab-title">ADHD</h2>
+        <p class="tab-sub">Attention-Deficit/Hyperactivity Disorder</p>
+        <div class="tab-progress" data-progress="adhd">
+          <span class="tab-progress-dot"></span>
+          <span class="tab-progress-dot"></span>
+          <span class="tab-progress-dot"></span>
+          <span class="tab-progress-dot"></span>
+        </div>
+      </button>
+      <button class="tab-card" type="button" data-condition="dys" role="tab" aria-selected="false">
+        <h2 class="tab-title">Dyslexia</h2>
+        <p class="tab-sub">Reading-based learning difference</p>
+        <div class="tab-progress" data-progress="dys">
+          <span class="tab-progress-dot"></span>
+          <span class="tab-progress-dot"></span>
+          <span class="tab-progress-dot"></span>
+          <span class="tab-progress-dot"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== ASD Panel ===== -->
+  <section class="panel is-active" data-condition="asd" role="tabpanel">
+    <div class="panel-header">
+      <h2 class="panel-title">Autism Spectrum Disorder</h2>
+    </div>
+    <div class="panel-body">
+
+      <div class="section">
+        <p class="section-label"><span class="badge">R</span>Resources</p>
+        <div class="resources-block">
+          <ul>
+            <li>Autism Spectrum Australia (Aspect): <a href="https://www.autism.org.au/" target="_blank" rel="noopener">[Access Here]</a></li>
+            <li>(2020) Autism spectrum disorder: definition, epidemiology, causes, and clinical evaluation. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7082249/" target="_blank" rel="noopener">[Access Here]</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="fill-grid">
+          <div class="fill-field">
+            <label class="fill-label" for="asd-legal">Legal and Ethical Considerations</label>
+            <span class="fill-hint">What legal frameworks, rights, and ethical responsibilities apply when supporting students with ASD?</span>
+            <textarea class="field-textarea" id="asd-legal" data-field="asd-legal" placeholder="Add your group's findings here..."></textarea>
+          </div>
+          <div class="fill-field">
+            <label class="fill-label" for="asd-strategies">Effective Classroom Strategies and Supports</label>
+            <span class="fill-hint">What evidence-informed teaching practices and classroom supports work well for students with ASD?</span>
+            <textarea class="field-textarea" id="asd-strategies" data-field="asd-strategies" placeholder="Add your group's findings here..."></textarea>
+          </div>
+          <div class="fill-field">
+            <label class="fill-label" for="asd-communication">Communication Techniques and Tools</label>
+            <span class="fill-hint">What communication approaches or tools best support students with ASD?</span>
+            <textarea class="field-textarea" id="asd-communication" data-field="asd-communication" placeholder="Add your group's findings here..."></textarea>
+          </div>
+          <div class="fill-field">
+            <label class="fill-label" for="asd-inclusion">Promoting Social Inclusion and Peer Support</label>
+            <span class="fill-hint">How can teachers foster peer connection and social inclusion for students with ASD?</span>
+            <textarea class="field-textarea" id="asd-inclusion" data-field="asd-inclusion" placeholder="Add your group's findings here..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-pdf" type="button" data-export="asd">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
+          Export ASD Row (PDF)
+        </button>
+        <button class="btn" type="button" data-reset="asd">
+          <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Reset ASD
+        </button>
+      </div>
+      <p class="actions-note">Save the PDF and post it in the ASD column of your class Padlet.</p>
+
+    </div>
+  </section>
+
+  <!-- ===== ADHD Panel ===== -->
+  <section class="panel" data-condition="adhd" role="tabpanel">
+    <div class="panel-header">
+      <h2 class="panel-title">ADHD</h2>
+    </div>
+    <div class="panel-body">
+
+      <div class="section">
+        <p class="section-label"><span class="badge">R</span>Resources</p>
+        <div class="resources-block">
+          <ul>
+            <li>CHADD (Children and Adults with ADHD): <a href="https://chadd.org/" target="_blank" rel="noopener">[Access Here]</a></li>
+            <li>DuPaul, G. J., Weyandt, L. L., &amp; Janusis, G. M. (2011). ADHD in the Classroom: Effective Intervention Strategies. <em>Theory into Practice, 50</em>(1), 35&ndash;42. <a href="https://doi.org/10.1080/00405841.2011.534935" target="_blank" rel="noopener">https://doi.org/10.1080/00405841.2011.534935</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="fill-grid">
+          <div class="fill-field">
+            <label class="fill-label" for="adhd-legal">Legal and Ethical Considerations</label>
+            <span class="fill-hint">What legal frameworks, rights, and ethical responsibilities apply when supporting students with ADHD?</span>
+            <textarea class="field-textarea" id="adhd-legal" data-field="adhd-legal" placeholder="Add your group's findings here..."></textarea>
+          </div>
+          <div class="fill-field">
+            <label class="fill-label" for="adhd-strategies">Effective Classroom Strategies and Supports</label>
+            <span class="fill-hint">What evidence-informed teaching practices and classroom supports work well for students with ADHD?</span>
+            <textarea class="field-textarea" id="adhd-strategies" data-field="adhd-strategies" placeholder="Add your group's findings here..."></textarea>
+          </div>
+          <div class="fill-field">
+            <label class="fill-label" for="adhd-communication">Communication Techniques and Tools</label>
+            <span class="fill-hint">What communication approaches or tools best support students with ADHD?</span>
+            <textarea class="field-textarea" id="adhd-communication" data-field="adhd-communication" placeholder="Add your group's findings here..."></textarea>
+          </div>
+          <div class="fill-field">
+            <label class="fill-label" for="adhd-inclusion">Promoting Social Inclusion and Peer Support</label>
+            <span class="fill-hint">How can teachers foster peer connection and social inclusion for students with ADHD?</span>
+            <textarea class="field-textarea" id="adhd-inclusion" data-field="adhd-inclusion" placeholder="Add your group's findings here..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-pdf" type="button" data-export="adhd">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
+          Export ADHD Row (PDF)
+        </button>
+        <button class="btn" type="button" data-reset="adhd">
+          <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Reset ADHD
+        </button>
+      </div>
+      <p class="actions-note">Save the PDF and post it in the ADHD column of your class Padlet.</p>
+
+    </div>
+  </section>
+
+  <!-- ===== Dyslexia Panel ===== -->
+  <section class="panel" data-condition="dys" role="tabpanel">
+    <div class="panel-header">
+      <h2 class="panel-title">Dyslexia</h2>
+    </div>
+    <div class="panel-body">
+
+      <div class="section">
+        <p class="section-label"><span class="badge">R</span>Resources</p>
+        <div class="resources-block">
+          <ul>
+            <li>Dyslexia International: <a href="https://www.dyslexia-international.org/" target="_blank" rel="noopener">[Access Here]</a></li>
+            <li>Mayo Clinic: What is Dyslexia? <a href="https://www.mayoclinic.org/diseases-conditions/dyslexia/symptoms-causes/syc-20353552" target="_blank" rel="noopener">[Access Here]</a></li>
+            <li>Australian Dyslexia Association. What is Dyslexia? <a href="https://dyslexiaassociation.org.au/what-is-dyslexia/" target="_blank" rel="noopener">[Access Here]</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="fill-grid">
+          <div class="fill-field">
+            <label class="fill-label" for="dys-legal">Legal and Ethical Considerations</label>
+            <span class="fill-hint">What legal frameworks, rights, and ethical responsibilities apply when supporting students with dyslexia?</span>
+            <textarea class="field-textarea" id="dys-legal" data-field="dys-legal" placeholder="Add your group's findings here..."></textarea>
+          </div>
+          <div class="fill-field">
+            <label class="fill-label" for="dys-strategies">Effective Classroom Strategies and Supports</label>
+            <span class="fill-hint">What evidence-informed teaching practices and classroom supports work well for students with dyslexia?</span>
+            <textarea class="field-textarea" id="dys-strategies" data-field="dys-strategies" placeholder="Add your group's findings here..."></textarea>
+          </div>
+          <div class="fill-field">
+            <label class="fill-label" for="dys-communication">Communication Techniques and Tools</label>
+            <span class="fill-hint">What communication approaches or tools best support students with dyslexia?</span>
+            <textarea class="field-textarea" id="dys-communication" data-field="dys-communication" placeholder="Add your group's findings here..."></textarea>
+          </div>
+          <div class="fill-field">
+            <label class="fill-label" for="dys-inclusion">Promoting Social Inclusion and Peer Support</label>
+            <span class="fill-hint">How can teachers foster peer connection and social inclusion for students with dyslexia?</span>
+            <textarea class="field-textarea" id="dys-inclusion" data-field="dys-inclusion" placeholder="Add your group's findings here..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-pdf" type="button" data-export="dys">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
+          Export Dyslexia Row (PDF)
+        </button>
+        <button class="btn" type="button" data-reset="dys">
+          <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          Reset Dyslexia
+        </button>
+      </div>
+      <p class="actions-note">Save the PDF and post it in the Dyslexia column of your class Padlet.</p>
+
+    </div>
+  </section>
+
+</div>
+
+<footer style="max-width: 960px; margin: 3rem auto 0; padding: 1.25rem 1.5rem 1rem; border-top: 1px solid #e2e8f0; text-align: center; font-size: 0.78rem; color: #94a3b8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au" style="color: #64748b; text-decoration: underline;">Hum-EdTT@curtin.edu.au</a>
+</footer>
+
+<script>
+  (function () {
+    const tabs = document.querySelectorAll('.tab-card');
+    const panels = document.querySelectorAll('.panel');
+
+    // Condition metadata for PDF export
+    const CONDITIONS = {
+      asd: {
+        title: 'Autism Spectrum Disorder',
+        resources: [
+          { text: 'Autism Spectrum Australia (Aspect)', linkText: '[Access Here]', url: 'https://www.autism.org.au/' },
+          { text: '(2020) Autism spectrum disorder: definition, epidemiology, causes, and clinical evaluation.', linkText: '[Access Here]', url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC7082249/' }
+        ]
+      },
+      adhd: {
+        title: 'ADHD',
+        resources: [
+          { text: 'CHADD (Children and Adults with ADHD)', linkText: '[Access Here]', url: 'https://chadd.org/' },
+          { text: 'DuPaul, G. J., Weyandt, L. L., & Janusis, G. M. (2011). ADHD in the Classroom: Effective Intervention Strategies. Theory into Practice, 50(1), 35–42.', linkText: 'https://doi.org/10.1080/00405841.2011.534935', url: 'https://doi.org/10.1080/00405841.2011.534935' }
+        ]
+      },
+      dys: {
+        title: 'Dyslexia',
+        resources: [
+          { text: 'Dyslexia International', linkText: '[Access Here]', url: 'https://www.dyslexia-international.org/' },
+          { text: 'Mayo Clinic: What is Dyslexia?', linkText: '[Access Here]', url: 'https://www.mayoclinic.org/diseases-conditions/dyslexia/symptoms-causes/syc-20353552' },
+          { text: 'Australian Dyslexia Association. What is Dyslexia?', linkText: '[Access Here]', url: 'https://dyslexiaassociation.org.au/what-is-dyslexia/' }
+        ]
+      }
+    };
+
+    const FIELDS = [
+      { key: 'legal', label: 'Legal and Ethical Considerations' },
+      { key: 'strategies', label: 'Effective Classroom Strategies and Supports' },
+      { key: 'communication', label: 'Communication Techniques and Tools' },
+      { key: 'inclusion', label: 'Promoting Social Inclusion and Peer Support' }
+    ];
+
+    function setActive(conditionKey) {
+      tabs.forEach(t => {
+        const isActive = t.dataset.condition === conditionKey;
+        t.classList.toggle('is-active', isActive);
+        t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+      panels.forEach(p => p.classList.toggle('is-active', p.dataset.condition === conditionKey));
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => setActive(tab.dataset.condition));
+    });
+
+    // Update progress dots when text areas change
+    function updateProgress() {
+      ['asd', 'adhd', 'dys'].forEach(cond => {
+        const progressEl = document.querySelector(`.tab-progress[data-progress="${cond}"]`);
+        if (!progressEl) return;
+        const dots = progressEl.querySelectorAll('.tab-progress-dot');
+        FIELDS.forEach((f, i) => {
+          const t = document.getElementById(`${cond}-${f.key}`);
+          const filled = t && t.value.trim().length > 0;
+          if (dots[i]) dots[i].classList.toggle('is-filled', filled);
+        });
+      });
+    }
+    document.querySelectorAll('textarea[data-field]').forEach(t => {
+      t.addEventListener('input', updateProgress);
+    });
+    updateProgress();
+
+    // Reset buttons
+    document.querySelectorAll('[data-reset]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cond = btn.dataset.reset;
+        const textareas = FIELDS.map(f => document.getElementById(`${cond}-${f.key}`));
+        const hasContent = textareas.some(t => t && t.value.trim());
+        if (!hasContent) return;
+        const labels = { asd: 'ASD', adhd: 'ADHD', dys: 'Dyslexia' };
+        if (!confirm(`Reset the ${labels[cond]} responses? This will clear all four fields.`)) return;
+        textareas.forEach(t => { if (t) t.value = ''; });
+        updateProgress();
+      });
+    });
+
+    // ===== PDF Export =====
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+    function nl2br(s) { return escapeHtml(s).replace(/\n/g, '<br>'); }
+
+    document.querySelectorAll('[data-export]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cond = btn.dataset.export;
+        const data = CONDITIONS[cond];
+        const date = new Date().toLocaleDateString('en-AU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+        // Build resources cell HTML
+        const resourcesHtml = `<ul style="margin:0; padding-left:14px;">${
+          data.resources.map(r => `<li>${escapeHtml(r.text)} <a href="${escapeHtml(r.url)}">${escapeHtml(r.linkText)}</a></li>`).join('')
+        }</ul>`;
+
+        // Build the four content cells
+        const cellHtml = FIELDS.map(f => {
+          const val = document.getElementById(`${cond}-${f.key}`).value.trim();
+          return val ? nl2br(val) : '<span class="p-empty">— not completed —</span>';
+        });
+
+        const printHtml = `<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<title>${escapeHtml(data.title)} — Neurodivergent Students Activity</title>
+<style>
+  @page { size: A4 landscape; margin: 0; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+  html, body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: #102528; margin: 0; padding: 12mm; background: #fff;
+    line-height: 1.4; font-size: 9.5pt;
+  }
+  .p-header { margin-bottom: 10px; }
+  .p-header h1 { font-size: 14pt; font-weight: 800; margin: 0 0 3px; color: #003d44; letter-spacing: -0.02em; }
+  .p-header .p-sub { color: #5a6e71; margin: 0; font-size: 8.5pt; }
+
+  .p-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-top: 8px;
+  }
+  .p-table th {
+    background: #e6f0f1;
+    color: #003d44;
+    font-weight: 700;
+    font-size: 8.5pt;
+    padding: 6px 8px;
+    text-align: left;
+    border: 1px solid #d8e3e4;
+    vertical-align: top;
+  }
+  .p-table td {
+    border: 1px solid #d8e3e4;
+    padding: 7px 9px;
+    vertical-align: top;
+    font-size: 8.5pt;
+    line-height: 1.45;
+    word-wrap: break-word;
+  }
+  .p-table .col-condition { width: 11%; font-weight: 600; background: #f5f8f8; }
+  .p-table .col-resources { width: 18%; }
+  .p-table .col-content { width: 17.75%; }
+  .p-table ul { margin: 0; padding-left: 14px; }
+  .p-table li { margin-bottom: 3px; }
+  .p-table li:last-child { margin-bottom: 0; }
+  .p-table a { color: #006d77; text-decoration: underline; }
+  .p-empty { color: #94a3b8; font-style: italic; }
+
+  .p-footer {
+    margin-top: 14px;
+    padding-top: 8px;
+    border-top: 1px solid #e8eeef;
+    font-size: 7.5pt; color: #94a3b8;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <header class="p-header">
+    <h1>Understanding &amp; Teaching Neurodivergent Students</h1>
+    <p class="p-sub">${escapeHtml(data.title)} — Completed ${escapeHtml(date)}</p>
+  </header>
+
+  <table class="p-table">
+    <thead>
+      <tr>
+        <th class="col-condition">Neurodivergent condition</th>
+        <th class="col-resources">Resources</th>
+        <th class="col-content">Legal and Ethical Considerations</th>
+        <th class="col-content">Effective Classroom Strategies and Supports</th>
+        <th class="col-content">Communication Techniques and Tools</th>
+        <th class="col-content">Promoting Social Inclusion and Peer Support</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-condition">${escapeHtml(data.title)}</td>
+        <td>${resourcesHtml}</td>
+        <td>${cellHtml[0]}</td>
+        <td>${cellHtml[1]}</td>
+        <td>${cellHtml[2]}</td>
+        <td>${cellHtml[3]}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="p-footer">Completed via the Understanding &amp; Teaching Neurodivergent Students activity.</p>
+
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() { window.print(); }, 150);
+    });
+  <\/script>
+</body>
+</html>`;
+
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+          alert('Please allow pop-ups to generate the PDF record.');
+          return;
+        }
+        printWindow.document.open();
+        printWindow.document.write(printHtml);
+        printWindow.document.close();
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
