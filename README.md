@@ -20,7 +20,7 @@ All activities are hosted via GitHub Pages and can be embedded in Blackboard, Ca
 | **Reflective Checklist (SMART Goal Sequence)** | Tabbed reflective checklist across three parts (SMART Criteria, ACARA Alignment, Pedagogical Reflection). Students tick items as they confirm them and optionally save a PDF completion record. | [Open](https://hum-edtt.github.io/soe-activities/professional-experience/reflective-checklist.html) |
 | **Rotation Activity Review** | Interactive eWorksheet for reviewing the Spoons and Heat rotation stations activity. Seven sections with Yes/Somewhat/No ratings plus open responses. Save a PDF record of completed responses. | [Open](https://hum-edtt.github.io/soe-activities/professional-experience/rotation-activity-review.html) |
 | **Teaching Strategy Review** | Two-column reference of 20 instructional and collaborative teaching strategies. Click any strategy to expand its description inline. | [Open](https://hum-edtt.github.io/soe-activities/professional-experience/teaching-strategies.html) |
-
+| Understanding & Teaching Neurodivergent Students | Group activity with three neurodivergent conditions (ASD, ADHD, Dyslexia). Students review provided resources and collaboratively complete four columns per condition, then export each as a PDF row. | [Open](https://hum-edtt.github.io/soe-activities/professional-experience/understanding-neurodivergent-students.html) |
 ---
 
 ## Contact
