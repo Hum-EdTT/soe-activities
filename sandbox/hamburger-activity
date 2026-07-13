@@ -708,11 +708,17 @@
   }
 
   function placeInSlot(ingredientId, index) {
-    // If ingredient is already in another slot, clear that slot first.
+    var originIndex = null;
     for (var i = 0; i < slots.length; i++) {
-      if (slots[i].filled === ingredientId) slots[i].filled = null;
+      if (slots[i].filled === ingredientId) { originIndex = i; break; }
     }
-    // If target slot is occupied, that ingredient returns to the bank.
+    var targetOccupant = (originIndex === index) ? null : slots[index].filled;
+
+    if (originIndex !== null && originIndex !== index) {
+      // Moved from another layer — swap the two ingredients rather than
+      // sending the target's occupant back to the bank.
+      slots[originIndex].filled = targetOccupant;
+    }
     slots[index].filled = ingredientId;
     refreshAll();
   }
