@@ -215,17 +215,16 @@
 
   <hr>
 
-  <!-- ============================================================
-       PROFESSIONAL EXPERIENCE
-       To add a new activity: copy any <tr>...</tr> block in this
-       tbody and update the three cells.
-       Colour square = subject area colour (edit .subject-swatch style).
-       ============================================================ -->
+<!--
+To add a new activity: copy any <tr>...</tr> block in this
+tbody and update the three cells. The activity count is
+calculated automatically.
+-->
   <details class="subject" open>
     <summary>
       <span class="subject-swatch" style="background: #006d77;"></span>
       <span class="subject-title">Professional Experience</span>
-      <span class="subject-count">12 activities</span>
+      <span class="subject-count"></span>
       <svg class="subject-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
     </summary>
     <div class="subject-body">
@@ -302,10 +301,7 @@
   <!-- ============================================================
        MATHEMATICS
        Example of a new subject area. Empty for now.
-       When activities are added, replace the .subject-empty block
-       with a full <table> block (see Professional Experience above).
-       Update the .subject-count to reflect the number of activities.
-       ============================================================ -->
+  -->
   <details class="subject">
     <summary>
       <span class="subject-swatch" style="background: #2E4AA6;"></span>
@@ -320,16 +316,8 @@
 
 
   <!-- ============================================================
-       TO ADD A NEW SUBJECT AREA
-       Copy an entire <details class="subject">...</details> block
-       above. Update:
-         - the swatch background colour (subject area primary)
-         - the subject-title text
-         - the subject-count
-         - the table body (or leave the empty state if starting fresh)
-       Include `open` on the <details> tag if you want it expanded
-       by default. Leave it off for collapsed by default.
-       ============================================================ -->
+       NEW SUBJECT AREAS HERE
+  -->
 
 
   <footer>
@@ -337,6 +325,29 @@
   </footer>
 
 </div>
+<script>
+  function updateActivityCounts() {
+    document.querySelectorAll('.subject').forEach((subject) => {
+      const countElement = subject.querySelector('.subject-count');
 
+      if (!countElement) {
+        return;
+      }
+
+      const tableBody = subject.querySelector('.subject-body table tbody');
+      const activityCount = tableBody ? tableBody.rows.length : 0;
+
+      if (activityCount === 0) {
+        countElement.textContent = 'No activities yet';
+      } else if (activityCount === 1) {
+        countElement.textContent = '1 activity';
+      } else {
+        countElement.textContent = `${activityCount} activities`;
+      }
+    });
+  }
+
+  updateActivityCounts();
+</script>
 </body>
 </html>
