@@ -47,16 +47,6 @@
     border-bottom: 1px solid var(--line);
   }
 
-  h2 {
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin: 2.75rem 0 1rem;
-    letter-spacing: -0.01em;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--line);
-  }
-
   p {
     color: var(--ink-soft);
     font-size: 0.95rem;
@@ -77,16 +67,95 @@
     margin: 2rem 0;
   }
 
-  /* Tables */
+  /* ===== Subject area accordions ===== */
+  .subject {
+    margin-top: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .subject[open] {
+    box-shadow: 0 1px 2px rgba(31, 41, 51, 0.03);
+  }
+  .subject summary {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem 1.1rem;
+    cursor: pointer;
+    list-style: none;
+    background: #fafbfc;
+    border-bottom: 1px solid transparent;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    user-select: none;
+  }
+  .subject summary:hover { background: #f4f6f8; }
+  .subject[open] summary { border-bottom-color: var(--line); background: #fafbfc; }
+  .subject summary::-webkit-details-marker { display: none; }
+  .subject summary:focus-visible {
+    outline: 2px solid var(--link);
+    outline-offset: -2px;
+  }
+
+  .subject-swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    flex-shrink: 0;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .subject-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    flex: 1;
+    margin: 0;
+  }
+
+  .subject-count {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    margin-right: 0.35rem;
+  }
+
+  .subject-chevron {
+    width: 14px;
+    height: 14px;
+    stroke: var(--muted);
+    fill: none;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .subject[open] .subject-chevron { transform: rotate(180deg); }
+
+  .subject-body {
+    padding: 0.25rem 0 0.25rem;
+  }
+  .subject-empty {
+    padding: 1.5rem 1.25rem;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  /* ===== Tables ===== */
   table {
     width: 100%;
     border-collapse: collapse;
-    margin: 0.5rem 0 1rem;
+    margin: 0;
     font-size: 0.92rem;
   }
   th, td {
     text-align: left;
-    padding: 0.7rem 0.85rem;
+    padding: 0.7rem 1.1rem;
     border-bottom: 1px solid var(--line);
     vertical-align: top;
   }
@@ -94,18 +163,16 @@
     background: var(--table-header-bg);
     font-weight: 700;
     color: var(--ink);
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     border-bottom: 1.5px solid var(--line);
   }
-  td {
-    color: var(--ink-soft);
-  }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: var(--line-soft); }
+  td { color: var(--ink-soft); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--line-soft); }
 
-  .col-name { width: 26%; color: var(--ink); }
+  .col-name { width: 26%; font-weight: 600; color: var(--ink); }
   .col-desc { width: 60%; }
   .col-link { width: 14%; text-align: center; white-space: nowrap; }
 
@@ -113,13 +180,12 @@
     /* Stack tables on narrow screens */
     table, thead, tbody, tr, th, td { display: block; }
     thead { display: none; }
-    tr {
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      margin-bottom: 0.85rem;
-      padding: 0.65rem 0.85rem;
+    tbody tr {
+      border-bottom: 1px solid var(--line);
+      padding: 0.85rem 1.1rem;
     }
-    tr:hover td { background: transparent; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover td { background: transparent; }
     td { border: none; padding: 0.25rem 0; }
     .col-name { font-size: 1rem; margin-bottom: 0.35rem; }
     .col-desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
@@ -151,104 +217,125 @@
 
   <!-- ============================================================
        PROFESSIONAL EXPERIENCE
-       To add a new activity: copy any <tr>...</tr> block below and
-       update the three cells. To add a new subject area: copy this
-       whole section (from <h2> down to </table>) and update.
+       To add a new activity: copy any <tr>...</tr> block in this
+       tbody and update the three cells.
+       Colour square = subject area colour (edit .subject-swatch style).
        ============================================================ -->
-  <h2>Professional Experience</h2>
-
-  <table>
-    <thead>
-      <tr>
-        <th class="col-name">Activity</th>
-        <th class="col-desc">Description</th>
-        <th class="col-link">Link</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="col-name">CMS Scenario: Managing Escalation</td>
-        <td class="col-desc">Five-stage scenario-based learning activity following a classroom escalation. Students reflect at each stage and save their reflections as a PDF.</td>
-        <td class="col-link"><a href="professional-experience/cms-scenario.html">Open</a></td>
-      </tr>
-      <tr>
-        <td class="col-name">Differentiation Elements</td>
-        <td class="col-desc">Interactive infographic showing how classroom elements (Content, Process, Product, Learning Environment) connect to student characteristics (Readiness, Interests, Learning Profile). Hover or tap any element to highlight its connecting lines.</td>
-        <td class="col-link"><a href="professional-experience/differentiation-elements.html">Open</a></td>
-      </tr>
-      <tr>
-        <td class="col-name">Engaging with IEPs</td>
-        <td class="col-desc">Interactive document with three pathway IEPs (EAL/D, Disability, Trauma). Students review pre-filled IEPs and add their own differentiation strategies, then save as PDF.</td>
-        <td class="col-link"><a href="professional-experience/engaging-with-ieps.html">Open</a></td>
-      </tr>
-      <tr>
-        <td class="col-name">Gibbs' Reflective Cycle</td>
-        <td class="col-desc">Interactive cycle diagram of Gibbs' six stages of reflection. Click any stage to view its description and helpful reflection questions in a modal overlay.</td>
-        <td class="col-link"><a href="professional-experience/gibbs-reflective-cycle.html">Open</a></td>
-      </tr>
-      <tr>
-        <td class="col-name">Lesson Builder &mdash; Expert</td>
-        <td class="col-desc">Drag-and-drop lesson planning activity. Students place strategies into the correct sections of a lesson plan (Expert content level). Includes answer checking and PDF export.</td>
-        <td class="col-link"><a href="professional-experience/lesson-builder-expert.html">Open</a></td>
-      </tr>
-      <tr>
-        <td class="col-name">Lesson Builder &mdash; Novice</td>
-        <td class="col-desc">Drag-and-drop lesson planning activity. Students place strategies into the correct sections of a lesson plan (Novice content level). Includes answer checking and PDF export.</td>
-        <td class="col-link"><a href="professional-experience/lesson-builder-novice.html">Open</a></td>
-      </tr>
-      <tr>
-        <td class="col-name">Parent-Teacher Conference Self-Assessment</td>
-        <td class="col-desc">Self-assessment rubric for the recorded parent-teacher conference roleplay activity. Students score themselves against four criteria and export a PDF to attach to their Padlet post.</td>
-        <td class="col-link"><a href="professional-experience/parent-conference-rubric.html">Open</a></td>
-      </tr>
-      <tr>
-        <td class="col-name">Reflective Checklist (SMART Goal Sequence)</td>
-        <td class="col-desc">Tabbed reflective checklist across three parts (SMART Criteria, ACARA Alignment, Pedagogical Reflection). Students tick items as they confirm them and optionally save a PDF completion record.</td>
-        <td class="col-link"><a href="professional-experience/reflective-checklist.html">Open</a></td>
-      </tr>
-      <tr>
-        <td class="col-name">Rotation Activity Review</td>
-        <td class="col-desc">Interactive eWorksheet for reviewing the Spoons and Heat rotation stations activity. Seven sections with Yes/Somewhat/No ratings plus open responses. Save a PDF record of completed responses.</td>
-        <td class="col-link"><a href="professional-experience/rotation-activity-review.html">Open</a></td>
-      </tr>
-      <tr>
-        <td class="col-name">Teaching Strategy Review</td>
-        <td class="col-desc">Two-column reference of 20 instructional and collaborative teaching strategies. Click any strategy to expand its description inline.</td>
-        <td class="col-link"><a href="professional-experience/teaching-strategies.html">Open</a></td>
-      </tr>
-      <tr>
-        <td class="col-name">Understanding &amp; Teaching Neurodivergent Students</td>
-        <td class="col-desc">Group activity with three neurodivergent conditions (ASD, ADHD, Dyslexia). Students review provided resources and collaboratively complete four columns per condition, then export each as a PDF row.</td>
-        <td class="col-link"><a href="professional-experience/understanding-neurodivergent-students.html">Open</a></td>
-      </tr>
-    </tbody>
-  </table>
+  <details class="subject" open>
+    <summary>
+      <span class="subject-swatch" style="background: #006d77;"></span>
+      <span class="subject-title">Professional Experience</span>
+      <span class="subject-count">12 activities</span>
+      <svg class="subject-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </summary>
+    <div class="subject-body">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-name">Activity</th>
+            <th class="col-desc">Description</th>
+            <th class="col-link">Link</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-name">CMS Scenario: Managing Escalation</td>
+            <td class="col-desc">Five-stage scenario-based learning activity following a classroom escalation. Students reflect at each stage and save their reflections as a PDF.</td>
+            <td class="col-link"><a href="professional-experience/cms-scenario.html">Open</a></td>
+          </tr>
+          <tr>
+            <td class="col-name">Differentiation Elements</td>
+            <td class="col-desc">Interactive infographic showing how classroom elements (Content, Process, Product, Learning Environment) connect to student characteristics (Readiness, Interests, Learning Profile). Hover or tap any element to highlight its connecting lines.</td>
+            <td class="col-link"><a href="professional-experience/differentiation-elements.html">Open</a></td>
+          </tr>
+          <tr>
+            <td class="col-name">Engaging with IEPs</td>
+            <td class="col-desc">Interactive document with three pathway IEPs (EAL/D, Disability, Trauma). Students review pre-filled IEPs and add their own differentiation strategies, then save as PDF.</td>
+            <td class="col-link"><a href="professional-experience/engaging-with-ieps.html">Open</a></td>
+          </tr>
+          <tr>
+            <td class="col-name">Gibbs' Reflective Cycle</td>
+            <td class="col-desc">Interactive cycle diagram of Gibbs' six stages of reflection. Click any stage to view its description and helpful reflection questions in a modal overlay.</td>
+            <td class="col-link"><a href="professional-experience/gibbs-reflective-cycle.html">Open</a></td>
+          </tr>
+          <tr>
+            <td class="col-name">Build a Hamburger</td>
+            <td class="col-desc">Drag-and-drop sequencing activity. Students build the perfect burger by stacking ingredients in the correct order.</td>
+            <td class="col-link"><a href="professional-experience/hamburger-activity.html">Open</a></td>
+          </tr>
+          <tr>
+            <td class="col-name">Lesson Builder &mdash; Expert</td>
+            <td class="col-desc">Drag-and-drop lesson planning activity. Students place strategies into the correct sections of a lesson plan (Expert content level). Includes answer checking and PDF export.</td>
+            <td class="col-link"><a href="professional-experience/lesson-builder-expert.html">Open</a></td>
+          </tr>
+          <tr>
+            <td class="col-name">Lesson Builder &mdash; Novice</td>
+            <td class="col-desc">Drag-and-drop lesson planning activity. Students place strategies into the correct sections of a lesson plan (Novice content level). Includes answer checking and PDF export.</td>
+            <td class="col-link"><a href="professional-experience/lesson-builder-novice.html">Open</a></td>
+          </tr>
+          <tr>
+            <td class="col-name">Parent-Teacher Conference Self-Assessment</td>
+            <td class="col-desc">Self-assessment rubric for the recorded parent-teacher conference roleplay activity. Students score themselves against four criteria and export a PDF to attach to their Padlet post.</td>
+            <td class="col-link"><a href="professional-experience/parent-conference-rubric.html">Open</a></td>
+          </tr>
+          <tr>
+            <td class="col-name">Reflective Checklist (SMART Goal Sequence)</td>
+            <td class="col-desc">Tabbed reflective checklist across three parts (SMART Criteria, ACARA Alignment, Pedagogical Reflection). Students tick items as they confirm them and optionally save a PDF completion record.</td>
+            <td class="col-link"><a href="professional-experience/reflective-checklist.html">Open</a></td>
+          </tr>
+          <tr>
+            <td class="col-name">Rotation Activity Review</td>
+            <td class="col-desc">Interactive eWorksheet for reviewing the Spoons and Heat rotation stations activity. Seven sections with Yes/Somewhat/No ratings plus open responses. Save a PDF record of completed responses.</td>
+            <td class="col-link"><a href="professional-experience/rotation-activity-review.html">Open</a></td>
+          </tr>
+          <tr>
+            <td class="col-name">Teaching Strategy Review</td>
+            <td class="col-desc">Two-column reference of 20 instructional and collaborative teaching strategies. Click any strategy to expand its description inline.</td>
+            <td class="col-link"><a href="professional-experience/teaching-strategies.html">Open</a></td>
+          </tr>
+          <tr>
+            <td class="col-name">Understanding &amp; Teaching Neurodivergent Students</td>
+            <td class="col-desc">Group activity with three neurodivergent conditions (ASD, ADHD, Dyslexia). Students review provided resources and collaboratively complete four columns per condition, then export each as a PDF row.</td>
+            <td class="col-link"><a href="professional-experience/understanding-neurodivergent-students.html">Open</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
 
 
   <!-- ============================================================
-       FUTURE SUBJECT AREA TEMPLATE
-       Copy this block, uncomment, rename, and populate.
+       MATHEMATICS
+       Example of a new subject area. Empty for now.
+       When activities are added, replace the .subject-empty block
+       with a full <table> block (see Professional Experience above).
+       Update the .subject-count to reflect the number of activities.
        ============================================================ -->
-  <!--
-  <h2>[Subject Area Name]</h2>
+  <details class="subject">
+    <summary>
+      <span class="subject-swatch" style="background: #2E4AA6;"></span>
+      <span class="subject-title">Mathematics</span>
+      <span class="subject-count">No activities yet</span>
+      <svg class="subject-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </summary>
+    <div class="subject-body">
+      <div class="subject-empty">No activities have been added for this subject area yet.</div>
+    </div>
+  </details>
 
-  <table>
-    <thead>
-      <tr>
-        <th class="col-name">Activity</th>
-        <th class="col-desc">Description</th>
-        <th class="col-link">Link</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="col-name">Activity name here</td>
-        <td class="col-desc">Description here.</td>
-        <td class="col-link"><a href="[folder-name]/[filename].html">Open</a></td>
-      </tr>
-    </tbody>
-  </table>
-  -->
+
+  <!-- ============================================================
+       TO ADD A NEW SUBJECT AREA
+       Copy an entire <details class="subject">...</details> block
+       above. Update:
+         - the swatch background colour (subject area primary)
+         - the subject-title text
+         - the subject-count
+         - the table body (or leave the empty state if starting fresh)
+       Include `open` on the <details> tag if you want it expanded
+       by default. Leave it off for collapsed by default.
+       ============================================================ -->
+
 
   <footer>
     <p>Created by the School of Education's EdTech Team. For enquiries or to request a new activity, contact <a href="mailto:Hum-EdTT@curtin.edu.au">Hum-EdTT@curtin.edu.au</a>.</p>
