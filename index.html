@@ -172,7 +172,8 @@
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover td { background: var(--line-soft); }
 
-  .col-name { width: 26%; color: var(--ink); }
+  .col-name-h { width: 26%; color: var(--ink); }
+  .col-name { width: 26%; font-weight:600; color: var(--ink); }
   .col-desc { width: 60%; }
   .col-link { width: 14%; text-align: center; white-space: nowrap; }
 
@@ -231,7 +232,7 @@ calculated automatically.
       <table>
         <thead>
           <tr>
-            <th class="col-name">Activity</th>
+            <th class="col-name-h">Activity</th>
             <th class="col-desc">Description</th>
             <th class="col-link">Link</th>
           </tr>
@@ -306,7 +307,7 @@ calculated automatically.
     <summary>
       <span class="subject-swatch" style="background: #2E4AA6;"></span>
       <span class="subject-title">Mathematics</span>
-      <span class="subject-count">No activities yet</span>
+      <span class="subject-count"></span>
       <svg class="subject-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
     </summary>
     <div class="subject-body">
