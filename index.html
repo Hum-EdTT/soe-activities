@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOE Activities</title>
+<style>
+  :root {
+    --ink: #1f2933;
+    --ink-soft: #3e4c59;
+    --muted: #7b8794;
+    --line: #e4e7eb;
+    --line-soft: #f0f2f5;
+    --bg: #ffffff;
+    --card: #ffffff;
+    --link: #2a4c66;
+    --link-hover: #1a3549;
+    --table-header-bg: #f5f7fa;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 3rem;
+  }
+
+  h1 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 1rem;
+    letter-spacing: -0.015em;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 2.75rem 0 1rem;
+    letter-spacing: -0.01em;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  p {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    margin: 0 0 1rem;
+    max-width: 72ch;
+  }
+
+  a {
+    color: var(--link);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  a:hover { color: var(--link-hover); }
+
+  hr {
+    border: 0;
+    height: 1px;
+    background: var(--line);
+    margin: 2rem 0;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.5rem 0 1rem;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.7rem 0.85rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    background: var(--table-header-bg);
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1.5px solid var(--line);
+  }
+  td {
+    color: var(--ink-soft);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--line-soft); }
+
+  .col-name { width: 26%; font-weight: 600; color: var(--ink); }
+  .col-desc { width: 60%; }
+  .col-link { width: 14%; text-align: center; white-space: nowrap; }
+
+  @media (max-width: 720px) {
+    /* Stack tables on narrow screens */
+    table, thead, tbody, tr, th, td { display: block; }
+    thead { display: none; }
+    tr {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      margin-bottom: 0.85rem;
+      padding: 0.65rem 0.85rem;
+    }
+    tr:hover td { background: transparent; }
+    td { border: none; padding: 0.25rem 0; }
+    .col-name { font-size: 1rem; margin-bottom: 0.35rem; }
+    .col-desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .col-link { text-align: left; }
+    .col-name, .col-desc, .col-link { width: 100%; }
+  }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  footer p { margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <h1>SOE Activities</h1>
+
+  <p>A collection of interactive HTML activities built for the School of Education. Self-contained, embeddable components for use in an LMS or web platform across teaching and education units.</p>
+
+  <p>All activities are hosted via GitHub Pages and can be embedded in Blackboard, Canvas, or any platform that supports iframes. Each activity is a single HTML file with inline styles and scripts &mdash; no build step required.</p>
+
+  <hr>
+
+  <!-- ============================================================
+       PROFESSIONAL EXPERIENCE
+       To add a new activity: copy any <tr>...</tr> block below and
+       update the three cells. To add a new subject area: copy this
+       whole section (from <h2> down to </table>) and update.
+       ============================================================ -->
+  <h2>Professional Experience</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="col-name">Activity</th>
+        <th class="col-desc">Description</th>
+        <th class="col-link">Link</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-name">CMS Scenario: Managing Escalation</td>
+        <td class="col-desc">Five-stage scenario-based learning activity following a classroom escalation. Students reflect at each stage and save their reflections as a PDF.</td>
+        <td class="col-link"><a href="professional-experience/cms-scenario.html">Open</a></td>
+      </tr>
+      <tr>
+        <td class="col-name">Differentiation Elements</td>
+        <td class="col-desc">Interactive infographic showing how classroom elements (Content, Process, Product, Learning Environment) connect to student characteristics (Readiness, Interests, Learning Profile). Hover or tap any element to highlight its connecting lines.</td>
+        <td class="col-link"><a href="professional-experience/differentiation-elements.html">Open</a></td>
+      </tr>
+      <tr>
+        <td class="col-name">Engaging with IEPs</td>
+        <td class="col-desc">Interactive document with three pathway IEPs (EAL/D, Disability, Trauma). Students review pre-filled IEPs and add their own differentiation strategies, then save as PDF.</td>
+        <td class="col-link"><a href="professional-experience/engaging-with-ieps.html">Open</a></td>
+      </tr>
+      <tr>
+        <td class="col-name">Gibbs' Reflective Cycle</td>
+        <td class="col-desc">Interactive cycle diagram of Gibbs' six stages of reflection. Click any stage to view its description and helpful reflection questions in a modal overlay.</td>
+        <td class="col-link"><a href="professional-experience/gibbs-reflective-cycle.html">Open</a></td>
+      </tr>
+      <tr>
+        <td class="col-name">Build a Hamburger</td>
+        <td class="col-desc">Drag-and-drop sequencing activity. Students build the perfect burger by stacking ingredients in the correct order.</td>
+        <td class="col-link"><a href="professional-experience/hamburger-activity.html">Open</a></td>
+      </tr>
+      <tr>
+        <td class="col-name">Lesson Builder &mdash; Expert</td>
+        <td class="col-desc">Drag-and-drop lesson planning activity. Students place strategies into the correct sections of a lesson plan (Expert content level). Includes answer checking and PDF export.</td>
+        <td class="col-link"><a href="professional-experience/lesson-builder-expert.html">Open</a></td>
+      </tr>
+      <tr>
+        <td class="col-name">Lesson Builder &mdash; Novice</td>
+        <td class="col-desc">Drag-and-drop lesson planning activity. Students place strategies into the correct sections of a lesson plan (Novice content level). Includes answer checking and PDF export.</td>
+        <td class="col-link"><a href="professional-experience/lesson-builder-novice.html">Open</a></td>
+      </tr>
+      <tr>
+        <td class="col-name">Parent-Teacher Conference Self-Assessment</td>
+        <td class="col-desc">Self-assessment rubric for the recorded parent-teacher conference roleplay activity. Students score themselves against four criteria and export a PDF to attach to their Padlet post.</td>
+        <td class="col-link"><a href="professional-experience/parent-conference-rubric.html">Open</a></td>
+      </tr>
+      <tr>
+        <td class="col-name">Reflective Checklist (SMART Goal Sequence)</td>
+        <td class="col-desc">Tabbed reflective checklist across three parts (SMART Criteria, ACARA Alignment, Pedagogical Reflection). Students tick items as they confirm them and optionally save a PDF completion record.</td>
+        <td class="col-link"><a href="professional-experience/reflective-checklist.html">Open</a></td>
+      </tr>
+      <tr>
+        <td class="col-name">Rotation Activity Review</td>
+        <td class="col-desc">Interactive eWorksheet for reviewing the Spoons and Heat rotation stations activity. Seven sections with Yes/Somewhat/No ratings plus open responses. Save a PDF record of completed responses.</td>
+        <td class="col-link"><a href="professional-experience/rotation-activity-review.html">Open</a></td>
+      </tr>
+      <tr>
+        <td class="col-name">Teaching Strategy Review</td>
+        <td class="col-desc">Two-column reference of 20 instructional and collaborative teaching strategies. Click any strategy to expand its description inline.</td>
+        <td class="col-link"><a href="professional-experience/teaching-strategies.html">Open</a></td>
+      </tr>
+      <tr>
+        <td class="col-name">Understanding &amp; Teaching Neurodivergent Students</td>
+        <td class="col-desc">Group activity with three neurodivergent conditions (ASD, ADHD, Dyslexia). Students review provided resources and collaboratively complete four columns per condition, then export each as a PDF row.</td>
+        <td class="col-link"><a href="professional-experience/understanding-neurodivergent-students.html">Open</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <!-- ============================================================
+       FUTURE SUBJECT AREA TEMPLATE
+       Copy this block, uncomment, rename, and populate.
+       ============================================================ -->
+  <!--
+  <h2>[Subject Area Name]</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="col-name">Activity</th>
+        <th class="col-desc">Description</th>
+        <th class="col-link">Link</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-name">Activity name here</td>
+        <td class="col-desc">Description here.</td>
+        <td class="col-link"><a href="[folder-name]/[filename].html">Open</a></td>
+      </tr>
+    </tbody>
+  </table>
+  -->
+
+  <footer>
+    <p>Created by the School of Education's EdTech Team. For enquiries or to request a new activity, contact <a href="mailto:Hum-EdTT@curtin.edu.au">Hum-EdTT@curtin.edu.au</a>.</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
