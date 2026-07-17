@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Process Diagram Builder</title>
+<style>
+  :root {
+    --hpe: #087C57;
+    --hpe-dark: #07694a;
+    --hpe-deep: #055139;
+    --hpe-tint: #e6f1ee;
+    --hpe-tint-2: #f2f7f5;
+    --accent: #b5d8cd;
+    --ink: #102528;
+    --ink-soft: #2c4045;
+    --muted: #5a6e71;
+    --line: #d8e3e4;
+    --line-soft: #e8eeef;
+    --bg: #f5f8f8;
+    --card: #ffffff;
+    --shadow-sm: 0 1px 2px rgba(5, 81, 57, 0.04), 0 2px 6px rgba(5, 81, 57, 0.05);
+    --shadow-md: 0 4px 12px rgba(5, 81, 57, 0.08), 0 12px 32px rgba(5, 81, 57, 0.07);
+    --primary-grad: linear-gradient(135deg, #087C57 0%, #07694a 100%);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.55;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.25rem 1.5rem 3rem;
+  }
+
+  /* Header */
+  .header { margin-bottom: 1.75rem; }
+  .header-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--hpe-tint);
+    color: var(--hpe-deep);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.75rem;
+  }
+  .header-eyebrow::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--hpe);
+    display: inline-block;
+  }
+  h1 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    margin: 0 0 0.5rem;
+    color: var(--ink);
+  }
+  .header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.98rem;
+    max-width: 62ch;
+  }
+
+  /* Cards / sections */
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .panel h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+    color: var(--ink);
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .field-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 0.35rem;
+  }
+
+  input[type="text"], input[type="date"], textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.55rem 0.7rem;
+    resize: vertical;
+  }
+  input[type="text"]:focus, input[type="date"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--hpe);
+    box-shadow: 0 0 0 3px rgba(8, 124, 87, 0.15);
+  }
+  input::placeholder, textarea::placeholder { color: #a8b6b8; }
+
+  /* Diagram track */
+  .track-scroller {
+    overflow-x: auto;
+    padding: 0.5rem 0.25rem 1.25rem;
+    margin: 0 -0.25rem;
+  }
+  .track {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    min-width: max-content;
+  }
+  .stage-card {
+    width: 240px;
+    flex: 0 0 auto;
+    background: var(--hpe-tint-2);
+    border: 1.5px solid var(--hpe);
+    border-radius: 12px;
+    padding: 0.9rem 1rem 1rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .stage-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .stage-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .stage-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+  }
+  .stage-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--primary-grad);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .move-btn, .remove-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.15rem 0.3rem;
+    border-radius: 6px;
+  }
+  .remove-btn { font-size: 1.15rem; }
+  .move-btn:hover { color: var(--hpe-deep); background: var(--hpe-tint); }
+  .remove-btn:hover { color: #b91c1c; background: #fef2f2; }
+  .move-btn:focus-visible, .remove-btn:focus-visible { outline: 2px solid var(--hpe); outline-offset: 1px; }
+  .move-btn[disabled] { opacity: 0.3; cursor: default; }
+  .move-btn[disabled]:hover { color: var(--muted); background: transparent; }
+  .remove-btn[disabled] { visibility: hidden; }
+
+  .stage-desc-input { min-height: 84px; font-size: 0.88rem; }
+  .diagram-desc-input { min-height: 64px; }
+
+  .arrow-connector {
+    flex: 0 0 auto;
+    width: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--hpe-dark);
+    font-size: 1.6rem;
+    font-weight: 700;
+    user-select: none;
+  }
+
+  .scroll-hint {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-style: italic;
+    margin: -0.5rem 0 0.75rem;
+  }
+
+  /* Actions */
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+  button.btn {
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 0.7rem 1.15rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  button.btn:focus-visible { outline: 2px solid var(--hpe-deep); outline-offset: 2px; }
+  .btn-primary {
+    background: var(--primary-grad);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(8, 124, 87, 0.22);
+  }
+  .btn-primary:hover { background: linear-gradient(135deg, #07694a 0%, #055139 100%); }
+  .btn-secondary {
+    background: var(--card);
+    border-color: var(--line);
+    color: var(--ink);
+  }
+  .btn-secondary:hover { background: var(--line-soft); }
+  .btn-danger-outline {
+    background: var(--card);
+    border-color: #f3c6c6;
+    color: #b91c1c;
+  }
+  .btn-danger-outline:hover { background: #fef2f2; }
+
+  .pdf-fallback-link {
+    font-size: 0.85rem;
+    color: var(--hpe-deep);
+    text-decoration: underline;
+  }
+  .pdf-fallback-link:hover { color: var(--hpe-dark); }
+
+  .session-note {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: var(--muted);
+    margin-top: 1rem;
+  }
+
+  footer {
+    max-width: 1100px;
+    margin: 3rem auto 0;
+    padding: 1.25rem 1.5rem 1rem;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+    font-size: 0.78rem;
+    color: #94a3b8;
+  }
+  footer a { color: #64748b; text-decoration: underline; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="header">
+    <span class="header-eyebrow">Process Diagram Builder</span>
+    <h1>Build a Sequence Diagram</h1>
+    <p>Create a step-by-step process diagram. Give each stage a title and description, then add, remove, or reorder stages as needed. Export your finished diagram as a PDF.</p>
+  </header>
+
+  <section class="panel">
+    <h2>Diagram Details</h2>
+    <div class="meta-grid">
+      <div>
+        <label class="field-label" for="diagram-title">Diagram title</label>
+        <input type="text" id="diagram-title" placeholder="e.g. Stages of the Games Sense Approach">
+      </div>
+      <div>
+        <label class="field-label" for="diagram-description">Description (optional)</label>
+        <textarea id="diagram-description" class="diagram-desc-input" placeholder="Add an optional description of what this diagram shows..."></textarea>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Diagram Stages</h2>
+    <div class="scroll-hint">Use the &larr; &rarr; buttons on a stage to reorder it. Scroll horizontally if the diagram is wider than your screen.</div>
+    <div class="track-scroller">
+      <div class="track" id="track"></div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn btn-secondary" id="add-stage-btn">+ Add Stage</button>
+      <button type="button" class="btn btn-danger-outline" id="reset-btn">Reset</button>
+      <button type="button" class="btn btn-primary" id="export-pdf-btn">Save as PDF</button>
+      <a href="#" id="pdf-fallback-link" class="pdf-fallback-link" target="_blank" rel="noopener" style="display:none;">Printable version didn't open? Click here to open it in a new tab</a>
+    </div>
+
+    <p class="session-note">Your work is not saved automatically and will be lost if you close or refresh this page. Use the button above to download a PDF record of your diagram.</p>
+  </section>
+
+</div>
+
+<footer>
+  Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au">Hum-EdTT@curtin.edu.au</a>
+</footer>
+
+<script>
+  const track = document.getElementById('track');
+  let stageCounter = 0;
+  const MIN_STAGES = 2;
+
+  function createArrow() {
+    const arrow = document.createElement('div');
+    arrow.className = 'arrow-connector';
+    arrow.setAttribute('aria-hidden', 'true');
+    arrow.textContent = '\u2192';
+    return arrow;
+  }
+
+  function createStageCard() {
+    stageCounter += 1;
+    const id = stageCounter;
+
+    const card = document.createElement('div');
+    card.className = 'stage-card';
+    card.setAttribute('data-stage-card', '');
+
+    const headerRow = document.createElement('div');
+    headerRow.className = 'stage-header';
+
+    const headerLeft = document.createElement('div');
+    headerLeft.className = 'stage-header-left';
+
+    const badge = document.createElement('span');
+    badge.className = 'stage-number';
+    badge.textContent = '1';
+
+    headerLeft.appendChild(badge);
+
+    const headerRight = document.createElement('div');
+    headerRight.className = 'stage-header-right';
+
+    const moveLeftBtn = document.createElement('button');
+    moveLeftBtn.type = 'button';
+    moveLeftBtn.className = 'move-btn';
+    moveLeftBtn.setAttribute('aria-label', 'Move this stage earlier');
+    moveLeftBtn.title = 'Move earlier';
+    moveLeftBtn.innerHTML = '&larr;';
+    moveLeftBtn.addEventListener('click', () => moveStage(card, -1));
+
+    const moveRightBtn = document.createElement('button');
+    moveRightBtn.type = 'button';
+    moveRightBtn.className = 'move-btn';
+    moveRightBtn.setAttribute('aria-label', 'Move this stage later');
+    moveRightBtn.title = 'Move later';
+    moveRightBtn.innerHTML = '&rarr;';
+    moveRightBtn.addEventListener('click', () => moveStage(card, 1));
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'remove-btn';
+    removeBtn.setAttribute('aria-label', 'Remove this stage');
+    removeBtn.title = 'Remove this stage';
+    removeBtn.innerHTML = '&times;';
+    removeBtn.addEventListener('click', () => removeStage(card));
+
+    headerRight.appendChild(moveLeftBtn);
+    headerRight.appendChild(moveRightBtn);
+    headerRight.appendChild(removeBtn);
+
+    headerRow.appendChild(headerLeft);
+    headerRow.appendChild(headerRight);
+
+    const titleLabel = document.createElement('label');
+    titleLabel.className = 'field-label';
+    titleLabel.setAttribute('for', 'title-' + id);
+    titleLabel.textContent = 'Title';
+
+    const titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.id = 'title-' + id;
+    titleInput.className = 'stage-title-input';
+    titleInput.placeholder = 'Stage title';
+
+    const descLabel = document.createElement('label');
+    descLabel.className = 'field-label';
+    descLabel.setAttribute('for', 'desc-' + id);
+    descLabel.textContent = 'Description';
+
+    const descInput = document.createElement('textarea');
+    descInput.id = 'desc-' + id;
+    descInput.className = 'stage-desc-input';
+    descInput.placeholder = 'Describe this stage...';
+
+    card.appendChild(headerRow);
+    card.appendChild(titleLabel);
+    card.appendChild(titleInput);
+    card.appendChild(descLabel);
+    card.appendChild(descInput);
+
+    return card;
+  }
+
+  function renumberStages() {
+    const cards = Array.from(track.querySelectorAll('.stage-card'));
+    cards.forEach((card, index) => {
+      card.querySelector('.stage-number').textContent = index + 1;
+      const [moveLeftBtn, moveRightBtn] = card.querySelectorAll('.move-btn');
+      moveLeftBtn.disabled = index === 0;
+      moveRightBtn.disabled = index === cards.length - 1;
+    });
+    updateRemoveButtons();
+  }
+
+  function updateRemoveButtons() {
+    const cards = track.querySelectorAll('.stage-card');
+    const disable = cards.length <= MIN_STAGES;
+    cards.forEach((card) => {
+      const btn = card.querySelector('.remove-btn');
+      btn.disabled = disable;
+    });
+  }
+
+  function syncArrows() {
+    track.querySelectorAll('.arrow-connector').forEach((a) => a.remove());
+    const cards = Array.from(track.querySelectorAll('.stage-card'));
+    cards.forEach((card, index) => {
+      if (index < cards.length - 1) {
+        track.insertBefore(createArrow(), card.nextSibling);
+      }
+    });
+    renumberStages();
+  }
+
+  function moveStage(card, direction) {
+    const cards = Array.from(track.querySelectorAll('.stage-card'));
+    const idx = cards.indexOf(card);
+    const targetIdx = idx + direction;
+    if (targetIdx < 0 || targetIdx >= cards.length) return;
+    const targetCard = cards[targetIdx];
+    if (direction < 0) {
+      track.insertBefore(card, targetCard);
+    } else {
+      track.insertBefore(targetCard, card);
+    }
+    syncArrows();
+  }
+
+  function addStage() {
+    const card = createStageCard();
+    track.appendChild(card);
+    syncArrows();
+    card.querySelector('.stage-title-input').focus();
+  }
+
+  function removeStage(card) {
+    const cards = track.querySelectorAll('.stage-card');
+    if (cards.length <= MIN_STAGES) return;
+    card.remove();
+    syncArrows();
+  }
+
+  function hasAnyContent() {
+    const inputs = track.querySelectorAll('.stage-title-input, .stage-desc-input');
+    let filled = false;
+    inputs.forEach((el) => { if (el.value.trim() !== '') filled = true; });
+    const meta = document.querySelectorAll('#diagram-title, #diagram-description');
+    meta.forEach((el) => { if (el.value.trim() !== '') filled = true; });
+    return filled;
+  }
+
+  function resetAll() {
+    if (hasAnyContent()) {
+      const confirmed = confirm('Reset the diagram and clear all stages you have entered?');
+      if (!confirmed) return;
+    }
+    document.getElementById('diagram-title').value = '';
+    document.getElementById('diagram-description').value = '';
+    track.innerHTML = '';
+    stageCounter = 0;
+    addStage();
+    addStage();
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function exportPdf() {
+    const diagramTitle = document.getElementById('diagram-title').value.trim() || 'Process Diagram';
+    const diagramDescription = document.getElementById('diagram-description').value.trim();
+
+    const cards = track.querySelectorAll('.stage-card');
+    const stages = Array.from(cards).map((card) => ({
+      title: card.querySelector('.stage-title-input').value.trim() || 'Untitled Stage',
+      desc: card.querySelector('.stage-desc-input').value.trim()
+    }));
+
+    const metaLine = diagramDescription
+      ? '<p class="meta-line">' + escapeHtml(diagramDescription).replace(/\n/g, '<br>') + '</p>'
+      : '';
+
+    const stageBoxes = stages.map((stage, index) => {
+      const arrow = index < stages.length - 1
+        ? '<div class="p-arrow">&rarr;</div>'
+        : '';
+      return (
+        '<div class="p-stage">' +
+          '<div class="p-num">' + (index + 1) + '</div>' +
+          '<div class="p-title">' + escapeHtml(stage.title) + '</div>' +
+          (stage.desc ? '<div class="p-desc">' + escapeHtml(stage.desc).replace(/\n/g, '<br>') + '</div>' : '') +
+        '</div>' + arrow
+      );
+    }).join('');
+
+    const printHtml = '<!DOCTYPE html>' +
+      '<html><head><meta charset="UTF-8"><title>' + escapeHtml(diagramTitle) + '</title>' +
+      '<style>' +
+        '@page { size: A4 landscape; margin: 0; }' +
+        '* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-sizing: border-box; }' +
+        'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; padding: 14mm 12mm; color: #102528; margin:0; }' +
+        'h1 { font-size: 1.4rem; margin: 0 0 0.25rem; color: #055139; }' +
+        '.meta-line { font-size: 0.85rem; color: #5a6e71; margin: 0 0 1rem; }' +
+        '.p-track { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0; }' +
+        '.p-stage { width: 190px; border: 1.5px solid #087C57; background: #f2f7f5; border-radius: 10px; padding: 0.7rem 0.8rem; position: relative; }' +
+        '.p-num { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:#087C57; color:#fff; font-size:0.7rem; font-weight:700; margin-bottom:0.4rem; }' +
+        '.p-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; color:#055139; }' +
+        '.p-desc { font-size: 0.78rem; color: #2c4045; line-height: 1.4; }' +
+        '.p-arrow { width: 34px; text-align:center; font-size: 1.3rem; font-weight:700; color:#07694a; flex: 0 0 auto; }' +
+        'footer { margin-top: 1.5rem; padding-top: 0.75rem; border-top: 1px solid #e2e8f0; text-align:center; font-size: 0.7rem; color: #94a3b8; }' +
+      '</style></head><body>' +
+      '<h1>' + escapeHtml(diagramTitle) + '</h1>' +
+      metaLine +
+      '<div class="p-track">' + stageBoxes + '</div>' +
+      '<footer>Created by the School of Education\'s EdTech Team &mdash; Hum-EdTT@curtin.edu.au</footer>' +
+      '<script>' +
+        'window.addEventListener("load", function() {' +
+          'setTimeout(function() { window.print(); }, 200);' +
+        '});' +
+      '<\/script>' +
+      '</body></html>';
+
+    // Open the printable version in a genuine new tab via a real link click,
+    // rather than window.open() or a hidden iframe. A real full tab renders
+    // normally (no hidden/zero-size layout quirks), and browsers essentially
+    // never block navigation that comes from clicking an <a> element.
+    const blob = new Blob([printHtml], { type: 'text/html;charset=utf-8' });
+    const blobUrl = URL.createObjectURL(blob);
+
+    const fallbackLink = document.getElementById('pdf-fallback-link');
+    if (fallbackLink._prevBlobUrl) URL.revokeObjectURL(fallbackLink._prevBlobUrl);
+    fallbackLink.href = blobUrl;
+    fallbackLink._prevBlobUrl = blobUrl;
+    fallbackLink.style.display = 'inline';
+
+    const opener = document.createElement('a');
+    opener.href = blobUrl;
+    opener.target = '_blank';
+    opener.rel = 'noopener';
+    document.body.appendChild(opener);
+    opener.click();
+    opener.remove();
+  }
+
+  document.getElementById('add-stage-btn').addEventListener('click', addStage);
+  document.getElementById('reset-btn').addEventListener('click', resetAll);
+  document.getElementById('export-pdf-btn').addEventListener('click', exportPdf);
+
+  // Initial state: 3 blank stages
+  addStage();
+  addStage();
+  addStage();
+</script>
+</body>
+</html>
