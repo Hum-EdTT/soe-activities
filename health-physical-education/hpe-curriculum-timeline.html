@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timeline of HPE Curriculum Development in Australia &amp; Western Australia (2008 - 2026)</title>
+<style>
+  :root {
+    --hpe: #087C57;
+    --hpe-dark: #07694a;
+    --hpe-deep: #055139;
+    --hpe-tint: #e6f1ee;
+    --hpe-tint-2: #f2f7f5;
+    --accent: #b5d8cd;
+    --ink: #102528;
+    --ink-soft: #2c4045;
+    --muted: #5a6e71;
+    --line: #d8e3e4;
+    --line-soft: #e8eeef;
+    --bg: #f5f8f8;
+    --card: #ffffff;
+    --shadow-sm: 0 1px 2px rgba(5, 81, 57, 0.04), 0 2px 6px rgba(5, 81, 57, 0.05);
+    --shadow-md: 0 4px 12px rgba(5, 81, 57, 0.08), 0 12px 32px rgba(5, 81, 57, 0.07);
+    --primary-grad: linear-gradient(135deg, #087C57 0%, #07694a 100%);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+  }
+
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2.25rem 1.5rem 1rem;
+  }
+
+  /* ===== Header ===== */
+  .header { text-align: center; margin-bottom: 1.75rem; }
+
+  .header-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    background: var(--hpe-tint);
+    color: var(--hpe-deep);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 0.35em 0.95em;
+    border-radius: 999px;
+  }
+  .header-eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--hpe);
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0.85rem 0 0.6rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .header p {
+    color: var(--muted);
+    font-size: 0.92rem;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* ===== Timeline ===== */
+  .timeline-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.25rem;
+    margin: 0 -0.25rem;
+  }
+
+  .timeline-track {
+    display: flex;
+    align-items: flex-start;
+    min-width: 680px;
+    padding: 0.5rem 0.75rem 0;
+  }
+
+  .timeline-item {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0;
+  }
+
+  .timeline-item:not(:first-child)::before {
+    content: '';
+    position: absolute;
+    top: 9px;
+    left: -50%;
+    width: 100%;
+    height: 3px;
+    background: var(--line);
+    z-index: 0;
+  }
+
+  .timeline-node {
+    position: relative;
+    z-index: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.15rem 0.35rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: inherit;
+    border-radius: 10px;
+  }
+
+  .node-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 3px solid var(--hpe);
+    transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .timeline-node:hover .node-dot {
+    transform: scale(1.12);
+  }
+  .timeline-item.visited .node-dot {
+    background: var(--hpe);
+  }
+  .timeline-node:focus-visible {
+    outline: none;
+  }
+  .timeline-node:focus-visible .node-dot {
+    box-shadow: 0 0 0 4px rgba(8, 124, 87, 0.25);
+  }
+
+  .node-year {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-align: center;
+    line-height: 1.3;
+    max-width: 96px;
+    white-space: normal;
+  }
+
+  .scroll-hint {
+    display: none;
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 0.5rem;
+  }
+  @media (max-width: 700px) {
+    .scroll-hint { display: block; }
+  }
+
+  /* ===== Modal ===== */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(16, 37, 40, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    z-index: 10;
+  }
+  .modal-backdrop[hidden] { display: none; }
+
+  .modal {
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: var(--shadow-md);
+    max-width: 480px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 1.75rem 1.75rem 1.5rem;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-close:hover { background: var(--line-soft); color: var(--ink); }
+  .modal-close:focus-visible {
+    outline: 2px solid var(--hpe);
+    outline-offset: 2px;
+  }
+
+  .modal-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--hpe-deep);
+    margin-bottom: 0.4rem;
+  }
+
+  .modal h2 {
+    font-size: 1.25rem;
+    margin: 0 0 0.9rem;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    padding-right: 1.5rem;
+  }
+
+  .modal-body p {
+    margin: 0 0 0.6rem;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+  .modal-body p.title-line { margin-bottom: 1rem; }
+  .modal-body p:last-child { margin-bottom: 0; }
+
+  .modal-body ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin: 0.6rem 0 0;
+    padding-left: 0;
+    list-style: none;
+  }
+  .modal-body ul li {
+    position: relative;
+    padding-left: 1.15rem;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+  .modal-body ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--hpe);
+  }
+
+  .modal-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line-soft);
+  }
+  .modal-nav button {
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.55rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .modal-nav button:hover:not(:disabled) { background: var(--line-soft); }
+  .modal-nav button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .modal-nav button:focus-visible {
+    outline: 2px solid var(--hpe);
+    outline-offset: 2px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ===== Footer ===== */
+  footer {
+    max-width: 900px;
+    margin: 2.75rem auto 0;
+    padding: 1.25rem 1.5rem 1rem;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+    font-size: 0.78rem;
+    color: #94a3b8;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  footer a { color: #64748b; text-decoration: underline; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="header">
+    <span class="header-eyebrow">Interactive Timeline</span>
+    <h1>Timeline of HPE Curriculum Development in Australia &amp; Western Australia (2008 - 2026)</h1>
+    <p>Click a year on the timeline below to see what happened at each stage.</p>
+  </header>
+
+  <div class="timeline-scroll">
+    <div class="timeline-track" id="timelineTrack" role="list"></div>
+  </div>
+  <p class="scroll-hint">&larr; Scroll to see the full timeline &rarr;</p>
+
+  <footer>
+    Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au">Hum-EdTT@curtin.edu.au</a>
+  </footer>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-backdrop" id="modalBackdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" id="modalDialog">
+    <button class="modal-close" id="modalClose" type="button" aria-label="Close">&times;</button>
+    <div class="modal-eyebrow">Milestone</div>
+    <h2 id="modalTitle"></h2>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-nav">
+      <button type="button" id="modalPrev">&larr; Previous</button>
+      <button type="button" id="modalNext">Next &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<span class="sr-only" id="liveAnnounce" aria-live="polite"></span>
+
+<script>
+  var milestones = [
+    {
+      year: "2008",
+      body: [
+        { type: "p", bold: true, text: "Melbourne Declaration" },
+        { type: "p", text: "National goals for wellbeing and learning." }
+      ]
+    },
+    {
+      year: "2008 - 10",
+      body: [
+        { type: "p", bold: true, text: "ACARA Established" },
+        { type: "p", text: "National Curriculum development" }
+      ]
+    },
+    {
+      year: "2012 - 14",
+      body: [
+        { type: "p", bold: true, text: "Australian Curriculum: HPE Development" },
+        { type: "ul", items: [
+          "Mandatory area",
+          "Two strands: Health + Movement",
+          "F - 10 continuum & standards"
+        ] }
+      ]
+    },
+    {
+      year: "2014",
+      body: [
+        { type: "p", bold: true, text: "National Endorsement" },
+        { type: "p", text: "States/Territories adopt/adapt" }
+      ]
+    },
+    {
+      year: "2015 - 17",
+      body: [
+        { type: "p", bold: true, text: "WA integrates HPE into Western Australian Curriculum" }
+      ]
+    },
+    {
+      year: "2018 - 22",
+      body: [
+        { type: "p", text: "WA maintains and updates HPE curriculum scope and sequence" }
+      ]
+    },
+    {
+      year: "2023 - 25",
+      body: [
+        { type: "p", bold: true, text: "WA finalises new HPE Scope and Sequence for 2025 implementation" }
+      ]
+    },
+    {
+      year: "2025 - 26 (today)",
+      body: [
+        { type: "p", bold: true, text: "Current status" },
+        { type: "ul", items: [
+          "Australian Curriculum HPE mandatory & reported",
+          "WA Curriculum HPE mandatory & reported",
+          "Indicative national HPE time (2 hrs/week)",
+          "WA mandated minimum structured Physical Activity time of 2 hours per week in the school day"
+        ] }
+      ]
+    }
+  ];
+
+  var visited = new Array(milestones.length).fill(false);
+  var currentIndex = null;
+  var lastFocusedNode = null;
+
+  var track = document.getElementById('timelineTrack');
+  var backdrop = document.getElementById('modalBackdrop');
+  var modalDialog = document.getElementById('modalDialog');
+  var modalTitle = document.getElementById('modalTitle');
+  var modalBody = document.getElementById('modalBody');
+  var modalClose = document.getElementById('modalClose');
+  var modalPrev = document.getElementById('modalPrev');
+  var modalNext = document.getElementById('modalNext');
+  var liveAnnounce = document.getElementById('liveAnnounce');
+
+  function renderTimeline() {
+    track.innerHTML = '';
+    milestones.forEach(function (m, i) {
+      var item = document.createElement('div');
+      item.className = 'timeline-item' + (visited[i] ? ' visited' : '');
+      item.setAttribute('role', 'listitem');
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'timeline-node';
+      btn.setAttribute('aria-haspopup', 'dialog');
+      btn.setAttribute('aria-label', m.year + (visited[i] ? ' (viewed)' : '') + ' \u2013 view details');
+
+      var dot = document.createElement('span');
+      dot.className = 'node-dot';
+      dot.setAttribute('aria-hidden', 'true');
+
+      var label = document.createElement('span');
+      label.className = 'node-year';
+      label.textContent = m.year;
+
+      btn.appendChild(dot);
+      btn.appendChild(label);
+      btn.addEventListener('click', function () { openModal(i, btn); });
+
+      item.appendChild(btn);
+      track.appendChild(item);
+    });
+  }
+
+  function buildBody(entry) {
+    modalBody.innerHTML = '';
+    entry.body.forEach(function (block) {
+      if (block.type === 'p') {
+        var p = document.createElement('p');
+        if (block.bold) {
+          p.classList.add('title-line');
+          var strong = document.createElement('strong');
+          strong.textContent = block.text;
+          p.appendChild(strong);
+        } else {
+          p.textContent = block.text;
+        }
+        modalBody.appendChild(p);
+      } else if (block.type === 'ul') {
+        var ul = document.createElement('ul');
+        block.items.forEach(function (itemText) {
+          var li = document.createElement('li');
+          li.textContent = itemText;
+          ul.appendChild(li);
+        });
+        modalBody.appendChild(ul);
+      }
+    });
+  }
+
+  function openModal(index, triggerEl) {
+    currentIndex = index;
+    lastFocusedNode = triggerEl || null;
+
+    if (!visited[index]) {
+      visited[index] = true;
+      renderTimeline();
+    }
+
+    var entry = milestones[index];
+    modalTitle.textContent = entry.year;
+    buildBody(entry);
+
+    modalPrev.disabled = index === 0;
+    modalNext.disabled = index === milestones.length - 1;
+
+    backdrop.hidden = false;
+    liveAnnounce.textContent = 'Showing ' + entry.year;
+    modalClose.focus();
+
+    document.addEventListener('keydown', handleKeydown);
+  }
+
+  function closeModal() {
+    backdrop.hidden = true;
+    document.removeEventListener('keydown', handleKeydown);
+
+    if (lastFocusedNode) {
+      var buttons = track.querySelectorAll('.timeline-node');
+      if (buttons[currentIndex]) {
+        buttons[currentIndex].focus();
+      }
+    }
+    currentIndex = null;
+  }
+
+  function handleKeydown(e) {
+    if (e.key === 'Escape') {
+      closeModal();
+    } else if (e.key === 'Tab') {
+      var focusables = modalDialog.querySelectorAll('button');
+      var first = focusables[0];
+      var last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }
+
+  function goToIndex(newIndex) {
+    if (newIndex < 0 || newIndex >= milestones.length) return;
+    var buttons = track.querySelectorAll('.timeline-node');
+    openModal(newIndex, buttons[newIndex]);
+  }
+
+  modalClose.addEventListener('click', closeModal);
+  modalPrev.addEventListener('click', function () { goToIndex(currentIndex - 1); });
+  modalNext.addEventListener('click', function () { goToIndex(currentIndex + 1); });
+  backdrop.addEventListener('click', function (e) {
+    if (e.target === backdrop) closeModal();
+  });
+
+  renderTimeline();
+  updateProgress();
+</script>
+
+</body>
+</html>
