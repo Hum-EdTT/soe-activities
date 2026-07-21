@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Research Project Credibility Test | CRAPP Test</title>
+<style>
+  :root {
+    --hpe: #087C57;
+    --hpe-dark: #07694a;
+    --hpe-deep: #055139;
+    --hpe-tint: #e6f1ee;
+    --hpe-tint-2: #f2f7f5;
+    --accent: #b5d8cd;
+    --ink: #102528;
+    --ink-soft: #2c4045;
+    --muted: #5a6e71;
+    --line: #d8e3e4;
+    --line-soft: #e8eeef;
+    --bg: #f5f8f8;
+    --card: #ffffff;
+    --shadow-sm: 0 1px 2px rgba(5, 81, 57, 0.04), 0 2px 6px rgba(5, 81, 57, 0.05);
+    --shadow-md: 0 4px 12px rgba(5, 81, 57, 0.08), 0 12px 32px rgba(5, 81, 57, 0.07);
+    --primary-grad: linear-gradient(135deg, #087C57 0%, #07694a 100%);
+    --green: #10b981; --green-tint: #ecfdf5; --green-deep: #047857;
+    --amber: #f59e0b; --amber-tint: #fffbeb; --amber-deep: #b45309;
+    --red: #ef4444; --red-tint: #fef2f2; --red-deep: #b91c1c;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.25rem 1.25rem 1rem;
+  }
+
+  /* ===== Header ===== */
+  .header { margin-bottom: 1.75rem; }
+
+  .header-eyebrow {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--hpe-deep);
+    background: var(--hpe-tint);
+    border-radius: 999px;
+    padding: 0.3rem 0.7rem 0.3rem 0.55rem;
+    margin: 0 auto 0.9rem;
+  }
+  .header-eyebrow::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--hpe);
+    display: inline-block;
+  }
+
+  h1 {
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.6rem;
+    color: var(--ink);
+  }
+
+  .header p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+    max-width: 34rem;
+  }
+
+  /* ===== Meta card ===== */
+  .card {
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    box-shadow: var(--shadow-sm);
+    padding: 1.25rem 1.35rem;
+    margin-top: 1.5rem;
+  }
+
+  .field label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+  .field input[type="text"] {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.92rem;
+    color: var(--ink);
+    background: var(--bg);
+    font-family: inherit;
+  }
+  .field input[type="text"]:focus-visible {
+    outline: none;
+    border-color: var(--hpe);
+    box-shadow: 0 0 0 3px rgba(8, 124, 87, 0.15);
+  }
+
+  /* ===== Progress ===== */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.5rem 0 0;
+  }
+  .progress-track {
+    flex: 1;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--line-soft);
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--primary-grad);
+    border-radius: 999px;
+    transition: width 0.25s ease;
+  }
+  .progress-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* ===== Section cards ===== */
+  .section {
+    margin-top: 1.25rem;
+  }
+  .section-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    margin-bottom: 0.9rem;
+  }
+  .section-badge {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--primary-grad);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(5, 81, 57, 0.25);
+  }
+  .section-titles h2 {
+    margin: 0 0 0.2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .section-titles p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 84px;
+    resize: vertical;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.75rem 0.9rem;
+    font-size: 0.92rem;
+    font-family: inherit;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.5;
+  }
+  textarea::placeholder { color: var(--muted); opacity: 0.85; }
+  textarea:focus-visible {
+    outline: none;
+    border-color: var(--hpe);
+    box-shadow: 0 0 0 3px rgba(8, 124, 87, 0.15);
+  }
+  textarea.answered { border-color: var(--accent); }
+
+  /* ===== Pill radiogroups ===== */
+  .pillgroup {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .pill {
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 0.55rem 1.1rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--card);
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .pill:hover { background: var(--line-soft); }
+  .pill:focus-visible { outline: 2px solid var(--hpe); outline-offset: 2px; }
+  .pill .tick { font-size: 0.85em; visibility: hidden; }
+  .pill[aria-checked="true"] .tick { visibility: visible; }
+
+  /* Relevance semantic colours */
+  .pill[data-tone="green"][aria-checked="true"] { background: var(--green-tint); border-color: var(--green); color: var(--green-deep); }
+  .pill[data-tone="amber"][aria-checked="true"] { background: var(--amber-tint); border-color: var(--amber); color: var(--amber-deep); }
+  .pill[data-tone="red"][aria-checked="true"] { background: var(--red-tint); border-color: var(--red); color: var(--red-deep); }
+  /* Purpose neutral (subject-primary) colour */
+  .pill[data-tone="primary"][aria-checked="true"] { background: var(--hpe-tint); border-color: var(--hpe); color: var(--hpe-deep); }
+
+  /* ===== Actions ===== */
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+    flex-wrap: wrap;
+  }
+  button.btn {
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 0.72rem 1.25rem;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .btn-primary {
+    background: var(--primary-grad);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(5, 81, 57, 0.22);
+  }
+  .btn-primary:hover { background: linear-gradient(135deg, #07694a 0%, #055139 100%); }
+  .btn-secondary {
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .btn-secondary:hover { background: var(--line-soft); }
+  .btn:focus-visible { outline: 2px solid var(--hpe); outline-offset: 2px; }
+
+  .save-note {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: var(--muted);
+    margin-top: 0.85rem;
+  }
+
+  footer {
+    margin-top: 2.5rem;
+    padding: 1.25rem 1.5rem 1rem;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+    font-size: 0.78rem;
+    color: #94a3b8;
+  }
+  footer a { color: #64748b; text-decoration: underline; }
+
+  /* ===== Print-only record (used by Save as PDF) ===== */
+  #print-area { display: none; }
+  #print-area h1 { font-size: 19px; margin: 0 0 4px; color: var(--ink); }
+  #print-area .print-sub { color: var(--muted); font-size: 12px; margin: 0 0 18px; }
+  #print-area .print-meta { display: flex; gap: 24px; margin-bottom: 18px; font-size: 12px; }
+  #print-area .print-meta span { color: var(--muted); }
+  #print-area .print-meta b { color: var(--ink); }
+  #print-area .row { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  #print-area .row:last-child { border-bottom: none; }
+  #print-area .row-badge {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: var(--hpe); color: #fff; font-weight: 700; font-size: 12px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  #print-area .row-body h3 { margin: 0 0 2px; font-size: 13.5px; color: var(--ink); }
+  #print-area .q { margin: 0 0 6px; font-size: 11.5px; color: var(--muted); }
+  #print-area .ans {
+    font-size: 12.5px; white-space: pre-wrap; color: var(--ink);
+    background: var(--hpe-tint-2); border-left: 3px solid var(--accent);
+    padding: 6px 10px; border-radius: 4px;
+  }
+  #print-area .empty { font-style: italic; color: #94a3b8; }
+
+  @media print {
+    @page { size: A4; margin: 16mm; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .wrap > *:not(#print-area) { display: none !important; }
+    .wrap { max-width: none; padding: 0; margin: 0; }
+    #print-area { display: block !important; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="header">
+    <span class="header-eyebrow">CRAPP Test</span>
+    <h1>Student Research Project Credibility Test</h1>
+    <p>Using the CRAPP test, prove the credibility of the sources you intend to use for your project.</p>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label for="student-name">Student name</label>
+      <input type="text" id="student-name" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="progress-row">
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <span class="progress-label" id="progress-label">0 of 5 completed</span>
+  </div>
+
+  <!-- Section 1: Currency -->
+  <div class="card section" data-section="currency">
+    <div class="section-head">
+      <span class="section-badge">1</span>
+      <div class="section-titles">
+        <h2>Currency</h2>
+        <p>Is this information up to date?</p>
+      </div>
+    </div>
+    <textarea id="currency-input" placeholder="Type the publishing date of your source here." aria-label="Currency response"></textarea>
+  </div>
+
+  <!-- Section 2: Relevance -->
+  <div class="card section" data-section="relevance">
+    <div class="section-head">
+      <span class="section-badge">2</span>
+      <div class="section-titles">
+        <h2 id="relevance-label">Relevance</h2>
+        <p>Is this source related to my topic?</p>
+      </div>
+    </div>
+    <div class="pillgroup" role="radiogroup" aria-labelledby="relevance-label" id="relevance-group">
+      <button type="button" class="pill" role="radio" aria-checked="false" data-value="yes" data-tone="green" tabindex="0"><span class="tick">✓</span>Yes</button>
+      <button type="button" class="pill" role="radio" aria-checked="false" data-value="somewhat" data-tone="amber" tabindex="-1"><span class="tick">✓</span>Somewhat</button>
+      <button type="button" class="pill" role="radio" aria-checked="false" data-value="no" data-tone="red" tabindex="-1"><span class="tick">✓</span>No</button>
+    </div>
+  </div>
+
+  <!-- Section 3: Authority -->
+  <div class="card section" data-section="authority">
+    <div class="section-head">
+      <span class="section-badge">3</span>
+      <div class="section-titles">
+        <h2>Authority</h2>
+        <p>Is the author or publisher credible?</p>
+      </div>
+    </div>
+    <textarea id="authority-input" placeholder="Explain what qualification the author or publisher has here" aria-label="Authority response"></textarea>
+  </div>
+
+  <!-- Section 4: Accuracy -->
+  <div class="card section" data-section="accuracy">
+    <div class="section-head">
+      <span class="section-badge">4</span>
+      <div class="section-titles">
+        <h2>Accuracy</h2>
+        <p>Is this information correct and proven?</p>
+      </div>
+    </div>
+    <textarea id="accuracy-input" placeholder="Explain what other information, sources, or research the source mentions" aria-label="Accuracy response"></textarea>
+  </div>
+
+  <!-- Section 5: Purpose -->
+  <div class="card section" data-section="purpose">
+    <div class="section-head">
+      <span class="section-badge">5</span>
+      <div class="section-titles">
+        <h2 id="purpose-label">Purpose</h2>
+        <p>What is the author's purpose?</p>
+      </div>
+    </div>
+    <div class="pillgroup" role="radiogroup" aria-labelledby="purpose-label" id="purpose-group">
+      <button type="button" class="pill" role="radio" aria-checked="false" data-value="persuade" data-tone="primary" tabindex="0"><span class="tick">✓</span>Persuade</button>
+      <button type="button" class="pill" role="radio" aria-checked="false" data-value="inform" data-tone="primary" tabindex="-1"><span class="tick">✓</span>Inform</button>
+      <button type="button" class="pill" role="radio" aria-checked="false" data-value="entertain" data-tone="primary" tabindex="-1"><span class="tick">✓</span>Entertain</button>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn btn-secondary" id="reset-btn">Reset</button>
+    <button type="button" class="btn btn-primary" id="pdf-btn">Save as PDF</button>
+  </div>
+  <p class="save-note">Your responses are not saved automatically. Use the button above to download a PDF record of your completed credibility check.</p>
+
+  <div id="print-area" aria-hidden="true"></div>
+
+  <footer>
+    Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au">Hum-EdTT@curtin.edu.au</a>
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var textAreas = Array.prototype.slice.call(document.querySelectorAll('textarea'));
+    var radioGroups = Array.prototype.slice.call(document.querySelectorAll('[role="radiogroup"]'));
+    var progressFill = document.getElementById('progress-fill');
+    var progressLabel = document.getElementById('progress-label');
+
+    function setupRadioGroup(group) {
+      var pills = Array.prototype.slice.call(group.querySelectorAll('.pill'));
+
+      function selectPill(target) {
+        pills.forEach(function (p) {
+          var checked = p === target;
+          p.setAttribute('aria-checked', checked ? 'true' : 'false');
+          p.tabIndex = checked ? 0 : -1;
+        });
+        target.focus();
+        updateProgress();
+      }
+
+      pills.forEach(function (pill, idx) {
+        pill.addEventListener('click', function () { selectPill(pill); });
+        pill.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            selectPill(pills[(idx + 1) % pills.length]);
+          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            selectPill(pills[(idx - 1 + pills.length) % pills.length]);
+          }
+        });
+      });
+    }
+
+    radioGroups.forEach(setupRadioGroup);
+
+    textAreas.forEach(function (ta) {
+      ta.addEventListener('input', function () {
+        ta.classList.toggle('answered', ta.value.trim().length > 0);
+        updateProgress();
+      });
+    });
+
+    function getPillValue(groupId) {
+      var checked = document.querySelector('#' + groupId + ' .pill[aria-checked="true"]');
+      return checked ? checked.textContent.trim() : '';
+    }
+
+    function updateProgress() {
+      var total = 5;
+      var done = 0;
+      if (document.getElementById('currency-input').value.trim()) done++;
+      if (getPillValue('relevance-group')) done++;
+      if (document.getElementById('authority-input').value.trim()) done++;
+      if (document.getElementById('accuracy-input').value.trim()) done++;
+      if (getPillValue('purpose-group')) done++;
+
+      progressFill.style.width = (done / total * 100) + '%';
+      progressLabel.textContent = done + ' of ' + total + ' completed';
+    }
+
+    function performReset() {
+      textAreas.forEach(function (ta) { ta.value = ''; ta.classList.remove('answered'); });
+      radioGroups.forEach(function (g) {
+        var pills = g.querySelectorAll('.pill');
+        pills.forEach(function (p, idx) {
+          p.setAttribute('aria-checked', 'false');
+          p.tabIndex = idx === 0 ? 0 : -1;
+        });
+      });
+      document.getElementById('student-name').value = '';
+      updateProgress();
+    }
+
+    document.getElementById('reset-btn').addEventListener('click', performReset);
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function rowHtml(letter, title, question, answer) {
+      return '' +
+        '<div class="row">' +
+          '<div class="row-badge">' + letter + '</div>' +
+          '<div class="row-body">' +
+            '<h3>' + title + '</h3>' +
+            '<p class="q">' + question + '</p>' +
+            '<div class="ans">' + (answer ? escapeHtml(answer) : '<span class="empty">No response provided</span>') + '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    document.getElementById('pdf-btn').addEventListener('click', function () {
+      var studentName = document.getElementById('student-name').value.trim() || '\u2014';
+      var today = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      var rows = [
+        rowHtml('1', 'Currency', 'Is this information up to date?', document.getElementById('currency-input').value.trim()),
+        rowHtml('2', 'Relevance', 'Is this source related to my topic?', getPillValue('relevance-group')),
+        rowHtml('3', 'Authority', 'Is the author or publisher credible?', document.getElementById('authority-input').value.trim()),
+        rowHtml('4', 'Accuracy', 'Is this information correct and proven?', document.getElementById('accuracy-input').value.trim()),
+        rowHtml('5', 'Purpose', "What is the author's purpose?", getPillValue('purpose-group'))
+      ].join('');
+
+      document.getElementById('print-area').innerHTML =
+        '<h1>Student Research Project Credibility Test</h1>' +
+        '<p class="print-sub">CRAPP Test record</p>' +
+        '<div class="print-meta"><span>Student: <b>' + escapeHtml(studentName) + '</b></span><span>Date: <b>' + today + '</b></span></div>' +
+        rows;
+
+      window.print();
+    });
+
+    updateProgress();
+  })();
+</script>
+
+</body>
+</html>
