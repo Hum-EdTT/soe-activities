@@ -29,10 +29,18 @@
   html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
+    overflow: hidden; /* the OUTER page never scrolls */
     background: var(--bg);
     color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     line-height: 1.55;
+  }
+
+  .activity-scroll {
+    height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .wrap {
@@ -42,7 +50,7 @@
   }
 
   /* Header */
-  .header { margin-bottom: 1.75rem; }
+  .header { text-align: center; margin-bottom: 1.75rem; }
   .header-eyebrow {
     display: flex;
     width: fit-content;
@@ -74,9 +82,10 @@
     color: var(--ink);
   }
   .header p {
-    margin: 0;
+    margin: 0 auto;
     color: var(--muted);
     font-size: 0.98rem;
+    max-width: 100%;
   }
 
   /* Cards / sections */
@@ -280,6 +289,41 @@
   }
   footer a { color: #64748b; text-decoration: underline; }
 
+  /* ===== Fullscreen expand ===== */
+  .fullscreen-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 999;
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.5rem 0.9rem;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+  }
+  .fullscreen-btn:hover { background: var(--line-soft); }
+  .fullscreen-btn:focus-visible { outline: 2px solid var(--hpe); outline-offset: 2px; }
+  .fullscreen-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  .fullscreen-notice {
+    display: none;
+    background: var(--hpe-tint);
+    border-left: 3px solid var(--hpe);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-bottom: 1.25rem;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; }
   }
@@ -287,6 +331,7 @@
 </head>
 <body>
 
+<div class="activity-scroll">
 <div class="wrap">
 
   <header class="header">
@@ -294,6 +339,20 @@
     <h1>Build a Sequence Diagram</h1>
     <p>Create a step-by-step process diagram. Give each stage a title and description, then add, remove, or reorder stages as needed. Export your finished diagram as a PDF.</p>
   </header>
+
+  <button type="button" class="fullscreen-btn" id="fullscreen-btn" title="Open in fullscreen" aria-label="Open this activity in fullscreen in a new tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+      <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+      <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+      <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+    </svg>
+    Fullscreen
+  </button>
+
+  <div class="fullscreen-notice" id="fullscreen-notice">
+    This activity is taller than the embedded view. For the best experience, use the <strong>Fullscreen</strong> button in the top-right corner.
+  </div>
 
   <section class="panel">
     <h2>Diagram Details</h2>
@@ -331,6 +390,7 @@
 <footer>
   Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au">Hum-EdTT@curtin.edu.au</a>
 </footer>
+</div>
 
 <script>
   const track = document.getElementById('track');
@@ -604,5 +664,28 @@
   addStage();
   addStage();
 </script>
+
+<script>
+  (function () {
+    var HEIGHT_THRESHOLD = 950; // set this to match the iframe embed height chosen for this activity
+    var btn = document.getElementById('fullscreen-btn');
+    var notice = document.getElementById('fullscreen-notice');
+    var scrollEl = document.querySelector('.activity-scroll');
+
+    function checkOverflow() {
+      var isTall = scrollEl.scrollHeight > HEIGHT_THRESHOLD;
+      btn.style.display = isTall ? 'flex' : 'none';
+      notice.style.display = isTall ? 'block' : 'none';
+    }
+
+    btn.addEventListener('click', function () {
+      window.open(window.location.href, '_blank');
+    });
+
+    window.addEventListener('load', checkOverflow);
+    window.addEventListener('resize', checkOverflow);
+  })();
+</script>
+
 </body>
 </html>
