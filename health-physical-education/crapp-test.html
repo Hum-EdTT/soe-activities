@@ -32,11 +32,19 @@
   html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
+    overflow: hidden; /* the OUTER page never scrolls */
     background: var(--bg);
     color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
+  }
+
+  .activity-scroll {
+    height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* smooth momentum scroll on iOS */
   }
 
   .wrap {
@@ -315,6 +323,7 @@
   @media print {
     @page { size: A4; margin: 16mm; }
     * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    html, body, .activity-scroll { height: auto; overflow: visible; }
     .wrap > *:not(#print-area) { display: none !important; }
     .wrap { max-width: none; padding: 0; margin: 0; }
     #print-area { display: block !important; }
@@ -327,6 +336,7 @@
 </head>
 <body>
 
+<div class="activity-scroll">
 <div class="wrap">
 
   <div class="header">
@@ -427,6 +437,7 @@
     Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au">Hum-EdTT@curtin.edu.au</a>
   </footer>
 
+</div>
 </div>
 
 <script>
