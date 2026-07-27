@@ -22,9 +22,6 @@
     --shadow-sm: 0 1px 2px rgba(5, 81, 57, 0.04), 0 2px 6px rgba(5, 81, 57, 0.05);
     --shadow-md: 0 4px 12px rgba(5, 81, 57, 0.08), 0 12px 32px rgba(5, 81, 57, 0.07);
     --primary-grad: linear-gradient(135deg, #087C57 0%, #07694a 100%);
-    --green: #10b981; --green-tint: #ecfdf5; --green-deep: #047857;
-    --amber: #f59e0b; --amber-tint: #fffbeb; --amber-deep: #b45309;
-    --red: #ef4444; --red-tint: #fef2f2; --red-deep: #b91c1c;
   }
 
   * { box-sizing: border-box; }
@@ -224,20 +221,11 @@
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
     transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   }
   .pill:hover { background: var(--line-soft); }
   .pill:focus-visible { outline: 2px solid var(--hpe); outline-offset: 2px; }
-  .pill .tick { font-size: 0.85em; visibility: hidden; }
-  .pill[aria-checked="true"] .tick { visibility: visible; }
-
-  /* Relevance semantic colours */
-  .pill[data-tone="green"][aria-checked="true"] { background: var(--green-tint); border-color: var(--green); color: var(--green-deep); }
-  .pill[data-tone="amber"][aria-checked="true"] { background: var(--amber-tint); border-color: var(--amber); color: var(--amber-deep); }
-  .pill[data-tone="red"][aria-checked="true"] { background: var(--red-tint); border-color: var(--red); color: var(--red-deep); }
-  /* Purpose neutral (subject-primary) colour */
-  .pill[data-tone="primary"][aria-checked="true"] { background: var(--hpe-tint); border-color: var(--hpe); color: var(--hpe-deep); }
+  .pill[aria-checked="true"] { background: var(--hpe-tint); border-color: var(--hpe); color: var(--hpe-deep); }
 
   /* ===== Actions ===== */
   .actions {
@@ -381,9 +369,9 @@
       </div>
     </div>
     <div class="pillgroup" role="radiogroup" aria-labelledby="relevance-label" id="relevance-group">
-      <button type="button" class="pill" role="radio" aria-checked="false" data-value="yes" data-tone="green" tabindex="0"><span class="tick">✓</span>Yes</button>
-      <button type="button" class="pill" role="radio" aria-checked="false" data-value="somewhat" data-tone="amber" tabindex="-1"><span class="tick">✓</span>Somewhat</button>
-      <button type="button" class="pill" role="radio" aria-checked="false" data-value="no" data-tone="red" tabindex="-1"><span class="tick">✓</span>No</button>
+      <button type="button" class="pill" role="radio" aria-checked="false" data-value="yes" tabindex="0">Yes</button>
+      <button type="button" class="pill" role="radio" aria-checked="false" data-value="somewhat" tabindex="-1">Somewhat</button>
+      <button type="button" class="pill" role="radio" aria-checked="false" data-value="no" tabindex="-1">No</button>
     </div>
   </div>
 
@@ -421,9 +409,9 @@
       </div>
     </div>
     <div class="pillgroup" role="radiogroup" aria-labelledby="purpose-label" id="purpose-group">
-      <button type="button" class="pill" role="radio" aria-checked="false" data-value="persuade" data-tone="primary" tabindex="0"><span class="tick">✓</span>Persuade</button>
-      <button type="button" class="pill" role="radio" aria-checked="false" data-value="inform" data-tone="primary" tabindex="-1"><span class="tick">✓</span>Inform</button>
-      <button type="button" class="pill" role="radio" aria-checked="false" data-value="entertain" data-tone="primary" tabindex="-1"><span class="tick">✓</span>Entertain</button>
+      <button type="button" class="pill" role="radio" aria-checked="false" data-value="persuade" tabindex="0">Persuade</button>
+      <button type="button" class="pill" role="radio" aria-checked="false" data-value="inform" tabindex="-1">Inform</button>
+      <button type="button" class="pill" role="radio" aria-checked="false" data-value="entertain" tabindex="-1">Entertain</button>
     </div>
   </div>
 
