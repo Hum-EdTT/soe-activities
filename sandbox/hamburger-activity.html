@@ -30,6 +30,8 @@
     --patty-tint: #f0e5dc;
     --cheese: #e0ab12;
     --cheese-tint: #fdf3d8;
+    --pineapple: #f0b429;
+    --pineapple-tint: #fdf3d9;
     --lettuce: #4f9a3b;
     --lettuce-tint: #eaf5e6;
     --tomato: #d64526;
@@ -439,7 +441,7 @@
 
     <section class="panel" aria-labelledby="stack-heading">
       <h2 id="stack-heading">Your Burger</h2>
-      <p class="hint">Layer 1 is the top of the burger, Layer 9 is the bottom.</p>
+      <p class="hint">Layer 1 is the top of the burger, Layer 10 is the bottom.</p>
       <div id="stack" class="stack" role="list" aria-label="Your burger stack"></div>
       <p class="save-note">Your progress isn't saved if you leave or reload this page — this activity is for practice, not for submission.</p>
       <div class="actions">
@@ -471,6 +473,7 @@
     { id: "ketchup", type: "ketchup", label: "Ketchup",      color: "var(--ketchup)" },
     { id: "pickles", type: "pickles", label: "Pickles",      color: "var(--pickles)" },
     { id: "cheese",  type: "cheese",  label: "Cheese Slice", color: "var(--cheese)" },
+    { id: "pineapple", type: "pineapple", label: "Grilled Pineapple", color: "var(--pineapple)" },
     { id: "patty",   type: "patty",   label: "Beef Patty",   color: "var(--patty)" },
     { id: "mayo",    type: "mayo",    label: "Mayo",         color: "var(--mayo)" },
     { id: "tomato",  type: "tomato",  label: "Tomato Slice", color: "var(--tomato)" },
@@ -478,7 +481,7 @@
   ];
 
   // Top of burger (Layer 1) to bottom of burger (Layer 9)
-  var CORRECT_ORDER = ["bun", "ketchup", "pickles", "cheese", "patty", "mayo", "tomato", "lettuce", "bun"];
+  var CORRECT_ORDER = ["bun", "ketchup", "pickles", "cheese", "pineapple", "patty", "mayo", "tomato", "lettuce", "bun"];
 
   var HINTS = [
     "Consider how a chef might be able to melt the cheese without using any direct heat.",
@@ -769,16 +772,17 @@
       }
     });
 
+    var totalLayers = CORRECT_ORDER.length;
     feedbackEl.className = "feedback show";
-    if (placedCount < CORRECT_ORDER.length) {
+    if (placedCount < totalLayers) {
       feedbackEl.classList.add("incomplete");
-      feedbackEl.textContent = "Place all 9 ingredients before checking your answer. (" + placedCount + " of 9 placed.)";
-    } else if (correctCount === CORRECT_ORDER.length) {
+      feedbackEl.textContent = "Place all " + totalLayers + " ingredients before checking your answer. (" + placedCount + " of " + totalLayers + " placed.)";
+    } else if (correctCount === totalLayers) {
       feedbackEl.classList.add("success");
-      feedbackEl.textContent = "Perfect burger! All 9 layers are in the correct order.";
+      feedbackEl.textContent = "Perfect burger! All " + totalLayers + " layers are in the correct order.";
     } else {
       feedbackEl.classList.add("partial");
-      feedbackEl.textContent = correctCount + " of 9 layers correct. Check the layers highlighted in red and try again.";
+      feedbackEl.textContent = correctCount + " of " + totalLayers + " layers correct. Check the layers highlighted in red and try again.";
     }
   }
 
@@ -869,3 +873,4 @@
 
 </body>
 </html>
+
