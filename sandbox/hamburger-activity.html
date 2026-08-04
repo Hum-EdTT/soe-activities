@@ -38,6 +38,8 @@
     --tomato-tint: #fbe8e2;
     --pickles: #7fa428;
     --pickles-tint: #f1f6e4;
+    --onion: #c17f2a;
+    --onion-tint: #f8ecd9;
     --mayo: #c9a227;
     --mayo-tint: #fbf6e2;
     --ketchup: #b1272d;
@@ -441,7 +443,7 @@
 
     <section class="panel" aria-labelledby="stack-heading">
       <h2 id="stack-heading">Your Burger</h2>
-      <p class="hint">Layer 1 is the top of the burger, Layer 10 is the bottom.</p>
+      <p class="hint">Layer 1 is the top of the burger, Layer 11 is the bottom.</p>
       <div id="stack" class="stack" role="list" aria-label="Your burger stack"></div>
       <p class="save-note">Your progress isn't saved if you leave or reload this page — this activity is for practice, not for submission.</p>
       <div class="actions">
@@ -471,6 +473,7 @@
     { id: "bun-1",   type: "bun",     label: "Burger Bun",   color: "var(--bun)" },
     { id: "bun-2",   type: "bun",     label: "Burger Bun",   color: "var(--bun)" },
     { id: "ketchup", type: "ketchup", label: "Ketchup",      color: "var(--ketchup)" },
+    { id: "onion",   type: "onion",   label: "Crispy Onions", color: "var(--onion)" },
     { id: "pickles", type: "pickles", label: "Pickles",      color: "var(--pickles)" },
     { id: "cheese",  type: "cheese",  label: "Cheese Slice", color: "var(--cheese)" },
     { id: "pineapple", type: "pineapple", label: "Grilled Pineapple", color: "var(--pineapple)" },
@@ -480,8 +483,8 @@
     { id: "lettuce", type: "lettuce", label: "Lettuce",      color: "var(--lettuce)" }
   ];
 
-  // Top of burger (Layer 1) to bottom of burger (Layer 9)
-  var CORRECT_ORDER = ["bun", "ketchup", "pickles", "cheese", "pineapple", "patty", "mayo", "tomato", "lettuce", "bun"];
+  // Top of burger (Layer 1) to bottom of burger (Layer 11)
+  var CORRECT_ORDER = ["bun", "ketchup", "onion", "pickles", "cheese", "pineapple", "patty", "mayo", "tomato", "lettuce", "bun"];
 
   var HINTS = [
     "Consider how a chef might be able to melt the cheese without using any direct heat.",
