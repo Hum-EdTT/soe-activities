@@ -1,1 +1,837 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Changing Ideas About Species</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sci: #3E586F;                  /* primary */
+    --sci-dark: #354b5e;             /* primary dark (~15% darker) */
+    --sci-deep: #283948;             /* primary deep (used for text on tinted bg) */
+    --sci-tint: #e6ecf1;             /* primary very pale tint */
+    --sci-tint-2: #f2f5f7;           /* primary even paler tint */
+    --accent: #c5cdd4;               /* accent - lighter partner to primary (subtitle colour) */
+    --ink: #102528;                  /* main body text - keep neutral */
+    --ink-soft: #2c4045;             /* softer body text - keep neutral */
+    --muted: #5a6e71;                /* muted text - keep neutral */
+    --line: #d8e3e4;                 /* borders - keep neutral */
+    --line-soft: #e8eeef;            /* soft dividers - keep neutral */
+    --bg: #f5f8f8;                   /* page background - keep neutral */
+    --card: #ffffff;                 /* card background - keep neutral */
+    --shadow-sm: 0 1px 2px rgba(40, 57, 72, 0.04), 0 2px 6px rgba(40, 57, 72, 0.05);
+    --shadow-md: 0 4px 12px rgba(40, 57, 72, 0.08), 0 12px 32px rgba(40, 57, 72, 0.07);
+    --primary-grad: linear-gradient(135deg, #3E586F 0%, #354b5e 100%);
+  }
 
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* the OUTER page never scrolls */
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .activity-scroll {
+    height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 0;
+  }
+
+  /* ===== Fullscreen expand ===== */
+  .fullscreen-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 999;
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.5rem 0.9rem;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+  }
+  .fullscreen-btn:hover { background: var(--line-soft); }
+  .fullscreen-btn:focus-visible { outline: 2px solid var(--sci); outline-offset: 2px; }
+  .fullscreen-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  .fullscreen-notice {
+    display: none;
+    background: var(--sci-tint);
+    border-left: 3px solid var(--sci);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-bottom: 1.25rem;
+  }
+
+  /* ===== Header ===== */
+  .header { text-align: center; }
+
+  .header-eyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    width: fit-content;
+    margin: 0 auto 0.75rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: var(--sci-tint);
+    color: var(--sci-deep);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .header-eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--sci);
+    flex-shrink: 0;
+  }
+
+  .header h1 {
+    margin: 0 0 0.6rem;
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  .header p {
+    margin: 0 auto;
+    max-width: 100%;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+
+  hr.rule {
+    border: 0;
+    height: 1px;
+    background: var(--line-soft);
+    margin: 1.75rem 0;
+  }
+
+  /* ===== Cards ===== */
+  .card {
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    box-shadow: var(--shadow-sm);
+    padding: 1.25rem 1.35rem;
+  }
+
+  .block-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--sci-deep);
+    margin-bottom: 0.6rem;
+  }
+
+  /* ===== Instructions ===== */
+  .instructions { margin-bottom: 1.25rem; }
+  .instructions p { margin: 0 0 0.65rem; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.55; }
+  .instructions ol {
+    margin: 0;
+    padding-left: 1.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  .ulo {
+    background: var(--sci-tint-2);
+    border: 1px solid var(--line-soft);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-bottom: 1.5rem;
+  }
+  .ulo strong { color: var(--sci-deep); }
+
+  /* ===== Identity fields ===== */
+  .identity {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .identity > div { flex: 1 1 220px; }
+  .field-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 0.35rem;
+  }
+  input[type="text"], input[type="date"], textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.92rem;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.6rem 0.75rem;
+    line-height: 1.5;
+  }
+  input[type="text"]:focus, input[type="date"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--sci);
+    box-shadow: 0 0 0 3px rgba(62, 88, 111, 0.15);
+  }
+  textarea { resize: vertical; min-height: 96px; }
+  textarea::placeholder { color: #9aa9ad; }
+
+  /* ===== Prompt navigation ===== */
+  .nav-heading {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+  .pill-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: inherit;
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.45rem 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .pill:hover { background: var(--sci-tint-2); }
+  .pill:focus-visible { outline: 2px solid var(--sci); outline-offset: 2px; }
+  .pill[aria-selected="true"] {
+    background: var(--primary-grad);
+    border-color: var(--sci-dark);
+    color: #fff;
+  }
+  .pill-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--sci-tint);
+    color: var(--sci-deep);
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .pill[aria-selected="true"] .pill-num { background: rgba(255, 255, 255, 0.22); color: #fff; }
+  .pill.is-complete .pill-num { background: #10b981; color: #fff; }
+  .pill.is-complete .pill-num::after { content: '\2713'; }
+  .pill.is-complete .pill-num span { display: none; }
+
+  .progress-line {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin: 0 0 1.5rem;
+  }
+
+  /* ===== Panels ===== */
+  .panel { display: none; }
+  .panel.is-active { display: block; }
+
+  .earlier-view {
+    background: var(--sci-tint);
+    border-left: 3px solid var(--sci);
+    border-radius: 10px;
+    padding: 1rem 1.15rem;
+    margin-bottom: 1.5rem;
+  }
+  .earlier-view .block-label { margin-bottom: 0.35rem; }
+  .earlier-view p {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--sci-deep);
+    line-height: 1.45;
+  }
+
+  .response-heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 1rem;
+  }
+
+  .question { margin-bottom: 1.35rem; }
+  .question:last-of-type { margin-bottom: 0; }
+  .question-label {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 0.5rem;
+    line-height: 1.45;
+  }
+  .question-label .q-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    background: var(--sci-tint);
+    color: var(--sci-deep);
+    font-size: 0.72rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  /* ===== Stage footer (Prev / Next) ===== */
+  .stage-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--card);
+    box-shadow: var(--shadow-sm);
+  }
+  .stage-counter { font-size: 0.82rem; color: var(--muted); font-weight: 500; }
+
+  button.btn {
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 0.65rem 1.1rem;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+  }
+  button.btn:hover:not(:disabled) { background: var(--line-soft); }
+  button.btn:focus-visible { outline: 2px solid var(--sci); outline-offset: 2px; }
+  button.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  button.btn-primary {
+    background: var(--primary-grad);
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.2rem;
+    box-shadow: 0 4px 12px rgba(62, 88, 111, 0.22);
+  }
+  button.btn-primary:hover:not(:disabled) { background: linear-gradient(135deg, #354b5e 0%, #283948 100%); }
+
+  /* ===== Actions ===== */
+  .actions {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line-soft);
+  }
+  .action-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+  .save-note {
+    margin: 0.85rem 0 0;
+    font-size: 0.82rem;
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  @media (max-width: 620px) {
+    .header h1 { font-size: 1.45rem; }
+    .wrap { padding: 1.5rem 1rem 0; }
+    .stage-footer { flex-direction: column; align-items: stretch; text-align: center; }
+    .fullscreen-btn { top: 0.6rem; right: 0.6rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<button type="button" class="fullscreen-btn" id="fullscreen-btn" title="Open in fullscreen" aria-label="Open this activity in fullscreen in a new tab">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+    <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+    <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+    <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+  </svg>
+  Fullscreen
+</button>
+
+<div class="activity-scroll">
+  <div class="wrap">
+
+    <header class="header">
+      <span class="header-eyebrow">Interactive Worksheet</span>
+      <h1>Changing Ideas About Species</h1>
+      <p>Work through four earlier views about species and set out the modern scientific understanding that replaced each one, then save a PDF record of your responses.</p>
+    </header>
+
+    <hr class="rule">
+
+    <div class="fullscreen-notice" id="fullscreen-notice">
+      This activity is taller than the embedded view. For the best experience, use the <strong>Fullscreen</strong> button in the top-right corner.
+    </div>
+
+    <div class="card instructions">
+      <span class="block-label">Instructions</span>
+      <p>Complete each prompt below by adding your response.</p>
+      <p>For each prompt, you must respond with:</p>
+      <ol>
+        <li>An explanation of what people originally believed.</li>
+        <li>What evidence led scientists to modify or reject this view.</li>
+        <li>A modern example that supports today's understanding.</li>
+      </ol>
+    </div>
+
+    <div class="ulo">
+      <strong>This activity links to ULO1:</strong> Assess current and past ideas on the prehistory of life in terms of the paradigms of evolutionary biology across species.
+    </div>
+
+    <div class="identity">
+      <div>
+        <label class="field-label" for="student-name">Your name</label>
+        <input type="text" id="student-name" autocomplete="name" placeholder="Enter your name">
+      </div>
+      <div>
+        <label class="field-label" for="student-date">Date</label>
+        <input type="date" id="student-date">
+      </div>
+    </div>
+
+    <p class="nav-heading" id="nav-heading">Earlier views</p>
+    <div class="pill-nav" role="tablist" aria-labelledby="nav-heading">
+      <button type="button" class="pill" role="tab" id="tab-0" aria-controls="panel-0" aria-selected="true" data-index="0">
+        <span class="pill-num"><span>1</span></span>Immutable species
+      </button>
+      <button type="button" class="pill" role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false" tabindex="-1" data-index="1">
+        <span class="pill-num"><span>2</span></span>No extinction
+      </button>
+      <button type="button" class="pill" role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1" data-index="2">
+        <span class="pill-num"><span>3</span></span>Lamarckian inheritance
+      </button>
+      <button type="button" class="pill" role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1" data-index="3">
+        <span class="pill-num"><span>4</span></span>Perfect design
+      </button>
+    </div>
+    <p class="progress-line" id="progress-line" aria-live="polite">0 of 4 prompts complete</p>
+
+    <!-- Prompt 1 -->
+    <section class="panel is-active" id="panel-0" role="tabpanel" aria-labelledby="tab-0" tabindex="0">
+      <div class="earlier-view">
+        <span class="block-label">Earlier view</span>
+        <p>Species are immutable</p>
+      </div>
+      <div class="card">
+        <h2 class="response-heading">Modern scientific understanding</h2>
+        <div class="question">
+          <label class="question-label" for="q-0-1"><span class="q-num">1</span>An explanation of what people originally believed.</label>
+          <textarea id="q-0-1" data-panel="0" placeholder="Describe the earlier belief in your own words."></textarea>
+        </div>
+        <div class="question">
+          <label class="question-label" for="q-0-2"><span class="q-num">2</span>What evidence led scientists to modify or reject this view.</label>
+          <textarea id="q-0-2" data-panel="0" placeholder="Identify the observations, data or discoveries that challenged it."></textarea>
+        </div>
+        <div class="question">
+          <label class="question-label" for="q-0-3"><span class="q-num">3</span>A modern example that supports today's understanding.</label>
+          <textarea id="q-0-3" data-panel="0" placeholder="Give a specific example and explain how it supports the current view."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- Prompt 2 -->
+    <section class="panel" id="panel-1" role="tabpanel" aria-labelledby="tab-1" tabindex="0" hidden>
+      <div class="earlier-view">
+        <span class="block-label">Earlier view</span>
+        <p>Species do not become extinct</p>
+      </div>
+      <div class="card">
+        <h2 class="response-heading">Modern scientific understanding</h2>
+        <div class="question">
+          <label class="question-label" for="q-1-1"><span class="q-num">1</span>An explanation of what people originally believed.</label>
+          <textarea id="q-1-1" data-panel="1" placeholder="Describe the earlier belief in your own words."></textarea>
+        </div>
+        <div class="question">
+          <label class="question-label" for="q-1-2"><span class="q-num">2</span>What evidence led scientists to modify or reject this view.</label>
+          <textarea id="q-1-2" data-panel="1" placeholder="Identify the observations, data or discoveries that challenged it."></textarea>
+        </div>
+        <div class="question">
+          <label class="question-label" for="q-1-3"><span class="q-num">3</span>A modern example that supports today's understanding.</label>
+          <textarea id="q-1-3" data-panel="1" placeholder="Give a specific example and explain how it supports the current view."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- Prompt 3 -->
+    <section class="panel" id="panel-2" role="tabpanel" aria-labelledby="tab-2" tabindex="0" hidden>
+      <div class="earlier-view">
+        <span class="block-label">Earlier view</span>
+        <p>Characteristics acquired during life are inherited (Lamarckian Theory)</p>
+      </div>
+      <div class="card">
+        <h2 class="response-heading">Modern scientific understanding</h2>
+        <div class="question">
+          <label class="question-label" for="q-2-1"><span class="q-num">1</span>An explanation of what people originally believed.</label>
+          <textarea id="q-2-1" data-panel="2" placeholder="Describe the earlier belief in your own words."></textarea>
+        </div>
+        <div class="question">
+          <label class="question-label" for="q-2-2"><span class="q-num">2</span>What evidence led scientists to modify or reject this view.</label>
+          <textarea id="q-2-2" data-panel="2" placeholder="Identify the observations, data or discoveries that challenged it."></textarea>
+        </div>
+        <div class="question">
+          <label class="question-label" for="q-2-3"><span class="q-num">3</span>A modern example that supports today's understanding.</label>
+          <textarea id="q-2-3" data-panel="2" placeholder="Give a specific example and explain how it supports the current view."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- Prompt 4 -->
+    <section class="panel" id="panel-3" role="tabpanel" aria-labelledby="tab-3" tabindex="0" hidden>
+      <div class="earlier-view">
+        <span class="block-label">Earlier view</span>
+        <p>Organisms were perfectly designed</p>
+      </div>
+      <div class="card">
+        <h2 class="response-heading">Modern scientific understanding</h2>
+        <div class="question">
+          <label class="question-label" for="q-3-1"><span class="q-num">1</span>An explanation of what people originally believed.</label>
+          <textarea id="q-3-1" data-panel="3" placeholder="Describe the earlier belief in your own words."></textarea>
+        </div>
+        <div class="question">
+          <label class="question-label" for="q-3-2"><span class="q-num">2</span>What evidence led scientists to modify or reject this view.</label>
+          <textarea id="q-3-2" data-panel="3" placeholder="Identify the observations, data or discoveries that challenged it."></textarea>
+        </div>
+        <div class="question">
+          <label class="question-label" for="q-3-3"><span class="q-num">3</span>A modern example that supports today's understanding.</label>
+          <textarea id="q-3-3" data-panel="3" placeholder="Give a specific example and explain how it supports the current view."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <div class="stage-footer">
+      <button type="button" class="btn" id="prev-btn" disabled>&larr; Previous</button>
+      <span class="stage-counter" id="stage-counter">Prompt 1 of 4</span>
+      <button type="button" class="btn" id="next-btn">Next &rarr;</button>
+    </div>
+
+    <div class="actions">
+      <div class="action-row">
+        <button type="button" class="btn btn-primary" id="pdf-btn">Save as PDF</button>
+        <button type="button" class="btn" id="reset-btn">Reset responses</button>
+      </div>
+      <p class="save-note">Your responses are not saved automatically. Use the button above to download a PDF record of your completed worksheet.</p>
+    </div>
+
+    <footer style="max-width: 900px; margin: 3rem auto 0; padding: 1.25rem 1.5rem 1rem; border-top: 1px solid #e2e8f0; text-align: center; font-size: 0.78rem; color: #94a3b8; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+      Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au" style="color: #64748b; text-decoration: underline;">Hum-EdTT@curtin.edu.au</a>
+    </footer>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var PROMPTS = [
+    'Species are immutable',
+    'Species do not become extinct',
+    'Characteristics acquired during life are inherited (Lamarckian Theory)',
+    'Organisms were perfectly designed'
+  ];
+
+  var QUESTIONS = [
+    'An explanation of what people originally believed.',
+    'What evidence led scientists to modify or reject this view.',
+    "A modern example that supports today's understanding."
+  ];
+
+  var TOTAL = PROMPTS.length;
+  var current = 0;
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.pill'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var textareas = Array.prototype.slice.call(document.querySelectorAll('textarea'));
+  var nameInput = document.getElementById('student-name');
+  var dateInput = document.getElementById('student-date');
+  var prevBtn = document.getElementById('prev-btn');
+  var nextBtn = document.getElementById('next-btn');
+  var counter = document.getElementById('stage-counter');
+  var progressLine = document.getElementById('progress-line');
+  var pdfBtn = document.getElementById('pdf-btn');
+  var resetBtn = document.getElementById('reset-btn');
+  var scrollEl = document.querySelector('.activity-scroll');
+
+  /* ---------- navigation ---------- */
+
+  function showPrompt(index, moveFocus) {
+    current = Math.max(0, Math.min(TOTAL - 1, index));
+
+    tabs.forEach(function (tab, i) {
+      var active = i === current;
+      tab.setAttribute('aria-selected', active ? 'true' : 'false');
+      tab.tabIndex = active ? 0 : -1;
+    });
+
+    panels.forEach(function (panel, i) {
+      var active = i === current;
+      panel.classList.toggle('is-active', active);
+      if (active) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
+    });
+
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === TOTAL - 1;
+    counter.textContent = 'Prompt ' + (current + 1) + ' of ' + TOTAL;
+
+    if (moveFocus) { tabs[current].focus(); }
+    checkOverflow();
+  }
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      showPrompt(parseInt(tab.getAttribute('data-index'), 10), false);
+    });
+  });
+
+  document.querySelector('.pill-nav').addEventListener('keydown', function (event) {
+    var key = event.key;
+    if (key === 'ArrowRight' || key === 'ArrowDown') {
+      event.preventDefault();
+      showPrompt((current + 1) % TOTAL, true);
+    } else if (key === 'ArrowLeft' || key === 'ArrowUp') {
+      event.preventDefault();
+      showPrompt((current - 1 + TOTAL) % TOTAL, true);
+    } else if (key === 'Home') {
+      event.preventDefault();
+      showPrompt(0, true);
+    } else if (key === 'End') {
+      event.preventDefault();
+      showPrompt(TOTAL - 1, true);
+    }
+  });
+
+  prevBtn.addEventListener('click', function () {
+    showPrompt(current - 1, false);
+    scrollEl.scrollTop = 0;
+  });
+  nextBtn.addEventListener('click', function () {
+    showPrompt(current + 1, false);
+    scrollEl.scrollTop = 0;
+  });
+
+  /* ---------- completion tracking ---------- */
+
+  function responsesFor(index) {
+    return [1, 2, 3].map(function (q) {
+      var el = document.getElementById('q-' + index + '-' + q);
+      return el ? el.value.trim() : '';
+    });
+  }
+
+  function updateProgress() {
+    var complete = 0;
+    for (var i = 0; i < TOTAL; i++) {
+      var done = responsesFor(i).every(function (value) { return value !== ''; });
+      tabs[i].classList.toggle('is-complete', done);
+      if (done) { complete++; }
+    }
+    progressLine.textContent = complete + ' of ' + TOTAL + ' prompts complete';
+  }
+
+  textareas.forEach(function (area) {
+    area.addEventListener('input', function () {
+      updateProgress();
+      checkOverflow();
+    });
+  });
+
+  /* ---------- reset ---------- */
+
+  function hasContent() {
+    if (nameInput.value.trim() !== '' || dateInput.value !== '') { return true; }
+    return textareas.some(function (area) { return area.value.trim() !== ''; });
+  }
+
+  resetBtn.addEventListener('click', function () {
+    if (hasContent() && !window.confirm('Reset all your responses for this worksheet?')) { return; }
+    textareas.forEach(function (area) { area.value = ''; });
+    nameInput.value = '';
+    dateInput.value = '';
+    updateProgress();
+    showPrompt(0, false);
+    scrollEl.scrollTop = 0;
+  });
+
+  /* ---------- PDF export ---------- */
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function formatText(value) {
+    var trimmed = String(value).trim();
+    if (trimmed === '') { return '<span class="empty">No response provided</span>'; }
+    return escapeHtml(trimmed).replace(/\n/g, '<br>');
+  }
+
+  function formatDate(value) {
+    if (!value) { return ''; }
+    var parts = value.split('-');
+    if (parts.length !== 3) { return escapeHtml(value); }
+    return parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+
+  pdfBtn.addEventListener('click', function () {
+    var rows = PROMPTS.map(function (prompt, i) {
+      var answers = responsesFor(i);
+      var items = answers.map(function (answer, q) {
+        return '<div class="answer">' +
+                 '<p class="answer-label">' + (q + 1) + '. ' + escapeHtml(QUESTIONS[q]) + '</p>' +
+                 '<p class="answer-body">' + formatText(answer) + '</p>' +
+               '</div>';
+      }).join('');
+      return '<tr>' +
+               '<td class="col-view"><span class="row-num">' + (i + 1) + '</span>' + escapeHtml(prompt) + '</td>' +
+               '<td class="col-response">' + items + '</td>' +
+             '</tr>';
+    }).join('');
+
+    var metaBits = [];
+    if (nameInput.value.trim() !== '') { metaBits.push('Name: ' + escapeHtml(nameInput.value.trim())); }
+    if (dateInput.value !== '') { metaBits.push('Date: ' + formatDate(dateInput.value)); }
+    var meta = metaBits.length ? '<p class="meta">' + metaBits.join(' &nbsp;&middot;&nbsp; ') + '</p>' : '';
+
+    var printHtml = '<!DOCTYPE html>' +
+      '<html lang="en-AU"><head><meta charset="UTF-8">' +
+      '<title>Changing Ideas About Species</title>' +
+      '<style>' +
+      '@page { size: A4; margin: 0; }' +
+      '* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-sizing: border-box; }' +
+      'body { margin: 0; padding: 16mm; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #102528; font-size: 10.5pt; line-height: 1.45; }' +
+      'h1 { font-size: 16pt; margin: 0 0 4pt; color: #283948; }' +
+      '.sub { font-size: 9.5pt; color: #5a6e71; margin: 0 0 2pt; }' +
+      '.meta { font-size: 9.5pt; color: #2c4045; margin: 8pt 0 0; }' +
+      '.ulo { font-size: 8.5pt; color: #2c4045; background: #f2f5f7; border: 1px solid #e6ecf1; border-radius: 4pt; padding: 6pt 8pt; margin: 10pt 0 14pt; }' +
+      'table { width: 100%; border-collapse: collapse; }' +
+      'th { background: #e6ecf1; color: #283948; font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.05em; text-align: left; padding: 6pt 8pt; border: 1px solid #c5cdd4; }' +
+      'td { border: 1px solid #c5cdd4; padding: 8pt; vertical-align: top; page-break-inside: avoid; }' +
+      '.col-view { width: 28%; background: #f8fafb; font-weight: 600; color: #283948; }' +
+      '.row-num { display: inline-block; min-width: 14pt; height: 14pt; line-height: 14pt; text-align: center; border-radius: 50%; background: #3E586F; color: #fff; font-size: 8pt; margin-right: 5pt; }' +
+      '.answer { margin-bottom: 8pt; }' +
+      '.answer:last-child { margin-bottom: 0; }' +
+      '.answer-label { margin: 0 0 2pt; font-size: 8.5pt; font-weight: 700; color: #3E586F; }' +
+      '.answer-body { margin: 0; font-size: 10pt; color: #102528; white-space: normal; }' +
+      '.empty { color: #9aa9ad; font-style: italic; }' +
+      'tr { page-break-inside: avoid; }' +
+      '.foot { margin-top: 14pt; padding-top: 8pt; border-top: 1px solid #e2e8f0; text-align: center; font-size: 8pt; color: #94a3b8; }' +
+      '</style></head><body>' +
+      '<h1>Changing Ideas About Species</h1>' +
+      '<p class="sub">Species Evolution Over Time &middot; Science &amp; iSTEM</p>' +
+      meta +
+      '<div class="ulo"><strong>ULO1:</strong> Assess current and past ideas on the prehistory of life in terms of the paradigms of evolutionary biology across species.</div>' +
+      '<table><thead><tr><th>Earlier View</th><th>Modern Scientific Understanding</th></tr></thead><tbody>' +
+      rows +
+      '</tbody></table>' +
+      '<p class="foot">Created by the School of Education\'s EdTech Team. For enquiries, contact Hum-EdTT@curtin.edu.au</p>' +
+      '<script>' +
+      'window.addEventListener("load", function() { setTimeout(function() { window.print(); }, 150); });' +
+      '<\/script>' +
+      '</body></html>';
+
+    var printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      window.alert('Please allow pop-ups to generate the PDF record.');
+      return;
+    }
+    printWindow.document.open();
+    printWindow.document.write(printHtml);
+    printWindow.document.close();
+  });
+
+  /* ---------- fullscreen expand ---------- */
+
+  var HEIGHT_THRESHOLD = 1200; // match this activity's iframe embed height — see Embed Snippets
+  var fsBtn = document.getElementById('fullscreen-btn');
+  var fsNotice = document.getElementById('fullscreen-notice');
+
+  function checkOverflow() {
+    var isTall = scrollEl.scrollHeight > HEIGHT_THRESHOLD;
+    fsBtn.style.display = isTall ? 'flex' : 'none';
+    fsNotice.style.display = isTall ? 'block' : 'none';
+  }
+
+  fsBtn.addEventListener('click', function () {
+    window.open(window.location.href, '_blank');
+  });
+
+  window.addEventListener('load', checkOverflow);
+  window.addEventListener('resize', checkOverflow);
+
+  /* ---------- init ---------- */
+
+  showPrompt(0, false);
+  updateProgress();
+})();
+</script>
+</body>
+</html>
