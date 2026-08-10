@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to the Unit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Theories, Diversity, Development & Learning palette */
+    --tddl: #3E1F7F;                  /* primary */
+    --tddl-dark: #351a6c;             /* primary dark (~15% darker) */
+    --tddl-deep: #281453;             /* primary deep (used for text on tinted bg) */
+    --tddl-tint: #eae6f1;             /* primary very pale tint */
+    --tddl-tint-2: #f4f2f7;           /* primary even paler tint */
+    --accent: #c5bcd9;                /* accent - lighter partner to primary */
+
+    /* Neutrals - shared grammar across all subject areas */
+    --ink: #102528;
+    --ink-soft: #2c4045;
+    --muted: #5a6e71;
+    --line: #d8e3e4;
+    --line-soft: #e8eeef;
+    --bg: #f5f8f8;
+    --card: #ffffff;
+
+    --shadow-sm: 0 1px 2px rgba(40, 20, 83, 0.04), 0 2px 6px rgba(40, 20, 83, 0.05);
+    --shadow-md: 0 4px 12px rgba(40, 20, 83, 0.08), 0 12px 32px rgba(40, 20, 83, 0.07);
+    --primary-grad: linear-gradient(135deg, #3E1F7F 0%, #351a6c 100%);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* the OUTER page never scrolls */
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .activity-scroll {
+    height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 1rem;
+  }
+
+  /* ===== Fullscreen expand ===== */
+  .fullscreen-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 999;
+    display: none; /* JS reveals only when content exceeds the height threshold */
+    align-items: center;
+    gap: 0.4rem;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.5rem 0.9rem;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+  }
+  .fullscreen-btn:hover { background: var(--line-soft); }
+  .fullscreen-btn:focus-visible { outline: 2px solid var(--tddl); outline-offset: 2px; }
+  .fullscreen-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  .fullscreen-notice {
+    display: none; /* JS reveals alongside the button */
+    background: var(--tddl-tint);
+    border-left: 3px solid var(--tddl);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-bottom: 1.25rem;
+  }
+
+  /* ===== Header ===== */
+  .header { text-align: center; margin-bottom: 1.5rem; }
+
+  .header-eyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    width: fit-content;
+    margin: 0 auto 0.75rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: var(--tddl-tint);
+    color: var(--tddl-deep);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .header-eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--tddl);
+    flex-shrink: 0;
+  }
+
+  .header h1 {
+    margin: 0 0 0.6rem;
+    font-size: 1.85rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  .header p {
+    margin: 0 auto;
+    max-width: 100%;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  /* ===== Framing note (authored intro, not a task) ===== */
+  .framing {
+    background: var(--tddl-tint-2);
+    border: 1px dashed var(--accent);
+    border-radius: 14px;
+    padding: 1.25rem 1.4rem;
+    margin-bottom: 2rem;
+  }
+  .framing .framing-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--tddl-deep);
+    margin-bottom: 0.5rem;
+  }
+  .framing .framing-label svg { width: 15px; height: 15px; }
+  .framing p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* ===== Meta (name + date) ===== */
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .meta .field { flex: 1 1 220px; }
+  .field label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 0.35rem;
+  }
+  .field .optional { font-weight: 500; color: var(--muted); }
+
+  input[type="text"], input[type="date"], textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.65rem 0.8rem;
+  }
+  input[type="text"]:focus, input[type="date"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--tddl);
+    box-shadow: 0 0 0 3px rgba(62, 31, 127, 0.15);
+  }
+
+  /* ===== Sections ===== */
+  .section {
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    box-shadow: var(--shadow-sm);
+    padding: 1.5rem 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .section-num {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-grad);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  .section-head h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--tddl-deep);
+  }
+  .section .lead {
+    margin: 0 0 1.25rem;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .section .lead a { color: var(--tddl); font-weight: 600; }
+  .section .lead a:hover { color: var(--tddl-dark); }
+  .prompt-q {
+    margin: 0 0 1rem;
+    color: var(--ink);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  /* short-answer fields (Section 1) */
+  .short-field { margin-bottom: 1.1rem; }
+  .short-field:last-child { margin-bottom: 0; }
+  .short-field label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+
+  /* reflection block */
+  .reflection {
+    background: var(--tddl-tint);
+    border-left: 4px solid var(--tddl);
+    border-radius: 0 10px 10px 0;
+    padding: 1.1rem 1.2rem;
+  }
+  .reflection-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--tddl-deep);
+    margin-bottom: 0.6rem;
+  }
+  .reflection-label svg { width: 15px; height: 15px; }
+  .reflection textarea {
+    min-height: 150px;
+    resize: vertical;
+    line-height: 1.55;
+  }
+  .wordcount {
+    margin-top: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ===== Actions ===== */
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+  .btn {
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 0.75rem 1.2rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid transparent;
+  }
+  .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .btn-primary {
+    background: var(--primary-grad);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(62, 31, 127, 0.22);
+  }
+  .btn-primary:hover { background: linear-gradient(135deg, #351a6c 0%, #281453 100%); }
+  .btn-secondary {
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .btn-secondary:hover { background: var(--line-soft); }
+  .btn:focus-visible { outline: 2px solid var(--tddl); outline-offset: 2px; }
+
+  .save-note {
+    margin: 1rem 0 0;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  /* ===== Footer ===== */
+  footer {
+    max-width: 820px;
+    margin: 3rem auto 0;
+    padding: 1.25rem 1.5rem 1rem;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+    font-size: 0.78rem;
+    color: #94a3b8;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  footer a { color: #64748b; text-decoration: underline; }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 1.75rem 1.1rem 1rem; }
+    .section { padding: 1.25rem 1.1rem; }
+    .header h1 { font-size: 1.5rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<button type="button" class="fullscreen-btn" id="fullscreen-btn" title="Open in fullscreen" aria-label="Open this activity in fullscreen in a new tab">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+    <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+    <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+    <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+  </svg>
+  Fullscreen
+</button>
+
+<div class="activity-scroll">
+  <div class="wrap">
+
+    <header class="header">
+      <span class="header-eyebrow">Topic activity</span>
+      <h1>Introduction to the unit</h1>
+      <p>Work through the tasks for this topic and save a PDF record.</p>
+    </header>
+
+    <div class="fullscreen-notice" id="fullscreen-notice">
+      This activity is taller than the embedded view. For the best experience, use the <strong>Fullscreen</strong> button in the top-right corner.
+    </div>
+
+    <div class="framing">
+      <span class="framing-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+        Before you start
+      </span>
+      <p>This activity is here to help, not to box you in. Each section gives you a starting structure for the tasks in this topic, room to gather your thoughts, then save them as a PDF to keep or to paste into the Discussion Board. If you would rather approach these tasks your own way, that is completely fine. The goal is to arrive at the thinking, and there is no single right route there. Use as much or as little of this scaffold as serves you.</p>
+    </div>
+
+    <div class="meta">
+      <div class="field">
+        <label for="student-name">Name <span class="optional">(optional)</span></label>
+        <input type="text" id="student-name" autocomplete="name" placeholder="Your name">
+      </div>
+      <div class="field">
+        <label for="student-date">Date</label>
+        <input type="date" id="student-date">
+      </div>
+    </div>
+
+    <!-- Section 1 -->
+    <section class="section">
+      <div class="section-head">
+        <span class="section-num">1</span>
+        <h2>Get oriented</h2>
+      </div>
+      <p class="lead">Make sure you explore the Getting Started tab in Blackboard, note the details and dates of the Program Calendar, put the assignment dates in your diary, and download and read the Unit Outline.</p>
+      <p class="prompt-q">Can you complete the following?</p>
+
+      <div class="short-field">
+        <label for="s1-standards">The unit addresses the AITSL Standards...</label>
+        <input type="text" id="s1-standards" placeholder="Type your answer">
+      </div>
+      <div class="short-field">
+        <label for="s1-assessment">The first assessment is due...</label>
+        <input type="text" id="s1-assessment" placeholder="Type your answer">
+      </div>
+      <div class="short-field">
+        <label for="s1-textbook">The required textbook is...</label>
+        <input type="text" id="s1-textbook" placeholder="Type your answer">
+      </div>
+    </section>
+
+    <!-- Section 2 -->
+    <section class="section">
+      <div class="section-head">
+        <span class="section-num">2</span>
+        <h2>Introduce yourself</h2>
+      </div>
+      <div class="reflection">
+        <span class="reflection-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          Your response
+        </span>
+        <p class="prompt-q">Introduce yourself and meet your colleagues on Discussion Board.</p>
+        <textarea id="s2-intro" data-wc="s2-count" placeholder="Write your introduction here"></textarea>
+        <div class="wordcount" id="s2-count">0 words</div>
+      </div>
+    </section>
+
+    <!-- Section 3 -->
+    <section class="section">
+      <div class="section-head">
+        <span class="section-num">3</span>
+        <h2>Reflection on Life at One</h2>
+      </div>
+      <div class="reflection">
+        <span class="reflection-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          Your response
+        </span>
+        <p class="prompt-q">The first episode of the Life After Life series, Life at One, gives a wonderful overview of some of the genetic and environmental aspects of development and is a nice lead in to physical development. You can access Episode 1 from the Curtin University Library at <a href="https://search.informit.org/doi/10.3316/edutv.159134" target="_blank" rel="noopener">https://search.informit.org/doi/10.3316/edutv.159134</a> or through our Reading List.</p>
+        <textarea id="s3-reflection" data-wc="s3-count" placeholder="Write your reflection here"></textarea>
+        <div class="wordcount" id="s3-count">0 words</div>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button type="button" class="btn btn-primary" id="save-pdf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Save as PDF
+      </button>
+      <button type="button" class="btn btn-secondary" id="reset-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="1 4 1 10 7 10"></polyline>
+          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+        </svg>
+        Reset
+      </button>
+    </div>
+
+    <p class="save-note">Your responses are not saved automatically. Use the Save as PDF button above to download a PDF record of your completed worksheet.</p>
+
+    <footer>
+      Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au">Hum-EdTT@curtin.edu.au</a>
+    </footer>
+
+  </div>
+</div>
+
+<script>
+  /* ===== Live word counts (display only) ===== */
+  function countWords(str) {
+    var t = str.trim();
+    if (!t) return 0;
+    return t.split(/\s+/).length;
+  }
+  document.querySelectorAll('textarea[data-wc]').forEach(function (ta) {
+    var out = document.getElementById(ta.getAttribute('data-wc'));
+    function update() {
+      var n = countWords(ta.value);
+      out.textContent = n + (n === 1 ? ' word' : ' words');
+    }
+    ta.addEventListener('input', update);
+    update();
+  });
+
+  /* ===== Fullscreen expand ===== */
+  (function () {
+    var HEIGHT_THRESHOLD = 1500; // match this activity's iframe embed height
+    var btn = document.getElementById('fullscreen-btn');
+    var notice = document.getElementById('fullscreen-notice');
+    var scrollEl = document.querySelector('.activity-scroll');
+
+    function checkOverflow() {
+      var isTall = scrollEl.scrollHeight > HEIGHT_THRESHOLD;
+      btn.style.display = isTall ? 'flex' : 'none';
+      notice.style.display = isTall ? 'block' : 'none';
+    }
+    btn.addEventListener('click', function () { window.open(window.location.href, '_blank'); });
+    window.addEventListener('load', checkOverflow);
+    window.addEventListener('resize', checkOverflow);
+  })();
+
+  /* ===== Reset ===== */
+  (function () {
+    var resetBtn = document.getElementById('reset-btn');
+    function hasContent() {
+      var inputs = document.querySelectorAll('.wrap input[type="text"], .wrap textarea');
+      for (var i = 0; i < inputs.length; i++) { if (inputs[i].value.trim()) return true; }
+      var d = document.getElementById('student-date');
+      if (d && d.value) return true;
+      return false;
+    }
+    resetBtn.addEventListener('click', function () {
+      if (hasContent() && !window.confirm('Clear all your responses for this worksheet?')) return;
+      document.querySelectorAll('.wrap input[type="text"], .wrap input[type="date"], .wrap textarea').forEach(function (el) { el.value = ''; });
+      document.querySelectorAll('textarea[data-wc]').forEach(function (ta) {
+        document.getElementById(ta.getAttribute('data-wc')).textContent = '0 words';
+      });
+    });
+  })();
+
+  /* ===== PDF export ===== */
+  (function () {
+    var saveBtn = document.getElementById('save-pdf');
+
+    function esc(s) {
+      return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    function formatDate(v) {
+      if (!v) return '';
+      var parts = v.split('-');
+      if (parts.length !== 3) return v;
+      var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      var y = parts[0], m = parseInt(parts[1], 10), d = parseInt(parts[2], 10);
+      return d + ' ' + months[m - 1] + ' ' + y;
+    }
+    function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+    function answerBlock(text) {
+      if (text) return '<div class="ans">' + esc(text).replace(/\n/g, '<br>') + '</div>';
+      return '<div class="ans empty">(No response entered)</div>';
+    }
+
+    saveBtn.addEventListener('click', function () {
+      var name = val('student-name');
+      var date = formatDate(val('student-date'));
+
+      var s1a = val('s1-standards');
+      var s1b = val('s1-assessment');
+      var s1c = val('s1-textbook');
+      var s2 = val('s2-intro');
+      var s3 = val('s3-reflection');
+
+      var printHtml = '<!DOCTYPE html>' +
+        '<html lang="en-AU"><head><meta charset="UTF-8"><title>Introduction to the Unit</title>' +
+        '<style>' +
+        '@page { size: A4 portrait; margin: 0; }' +
+        '* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }' +
+        'body { padding: 16mm; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #102528; font-size: 12px; line-height: 1.5; }' +
+        '.doc-eyebrow { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #3E1F7F; margin-bottom: 4px; }' +
+        'h1 { font-size: 20px; margin: 0 0 2px; color: #281453; }' +
+        '.subject { font-size: 12px; color: #5a6e71; margin: 0 0 16px; }' +
+        '.meta { display: flex; gap: 28px; padding: 10px 0; border-top: 1px solid #d8e3e4; border-bottom: 1px solid #d8e3e4; margin-bottom: 20px; }' +
+        '.meta div { font-size: 12px; }' +
+        '.meta .lbl { font-weight: 700; color: #281453; margin-right: 6px; }' +
+        '.sec { margin-bottom: 20px; page-break-inside: avoid; }' +
+        '.sec-title { font-size: 13px; font-weight: 700; color: #281453; margin: 0 0 8px; padding-bottom: 4px; border-bottom: 2px solid #eae6f1; }' +
+        '.q { font-size: 12px; font-weight: 600; color: #102528; margin: 12px 0 5px; }' +
+        '.ans { background: #f4f2f7; border-left: 3px solid #3E1F7F; padding: 9px 11px; border-radius: 0 6px 6px 0; font-size: 12px; min-height: 14px; white-space: normal; }' +
+        '.ans.empty { color: #98a0a3; font-style: italic; background: #f7f8f8; border-left-color: #d8e3e4; }' +
+        '.lead-txt { font-size: 11px; color: #2c4045; margin: 0 0 6px; }' +
+        '</style></head><body>' +
+        '<div class="doc-eyebrow">Topic activity</div>' +
+        '<h1>Introduction to the Unit</h1>' +
+        '<p class="subject">Theories, Diversity, Development &amp; Learning</p>' +
+        '<div class="meta">' +
+          '<div><span class="lbl">Name:</span>' + (name ? esc(name) : '&mdash;') + '</div>' +
+          '<div><span class="lbl">Date:</span>' + (date ? esc(date) : '&mdash;') + '</div>' +
+        '</div>' +
+
+        '<div class="sec">' +
+          '<p class="sec-title">1. Get oriented</p>' +
+          '<p class="lead-txt">Can you complete the following?</p>' +
+          '<p class="q">The unit addresses the AITSL Standards...</p>' + answerBlock(s1a) +
+          '<p class="q">The first assessment is due...</p>' + answerBlock(s1b) +
+          '<p class="q">The required textbook is...</p>' + answerBlock(s1c) +
+        '</div>' +
+
+        '<div class="sec">' +
+          '<p class="sec-title">2. Introduce yourself</p>' +
+          '<p class="q">Introduce yourself and meet your colleagues on Discussion Board.</p>' + answerBlock(s2) +
+        '</div>' +
+
+        '<div class="sec">' +
+          '<p class="sec-title">3. Reflection on Life at One</p>' +
+          '<p class="q">The first episode of the Life After Life series, Life at One, gives a wonderful overview of some of the genetic and environmental aspects of development and is a nice lead in to physical development. You can access Episode 1 from the Curtin University Library at https://search.informit.org/doi/10.3316/edutv.159134 or through our Reading List.</p>' + answerBlock(s3) +
+        '</div>' +
+
+        '<script>' +
+        'window.addEventListener("load", function () { setTimeout(function () { window.print(); }, 150); });' +
+        '<\/script>' +
+        '</body></html>';
+
+      var printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        window.alert('Please allow pop-ups to generate the PDF record.');
+        return;
+      }
+      printWindow.document.open();
+      printWindow.document.write(printHtml);
+      printWindow.document.close();
+    });
+  })();
+</script>
+</body>
+</html>
