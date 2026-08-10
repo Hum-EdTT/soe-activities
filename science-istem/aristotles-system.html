@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aristotle's System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Science & iSTEM palette */
+    --sci: #3E586F;                  /* primary */
+    --sci-dark: #354b5e;             /* primary dark (~15% darker) */
+    --sci-deep: #283948;             /* primary deep (used for text on tinted bg) */
+    --sci-tint: #e6ecf1;             /* primary very pale tint */
+    --sci-tint-2: #f2f5f7;           /* primary even paler tint */
+    --accent: #c5cdd4;               /* accent - lighter partner to primary */
+    --ink: #102528;                  /* main body text - keep neutral */
+    --ink-soft: #2c4045;             /* softer body text - keep neutral */
+    --muted: #5a6e71;                /* muted text - keep neutral */
+    --line: #d8e3e4;                 /* borders - keep neutral */
+    --line-soft: #e8eeef;            /* soft dividers - keep neutral */
+    --bg: #f5f8f8;                   /* page background - keep neutral */
+    --card: #ffffff;                 /* card background - keep neutral */
+    --shadow-sm: 0 1px 2px rgba(40, 57, 72, 0.04), 0 2px 6px rgba(40, 57, 72, 0.05);
+    --shadow-md: 0 4px 12px rgba(40, 57, 72, 0.08), 0 12px 32px rgba(40, 57, 72, 0.07);
+    --primary-grad: linear-gradient(135deg, #3E586F 0%, #354b5e 100%);
+
+    /* Branch accents for this diagram (pair with the Science & iSTEM slate primary) */
+    --plant: #4a7c59;
+    --plant-mid: #6e9a7c;
+    --plant-deep: #2f5a3f;
+    --plant-tint: #edf3ef;
+    --animal: #b5673c;
+    --animal-mid: #cf8b5f;
+    --animal-deep: #8a4d2b;
+    --animal-tint: #f8f0ea;
+    --beak: #e0a44e;
+
+    /* Connector colour (overridden per branch when active) */
+    --conn: #bbc8d1;
+
+    /* Shared page gutter - keeps the footer rule the same width as the diagram card */
+    --gutter: 1.25rem;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* the OUTER page never scrolls */
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .activity-scroll {
+    height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.25rem var(--gutter) 0;
+  }
+
+  /* Footer sits in a container with the same max-width and gutter as .wrap,
+     so its border-top rule lines up exactly with the diagram card edges. */
+  .footer-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+
+  /* ===== Fullscreen expand (revealed only if content is genuinely clipped) ===== */
+  .fullscreen-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 999;
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.5rem 0.9rem;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+  }
+  .fullscreen-btn:hover { background: var(--line-soft); }
+  .fullscreen-btn:focus-visible { outline: 2px solid var(--sci); outline-offset: 2px; }
+  .fullscreen-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* ===== Diagram shell ===== */
+  .diagram {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    padding: 1.35rem 1.5rem 1.6rem;
+  }
+
+  .hint {
+    margin: 0 0 1rem;
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .hint strong { font-weight: 600; color: var(--ink-soft); }
+
+  .tree { display: flex; flex-direction: column; align-items: center; }
+
+  .root-row { display: flex; justify-content: center; width: 100%; }
+
+  /* ===== Nodes ===== */
+  .node-root {
+    background: var(--primary-grad);
+    color: #fff;
+    border-radius: 10px;
+    padding: 0.55rem 1.4rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    box-shadow: 0 4px 12px rgba(40, 57, 72, 0.18);
+  }
+
+  /* The illustration lives inside the branch card, so picture + label read as
+     one item rather than as two separate nodes in the classification. */
+  .node-branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    width: 100%;
+    font-family: inherit;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--bc-deep);
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-top: 3px solid var(--bc);
+    border-radius: 12px;
+    padding: 0.9rem 1rem 0.75rem;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .node-branch:focus-visible { outline: 2px solid var(--bc); outline-offset: 2px; }
+  .branch.is-active .node-branch {
+    background: var(--bc-tint);
+    border-color: var(--bc);
+    box-shadow: var(--shadow-md);
+  }
+
+  .node-leaf {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    padding: 0.7rem 0.9rem;
+    min-height: 4rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  }
+  .leaf-sub {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--muted);
+    transition: color 0.18s ease;
+  }
+  .branch.is-active .node-leaf {
+    background: var(--bc-tint);
+    border-color: var(--bc);
+    color: var(--bc-deep);
+  }
+  .branch.is-active .leaf-sub { color: var(--bc-deep); }
+
+  /* ===== Illustration medallions ===== */
+  .branch-figure {
+    width: 74px;
+    height: 74px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bc-tint);
+    border: 1.5px solid var(--bc);
+    transition: transform 0.2s ease;
+  }
+  .branch-figure svg { width: 46px; height: 46px; display: block; overflow: visible; }
+  .branch.is-active .branch-figure { transform: scale(1.05); }
+  .branch.is-active .branch-figure { background: var(--card); }
+
+  /* ===== Branch + leaf layout ===== */
+  .branches {
+    --gap: 2.5rem;
+    display: flex;
+    gap: var(--gap);
+    align-items: flex-start;
+    width: 100%;
+  }
+  .branch {
+    flex: 1 1 0;
+    min-width: 0;
+    position: relative;
+    transition: opacity 0.18s ease;
+  }
+  .branch[data-branch="plants"]  { --bc: var(--plant);  --bc-deep: var(--plant-deep);  --bc-tint: var(--plant-tint); }
+  .branch[data-branch="animals"] { --bc: var(--animal); --bc-deep: var(--animal-deep); --bc-tint: var(--animal-tint); }
+  .branch.is-active { --conn: var(--bc); }
+  .diagram[data-active] .branch:not(.is-active) { opacity: 0.32; }
+
+  .leaves {
+    --gap: 0.85rem;
+    display: flex;
+    gap: var(--gap);
+    align-items: stretch;
+  }
+  .leaf-col {
+    flex: 1 1 0;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== Connectors ===== */
+  .rail {
+    width: 2px;
+    background: var(--conn);
+    margin: 0 auto;
+    transition: background-color 0.18s ease;
+  }
+  .rail-trunk { height: 24px; }
+  .rail-leaves { height: 16px; }
+
+  .connect { position: relative; }
+  .connect::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    margin-left: -1px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--conn);
+  }
+  .connect::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    height: 2px;
+    background: var(--conn);
+  }
+  .arrow {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 7px solid var(--conn);
+  }
+
+  .connect-branch { height: 24px; }
+  .branch:first-child .connect-branch::after { left: 50%; right: calc(var(--gap) / -2); }
+  .branch:last-child  .connect-branch::after { left: calc(var(--gap) / -2); right: 50%; }
+
+  .connect-leaf { height: 20px; }
+  .leaf-col:first-child  .connect-leaf::after { left: 50%; right: calc(var(--gap) / -2); }
+  .leaf-col:nth-child(2) .connect-leaf::after { left: calc(var(--gap) / -2); right: calc(var(--gap) / -2); }
+  .leaf-col:last-child   .connect-leaf::after { left: calc(var(--gap) / -2); right: 50%; }
+
+  /* ===== Branch caption ===== */
+  .caption { margin: 0.9rem 0 0; text-align: center; }
+  .caption-pill {
+    display: inline-block;
+    background: var(--bc-tint);
+    color: var(--bc-deep);
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .caption-pill strong { font-weight: 700; letter-spacing: 0.03em; }
+
+  /* ===== Narrow screens: rail-and-tick layout ===== */
+  @media (max-width: 680px) {
+    :root { --gutter: 1rem; }
+    .wrap { padding: 1rem var(--gutter) 0; }
+    .diagram { padding: 1.25rem 1rem 1.5rem; }
+    .hint { text-align: left; }
+    .tree { align-items: flex-start; }
+    .root-row { justify-content: flex-start; }
+    .node-root { font-size: 0.95rem; padding: 0.55rem 1.1rem; }
+
+    .rail-trunk { margin: 0 0 0 1.1rem; height: 18px; }
+
+    .branches {
+      flex-direction: column;
+      gap: 1.5rem;
+      border-left: 2px solid #bbc8d1;
+      margin-left: 1.1rem;
+      padding-left: 1.35rem;
+    }
+    .connect-branch { display: none; }
+    .branch::before {
+      content: '';
+      position: absolute;
+      left: -1.35rem;
+      top: 2.1rem;
+      width: 1.35rem;
+      height: 2px;
+      background: var(--conn);
+    }
+    .node-branch {
+      flex-direction: row;
+      justify-content: flex-start;
+      gap: 0.75rem;
+      text-align: left;
+      padding: 0.7rem 1rem;
+    }
+    .branch-figure { width: 54px; height: 54px; }
+    .branch-figure svg { width: 34px; height: 34px; }
+
+    .rail-leaves { display: none; }
+    .leaves {
+      flex-direction: column;
+      gap: 0.55rem;
+      margin: 0.9rem 0 0 1rem;
+      padding-left: 1.35rem;
+      border-left: 2px solid var(--conn);
+    }
+    .connect-leaf { display: none; }
+    .leaf-col::before {
+      content: '';
+      position: absolute;
+      left: -1.35rem;
+      top: 1.25rem;
+      width: 1.35rem;
+      height: 2px;
+      background: var(--conn);
+    }
+    .node-leaf {
+      align-items: flex-start;
+      justify-content: center;
+      text-align: left;
+      min-height: 0;
+      padding: 0.6rem 1.1rem;
+    }
+    .caption { text-align: left; margin-left: 1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+    .branch.is-active .branch-figure { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<button type="button" class="fullscreen-btn" id="fullscreen-btn" title="Open in fullscreen" aria-label="Open this activity in fullscreen in a new tab">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+    <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+    <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+    <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+  </svg>
+  Fullscreen
+</button>
+
+<div class="activity-scroll">
+  <div class="wrap">
+
+    <div class="diagram" id="diagram" role="group" aria-label="Aristotle's system of classification">
+
+      <p class="hint">Select <strong>Plants</strong> or <strong>Animals</strong> to focus that branch.</p>
+
+      <div class="tree">
+
+        <div class="root-row">
+          <div class="node-root">Aristotle's System</div>
+        </div>
+
+        <div class="rail rail-trunk" aria-hidden="true"></div>
+
+        <div class="branches">
+
+          <!-- ============ PLANTS ============ -->
+          <section class="branch" data-branch="plants">
+            <div class="connect connect-branch" aria-hidden="true"><span class="arrow"></span></div>
+
+            <button type="button" class="node-branch" data-branch-btn="plants" aria-pressed="false">
+              <span class="branch-figure" aria-hidden="true">
+                <!-- Leafy sprig -->
+                <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                  <ellipse cx="24" cy="43" rx="10" ry="2.6" fill="var(--plant-deep)" opacity="0.16"/>
+                  <path d="M24 43 C22.6 34 23.4 23 26 10" fill="none" stroke="var(--plant-deep)" stroke-width="2.2" stroke-linecap="round"/>
+                  <path d="M23.4 34 C17 34.6 11.6 30.4 10.6 24 C17 23 22.4 27.2 23.4 34 Z" fill="var(--plant)"/>
+                  <path d="M24 29 C30.4 29.6 35.8 25.4 36.8 19 C30.4 18 25 22.2 24 29 Z" fill="var(--plant-mid)"/>
+                  <path d="M24.6 23.4 C19.6 22.2 15.8 17.8 15.8 12.4 C20.8 13 24.2 17 24.6 23.4 Z" fill="var(--plant-mid)"/>
+                  <path d="M25.2 18.2 C30 17 33.8 12.6 33.8 7.2 C29 7.8 25.6 11.8 25.2 18.2 Z" fill="var(--plant)"/>
+                  <path d="M26 12.4 C23.6 9.6 24 5.6 26 3.4 C28 5.6 28.4 9.6 26 12.4 Z" fill="var(--plant-deep)"/>
+                  <g stroke="var(--plant-deep)" stroke-width="0.9" stroke-linecap="round" opacity="0.35" fill="none">
+                    <path d="M23.4 34 C19.6 32 16 29 12.4 25.2"/>
+                    <path d="M24 29 C27.8 27.4 31.4 24.6 34.8 20.4"/>
+                    <path d="M24.6 23.4 C22 21 19.4 18 17.6 14.2"/>
+                    <path d="M25.2 18.2 C27.4 15.8 29.8 12.8 31.8 9.2"/>
+                  </g>
+                </svg>
+              </span>
+              Plants
+            </button>
+
+            <div class="rail rail-leaves" aria-hidden="true"></div>
+            <div class="leaves">
+              <div class="leaf-col">
+                <div class="connect connect-leaf" aria-hidden="true"><span class="arrow"></span></div>
+                <div class="node-leaf">Soft stems <span class="leaf-sub">(herbs)</span></div>
+              </div>
+              <div class="leaf-col">
+                <div class="connect connect-leaf" aria-hidden="true"><span class="arrow"></span></div>
+                <div class="node-leaf">several woody stems <span class="leaf-sub">(shrubs)</span></div>
+              </div>
+              <div class="leaf-col">
+                <div class="connect connect-leaf" aria-hidden="true"><span class="arrow"></span></div>
+                <div class="node-leaf">one woody stem <span class="leaf-sub">(trees)</span></div>
+              </div>
+            </div>
+            <p class="caption"><span class="caption-pill"><strong>PLANTS:</strong> Based on size of stem</span></p>
+          </section>
+
+          <!-- ============ ANIMALS ============ -->
+          <section class="branch" data-branch="animals">
+            <div class="connect connect-branch" aria-hidden="true"><span class="arrow"></span></div>
+
+            <button type="button" class="node-branch" data-branch-btn="animals" aria-pressed="false">
+              <span class="branch-figure" aria-hidden="true">
+                <!-- Perching bird -->
+                <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 41 C15 38.5 30 39.5 44 36.5" fill="none" stroke="var(--animal-deep)" stroke-width="2.2" stroke-linecap="round"/>
+                  <path d="M31 38.6 C33 35 37 34.8 38.5 36.6 C36.5 39.6 33 39.8 31 38.6 Z" fill="var(--animal-mid)"/>
+                  <path d="M22 34.5 L21.5 39" stroke="var(--animal-deep)" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M26 34.5 L26.5 39" stroke="var(--animal-deep)" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M35.5 20 L46.5 12.5 L44.5 20.5 L37.5 26 Z" fill="var(--animal-deep)"/>
+                  <ellipse cx="26" cy="25" rx="12" ry="10.2" transform="rotate(-16 26 25)" fill="var(--animal)"/>
+                  <path d="M18 33.5 C17 29 19.5 25 24 24 C29 23 32.5 26 32 30 C31 34 24 36.5 18 33.5 Z" fill="#fdf3e7"/>
+                  <path d="M22 22.5 C28 19.5 34 22.5 35.5 28 C30 29.5 24.5 27 22 22.5 Z" fill="var(--animal-deep)"/>
+                  <circle cx="17" cy="16" r="7.6" fill="var(--animal)"/>
+                  <path d="M13 12 C15.5 9.5 20 9.5 22.5 12 C19 10.5 16 10.5 13 12 Z" fill="var(--animal-deep)"/>
+                  <path d="M10.2 16.6 L2.5 18.6 L10.2 21 Z" fill="var(--beak)"/>
+                  <circle cx="15.2" cy="15" r="2" fill="#241610"/>
+                  <circle cx="15.9" cy="14.3" r="0.65" fill="#ffffff"/>
+                </svg>
+              </span>
+              Animals
+            </button>
+
+            <div class="rail rail-leaves" aria-hidden="true"></div>
+            <div class="leaves">
+              <div class="leaf-col">
+                <div class="connect connect-leaf" aria-hidden="true"><span class="arrow"></span></div>
+                <div class="node-leaf">Air dwellers</div>
+              </div>
+              <div class="leaf-col">
+                <div class="connect connect-leaf" aria-hidden="true"><span class="arrow"></span></div>
+                <div class="node-leaf">Land Dwellers</div>
+              </div>
+              <div class="leaf-col">
+                <div class="connect connect-leaf" aria-hidden="true"><span class="arrow"></span></div>
+                <div class="node-leaf">Water Dwellers</div>
+              </div>
+            </div>
+            <p class="caption"><span class="caption-pill"><strong>ANIMALS:</strong> Based on where they lived</span></p>
+          </section>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-wrap">
+    <footer style="max-width: 100%; margin: 1.75rem auto 0; padding: 1.25rem 0 1rem; border-top: 1px solid #e2e8f0; text-align: center; font-size: 0.78rem; color: #94a3b8; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+      Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au" style="color: #64748b; text-decoration: underline;">Hum-EdTT@curtin.edu.au</a>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function () {
+  var diagram = document.getElementById('diagram');
+  var branches = Array.prototype.slice.call(diagram.querySelectorAll('.branch'));
+  var pinned = null;
+
+  function setActive(name) {
+    if (name) {
+      diagram.setAttribute('data-active', name);
+    } else {
+      diagram.removeAttribute('data-active');
+    }
+    branches.forEach(function (branch) {
+      var branchName = branch.getAttribute('data-branch');
+      branch.classList.toggle('is-active', branchName === name);
+      branch.querySelector('.node-branch').setAttribute('aria-pressed', String(pinned === branchName));
+    });
+  }
+
+  branches.forEach(function (branch) {
+    var name = branch.getAttribute('data-branch');
+    var btn = branch.querySelector('.node-branch');
+
+    branch.addEventListener('mouseenter', function () { if (!pinned) { setActive(name); } });
+    branch.addEventListener('mouseleave', function () { if (!pinned) { setActive(null); } });
+
+    btn.addEventListener('focus', function () { if (!pinned) { setActive(name); } });
+    btn.addEventListener('blur', function () { if (!pinned) { setActive(null); } });
+
+    btn.addEventListener('click', function () {
+      pinned = (pinned === name) ? null : name;
+      setActive(pinned);
+    });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && pinned) {
+      pinned = null;
+      setActive(null);
+    }
+  });
+})();
+
+(function () {
+  /* The diagram is sized to fit its embed height, so the fullscreen button stays
+     hidden unless the content is genuinely clipped (e.g. a very narrow phone). */
+  var btn = document.getElementById('fullscreen-btn');
+  var scrollEl = document.querySelector('.activity-scroll');
+
+  function checkOverflow() {
+    var isClipped = scrollEl.scrollHeight > scrollEl.clientHeight + 8;
+    btn.style.display = isClipped ? 'flex' : 'none';
+  }
+
+  btn.addEventListener('click', function () {
+    window.open(window.location.href, '_blank');
+  });
+
+  window.addEventListener('load', checkOverflow);
+  window.addEventListener('resize', checkOverflow);
+})();
+</script>
+</body>
+</html>
