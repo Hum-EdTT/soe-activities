@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binomial Nomenclature</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Science & iSTEM palette */
+    --sci: #3E586F;                  /* primary */
+    --sci-dark: #354b5e;             /* primary dark (~15% darker) */
+    --sci-deep: #283948;             /* primary deep (used for text on tinted bg) */
+    --sci-tint: #e6ecf1;             /* primary very pale tint */
+    --sci-tint-2: #f2f5f7;           /* primary even paler tint */
+    --accent: #c5cdd4;               /* accent - lighter partner to primary */
+    --ink: #102528;                  /* main body text - keep neutral */
+    --ink-soft: #2c4045;             /* softer body text - keep neutral */
+    --muted: #5a6e71;                /* muted text - keep neutral */
+    --line: #d8e3e4;                 /* borders - keep neutral */
+    --line-soft: #e8eeef;            /* soft dividers - keep neutral */
+    --bg: #f5f8f8;                   /* page background - keep neutral */
+    --card: #ffffff;                 /* card background - keep neutral */
+    --shadow-sm: 0 1px 2px rgba(40, 57, 72, 0.04), 0 2px 6px rgba(40, 57, 72, 0.05);
+    --shadow-md: 0 4px 12px rgba(40, 57, 72, 0.08), 0 12px 32px rgba(40, 57, 72, 0.07);
+    --primary-grad: linear-gradient(135deg, #3E586F 0%, #354b5e 100%);
+
+    /* Science & iSTEM secondary accents (as used on Aristotle's System) */
+    --generic: #4a7c59;
+    --generic-deep: #2f5a3f;
+    --generic-tint: #edf3ef;
+    --specific: #b5673c;
+    --specific-deep: #8a4d2b;
+    --specific-tint: #f8f0ea;
+
+    /* Shared page gutter - keeps the footer rule the same width as the card */
+    --gutter: 1.25rem;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* the OUTER page never scrolls */
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .activity-scroll {
+    height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .wrap {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1.25rem var(--gutter) 0;
+  }
+
+  .footer-wrap {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+
+  /* ===== Fullscreen expand (revealed only if content is genuinely clipped) ===== */
+  .fullscreen-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 999;
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.5rem 0.9rem;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+  }
+  .fullscreen-btn:hover { background: var(--line-soft); }
+  .fullscreen-btn:focus-visible { outline: 2px solid var(--sci); outline-offset: 2px; }
+  .fullscreen-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* ===== Shell ===== */
+  .diagram {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    padding: 1.35rem 1.5rem 1.5rem;
+  }
+
+  .hint {
+    margin: 0 0 1.1rem;
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .hint strong { font-weight: 600; color: var(--ink-soft); }
+
+  .columns {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+  .col-ladder { flex: 1 1 54%; min-width: 0; }
+  .col-info { flex: 1 1 46%; min-width: 0; }
+
+  /* ===== Taxonomic ladder ===== */
+  .ladder {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .rank-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0.55rem;
+  }
+  .rank-label {
+    width: 11rem;
+    flex-shrink: 0;
+    display: flex;
+  }
+  .rank-pill {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0.5rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sci-deep);
+    background: var(--sci-tint);
+    transition: transform 0.16s ease;
+  }
+  /* Progressive indent + deepening shade: the group narrows at each rank */
+  .rank-row:nth-child(1) .rank-label { padding-left: 0; }
+  .rank-row:nth-child(2) .rank-label { padding-left: 10px; }
+  .rank-row:nth-child(3) .rank-label { padding-left: 20px; }
+  .rank-row:nth-child(4) .rank-label { padding-left: 30px; }
+  .rank-row:nth-child(5) .rank-label { padding-left: 40px; }
+  .rank-row:nth-child(6) .rank-label { padding-left: 50px; }
+  .rank-row:nth-child(7) .rank-label { padding-left: 60px; }
+  .rank-row:nth-child(8) .rank-label { padding-left: 70px; }
+
+  .rank-row:nth-child(1) .rank-pill { background: #eef2f5; }
+  .rank-row:nth-child(2) .rank-pill { background: #dfe7ed; }
+  .rank-row:nth-child(3) .rank-pill { background: #cfdae3; }
+  .rank-row:nth-child(4) .rank-pill { background: #bacbd7; }
+  .rank-row:nth-child(5) .rank-pill { background: #a2b7c8; }
+  .rank-row:nth-child(6) .rank-pill { background: #83a0b5; color: #ffffff; }
+  .rank-row:nth-child(7) .rank-pill { background: #5d7d97; color: #ffffff; }
+  .rank-row:nth-child(8) .rank-pill { background: var(--sci); color: #ffffff; }
+
+  .rank-row:hover .rank-pill { transform: translateX(3px); }
+
+  .rank-arrow {
+    flex-shrink: 0;
+    align-self: center;
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 9px solid var(--sci);
+  }
+  .rank-value {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .rank-value em { font-style: italic; }
+
+  /* Highlight for the two parts of the binomial */
+  .part {
+    border-radius: 4px;
+    padding: 0.05em 0.15em;
+    transition: background-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+  }
+  .diagram[data-part="generic"] .part-generic {
+    background: var(--generic-tint);
+    color: var(--generic-deep);
+    box-shadow: inset 0 -2px 0 var(--generic);
+  }
+  .diagram[data-part="specific"] .part-specific {
+    background: var(--specific-tint);
+    color: var(--specific-deep);
+    box-shadow: inset 0 -2px 0 var(--specific);
+  }
+
+  /* ===== Info column ===== */
+  .definition {
+    background: var(--sci-tint-2);
+    border-left: 3px solid var(--sci);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.15rem;
+    margin: 0 0 1.1rem;
+    font-size: 1.02rem;
+    font-weight: 500;
+    color: var(--sci-deep);
+    line-height: 1.5;
+  }
+
+  .example {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1.1rem 1.15rem 1.15rem;
+  }
+  .example-head {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.75rem;
+  }
+  .figure-medallion {
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--sci-tint);
+    border: 1.5px solid var(--sci);
+  }
+  .figure-medallion svg { width: 34px; height: 34px; display: block; }
+
+  .example-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .example-title em { font-style: italic; }
+  .example-sub {
+    margin: 0.15rem 0 0;
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .example-lead {
+    margin: 0 0 0.7rem;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+
+  .parts-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .part-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-align: left;
+    color: var(--ink-soft);
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 0.6rem 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+  }
+  .part-num {
+    flex-shrink: 0;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--muted);
+    transition: color 0.16s ease;
+  }
+  .part-btn:focus-visible { outline: 2px solid var(--sci); outline-offset: 2px; }
+
+  .part-btn[data-part="generic"].is-on {
+    background: var(--generic-tint);
+    border-color: var(--generic);
+    color: var(--generic-deep);
+  }
+  .part-btn[data-part="specific"].is-on {
+    background: var(--specific-tint);
+    border-color: var(--specific);
+    color: var(--specific-deep);
+  }
+  .part-btn.is-on .part-num { color: inherit; }
+
+  /* ===== Source attribution (APA 7 figure note) ===== */
+  .source {
+    margin: 1.35rem auto 0;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--line-soft);
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.6;
+    text-align: center;
+  }
+  .source i, .source cite { font-style: italic; }
+  .source a {
+    color: var(--sci);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    word-break: break-word;
+  }
+  .source a:hover { color: var(--sci-deep); }
+  .source a:focus-visible { outline: 2px solid var(--sci); outline-offset: 2px; }
+
+  /* ===== Narrow screens ===== */
+  @media (max-width: 780px) {
+    :root { --gutter: 1rem; }
+    .wrap { padding: 1rem var(--gutter) 0; }
+    .diagram { padding: 1.25rem 1rem 1.35rem; }
+    .hint { text-align: left; }
+    .columns { flex-direction: column; gap: 1.5rem; }
+    .col-ladder, .col-info { flex: 1 1 auto; width: 100%; }
+    .rank-label { width: 8.5rem; }
+    .rank-row:nth-child(n) .rank-label { padding-left: 0; }
+    .rank-pill { font-size: 0.7rem; letter-spacing: 0.06em; padding: 0.5rem 0.7rem; }
+    .rank-value { font-size: 0.9rem; }
+    .definition { font-size: 0.95rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+    .rank-row:hover .rank-pill { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<button type="button" class="fullscreen-btn" id="fullscreen-btn" title="Open in fullscreen" aria-label="Open this activity in fullscreen in a new tab">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+    <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+    <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+    <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+  </svg>
+  Fullscreen
+</button>
+
+<div class="activity-scroll">
+  <div class="wrap">
+
+    <div class="diagram" id="diagram" role="group" aria-label="Binomial nomenclature and the classification of Homo sapiens">
+
+      <p class="hint">Select <strong>Generic name</strong> or <strong>Specific name</strong> to see which part of the binomial it refers to.</p>
+
+      <div class="columns">
+
+        <!-- ============ TAXONOMIC LADDER ============ -->
+        <div class="col-ladder">
+          <ul class="ladder">
+            <li class="rank-row">
+              <span class="rank-label"><span class="rank-pill">Domain</span></span>
+              <span class="rank-arrow" aria-hidden="true"></span>
+              <span class="rank-value">Eukarya</span>
+            </li>
+            <li class="rank-row">
+              <span class="rank-label"><span class="rank-pill">Kingdom</span></span>
+              <span class="rank-arrow" aria-hidden="true"></span>
+              <span class="rank-value">Animalia</span>
+            </li>
+            <li class="rank-row">
+              <span class="rank-label"><span class="rank-pill">Phylum</span></span>
+              <span class="rank-arrow" aria-hidden="true"></span>
+              <span class="rank-value">Chordates</span>
+            </li>
+            <li class="rank-row">
+              <span class="rank-label"><span class="rank-pill">Class</span></span>
+              <span class="rank-arrow" aria-hidden="true"></span>
+              <span class="rank-value">Mammalia</span>
+            </li>
+            <li class="rank-row">
+              <span class="rank-label"><span class="rank-pill">Order</span></span>
+              <span class="rank-arrow" aria-hidden="true"></span>
+              <span class="rank-value">Primates</span>
+            </li>
+            <li class="rank-row">
+              <span class="rank-label"><span class="rank-pill">Family</span></span>
+              <span class="rank-arrow" aria-hidden="true"></span>
+              <span class="rank-value">Hominids</span>
+            </li>
+            <li class="rank-row">
+              <span class="rank-label"><span class="rank-pill">Genus</span></span>
+              <span class="rank-arrow" aria-hidden="true"></span>
+              <span class="rank-value"><em><span class="part part-generic">Homo</span></em></span>
+            </li>
+            <li class="rank-row">
+              <span class="rank-label"><span class="rank-pill">Species</span></span>
+              <span class="rank-arrow" aria-hidden="true"></span>
+              <span class="rank-value"><em><span class="part part-generic">Homo</span> <span class="part part-specific">sapiens</span></em></span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- ============ DEFINITION + EXAMPLE ============ -->
+        <div class="col-info">
+
+          <p class="definition">Binomial nomenclature is a binomial system of naming a species.</p>
+
+          <div class="example">
+            <div class="example-head">
+              <span class="figure-medallion" aria-hidden="true">
+                <!-- Human figure -->
+                <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="16" cy="7" r="4.6" fill="var(--sci)"/>
+                  <path d="M16 13.4 C21 13.4 24 16.6 24.4 21.2 L25 27.4 C25.1 28.6 24.3 29.4 23.2 29.4 L21.6 29.4 L21.1 22.6 L20.4 29.4 L11.6 29.4 L10.9 22.6 L10.4 29.4 L8.8 29.4 C7.7 29.4 6.9 28.6 7 27.4 L7.6 21.2 C8 16.6 11 13.4 16 13.4 Z" fill="var(--sci)"/>
+                </svg>
+              </span>
+              <div>
+                <p class="example-title">Example: <em><span class="part part-generic">Homo</span> <span class="part part-specific">sapiens</span></em></p>
+                <p class="example-sub">(scientific name of humans)</p>
+              </div>
+            </div>
+
+            <p class="example-lead">consists of two parts:</p>
+
+            <ul class="parts-list">
+              <li>
+                <button type="button" class="part-btn" data-part="generic" aria-pressed="false">
+                  <span class="part-num">(1)</span> Generic name
+                </button>
+              </li>
+              <li>
+                <button type="button" class="part-btn" data-part="specific" aria-pressed="false">
+                  <span class="part-num">(2)</span> Specific name
+                </button>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <p class="source"><i>Note.</i> Adapted from <cite>Binomial nomenclature&mdash;Definition and examples</cite>, by Biology Online, 2022 (<a href="https://www.biologyonline.com/dictionary/binomial-nomenclature" target="_blank" rel="noreferrer noopener">https://www.biologyonline.com/dictionary/binomial-nomenclature</a>).</p>
+    </div>
+
+  </div>
+
+  <div class="footer-wrap">
+    <footer style="max-width: 100%; margin: 1.75rem auto 0; padding: 1.25rem 0 1rem; border-top: 1px solid #e2e8f0; text-align: center; font-size: 0.78rem; color: #94a3b8; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+      Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au" style="color: #64748b; text-decoration: underline;">Hum-EdTT@curtin.edu.au</a>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function () {
+  var diagram = document.getElementById('diagram');
+  var buttons = Array.prototype.slice.call(diagram.querySelectorAll('.part-btn'));
+  var pinned = null;
+
+  function setPart(name) {
+    if (name) {
+      diagram.setAttribute('data-part', name);
+    } else {
+      diagram.removeAttribute('data-part');
+    }
+    buttons.forEach(function (btn) {
+      var part = btn.getAttribute('data-part');
+      btn.classList.toggle('is-on', part === name);
+      btn.setAttribute('aria-pressed', String(pinned === part));
+    });
+  }
+
+  buttons.forEach(function (btn) {
+    var part = btn.getAttribute('data-part');
+
+    btn.addEventListener('mouseenter', function () { if (!pinned) { setPart(part); } });
+    btn.addEventListener('mouseleave', function () { if (!pinned) { setPart(null); } });
+    btn.addEventListener('focus', function () { if (!pinned) { setPart(part); } });
+    btn.addEventListener('blur', function () { if (!pinned) { setPart(null); } });
+
+    btn.addEventListener('click', function () {
+      pinned = (pinned === part) ? null : part;
+      setPart(pinned);
+    });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && pinned) {
+      pinned = null;
+      setPart(null);
+    }
+  });
+})();
+
+(function () {
+  /* Sized to fit its embed height, so the fullscreen button stays hidden
+     unless the content is genuinely clipped (e.g. a very narrow phone). */
+  var btn = document.getElementById('fullscreen-btn');
+  var scrollEl = document.querySelector('.activity-scroll');
+
+  function checkOverflow() {
+    var isClipped = scrollEl.scrollHeight > scrollEl.clientHeight + 8;
+    btn.style.display = isClipped ? 'flex' : 'none';
+  }
+
+  btn.addEventListener('click', function () {
+    window.open(window.location.href, '_blank');
+  });
+
+  window.addEventListener('load', checkOverflow);
+  window.addEventListener('resize', checkOverflow);
+})();
+</script>
+</body>
+</html>
