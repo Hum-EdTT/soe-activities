@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taxon-Character Matrix and Cladogram</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Science & iSTEM palette */
+    --sci: #3E586F;                  /* primary */
+    --sci-dark: #354b5e;             /* primary dark (~15% darker) */
+    --sci-deep: #283948;             /* primary deep (used for text on tinted bg) */
+    --sci-tint: #e6ecf1;             /* primary very pale tint */
+    --sci-tint-2: #f2f5f7;           /* primary even paler tint */
+    --accent: #c5cdd4;               /* accent - lighter partner to primary */
+    --ink: #102528;                  /* main body text - keep neutral */
+    --ink-soft: #2c4045;             /* softer body text - keep neutral */
+    --muted: #5a6e71;                /* muted text - keep neutral */
+    --line: #d8e3e4;                 /* borders - keep neutral */
+    --line-soft: #e8eeef;            /* soft dividers - keep neutral */
+    --bg: #f5f8f8;                   /* page background - keep neutral */
+    --card: #ffffff;                 /* card background - keep neutral */
+    --shadow-sm: 0 1px 2px rgba(40, 57, 72, 0.04), 0 2px 6px rgba(40, 57, 72, 0.05);
+    --shadow-md: 0 4px 12px rgba(40, 57, 72, 0.08), 0 12px 32px rgba(40, 57, 72, 0.07);
+    --primary-grad: linear-gradient(135deg, #3E586F 0%, #354b5e 100%);
+
+    /* Science & iSTEM secondary accents (as used on the other diagrams) */
+    --taxon: #4a7c59;
+    --taxon-deep: #2f5a3f;
+    --taxon-tint: #edf3ef;
+    --char: #b5673c;
+    --char-deep: #8a4d2b;
+    --char-tint: #f8f0ea;
+
+    --gutter: 1.25rem;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .activity-scroll {
+    height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 1.25rem var(--gutter) 0; }
+  .footer-wrap { max-width: 1060px; margin: 0 auto; padding: 0 var(--gutter); }
+
+  /* ===== Fullscreen expand ===== */
+  .fullscreen-btn {
+    position: fixed; top: 1rem; right: 1rem; z-index: 999;
+    display: none; align-items: center; gap: 0.4rem;
+    font-family: inherit; font-size: 0.8rem; font-weight: 600; color: var(--ink);
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+    padding: 0.5rem 0.9rem; box-shadow: var(--shadow-md); cursor: pointer;
+  }
+  .fullscreen-btn:hover { background: var(--line-soft); }
+  .fullscreen-btn:focus-visible { outline: 2px solid var(--sci); outline-offset: 2px; }
+  .fullscreen-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* ===== Shell ===== */
+  .diagram {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    padding: 1.35rem 1.5rem 1.5rem;
+  }
+  .diagram[data-mode="char"]  { --hl: var(--char);  --hl-deep: var(--char-deep);  --hl-tint: var(--char-tint); }
+  .diagram[data-mode="taxon"] { --hl: var(--taxon); --hl-deep: var(--taxon-deep); --hl-tint: var(--taxon-tint); }
+
+  .hint { margin: 0 0 1.15rem; text-align: center; font-size: 0.78rem; color: var(--muted); }
+  .hint strong { font-weight: 600; color: var(--ink-soft); }
+
+  /* ===== Figure layout =====
+     Everything inside .panels is sized in em, so the whole figure scales together
+     (matrix, arrow, tree and captions) exactly like the original image would. */
+  .panels {
+    --fs: clamp(9px, 2.2vw, 20px);
+    font-size: var(--fs);
+    line-height: 1.2;
+    color: var(--ink);
+    display: grid;
+    grid-template-columns: auto 3.6em auto;
+    grid-template-areas:
+      "matrix arrow tree"
+      "capm   .     capt";
+    column-gap: 1.6em;
+    row-gap: 0.8em;
+    align-items: center;
+    justify-content: center;
+  }
+  .panel-matrix { grid-area: matrix; }
+  .panel-tree   { grid-area: tree; width: 16.3em; }
+  .flow-arrow   { grid-area: arrow; display: flex; align-items: center; justify-content: center; color: var(--ink); }
+  .flow-arrow svg { width: 100%; height: auto; display: block; }
+
+  .panel-caption { margin: 0; text-align: center; font-size: 1em; font-weight: 400; color: var(--ink); }
+  .cap-matrix { grid-area: capm; }
+  .cap-tree   { grid-area: capt; max-width: 13.5em; justify-self: center; text-wrap: balance; }
+
+  /* ===== Matrix ===== */
+  table.matrix {
+    border-collapse: collapse;
+    border: 0.07em solid var(--ink);
+    font-size: 1em;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+    background: var(--card);
+  }
+  table.matrix th, table.matrix td {
+    padding: 0.14em 0;
+    text-align: center;
+    font-weight: 400;
+    transition: background-color 0.16s ease, color 0.16s ease;
+  }
+  table.matrix .m-corner, table.matrix .m-taxa, table.matrix .m-name { text-align: left; white-space: nowrap; padding-right: 0.6em; }
+  table.matrix .m-corner, table.matrix .m-taxa { padding-left: 0.5em; color: var(--ink); }
+  table.matrix .m-name { padding-left: 0.25em; font-style: italic; }
+  table.matrix .m-taxa { border-top: 0.07em solid var(--ink); }   /* the rule sits under the header row, as in the source */
+  .m-cell { width: 1.43em; color: var(--ink); }
+
+  .col-btn, .row-btn {
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: 400;
+    line-height: 1.15;
+    background: transparent;
+    border: 0.06em solid transparent;
+    cursor: pointer;
+    color: var(--ink);
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+  }
+  .col-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.3em; height: 1.3em; padding: 0;
+    border-radius: 50%;
+  }
+  .row-btn { font-style: italic; padding: 0.02em 0.25em; border-radius: 0.3em; }
+  .col-btn:hover, .row-btn:hover { background: var(--sci-tint); }
+  .col-btn:focus-visible, .row-btn:focus-visible { outline: 2px solid var(--sci); outline-offset: 1px; }
+  .col-btn.is-on { background: var(--char); border-color: var(--char); color: #fff; }
+  .row-btn.is-on { background: var(--taxon-tint); border-color: var(--taxon); color: var(--taxon-deep); font-weight: 600; }
+
+  td.m-cell.is-hl { background: var(--hl-tint); color: var(--hl-deep); font-weight: 600; }
+  tr.m-row.is-hl td { background: var(--taxon-tint); }
+  tr.m-row.is-hl .m-cell { color: var(--taxon-deep); }
+
+  /* ===== Cladogram (stroke widths and type sizes are in the SVG's own 456-unit space) ===== */
+  .tree-svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+  .seg {
+    stroke: var(--ink);
+    stroke-width: 5;
+    stroke-linecap: square;
+    fill: none;
+    transition: stroke 0.16s ease, stroke-width 0.16s ease, opacity 0.16s ease;
+  }
+  .tick-mark {
+    stroke: var(--ink);
+    stroke-width: 7;
+    stroke-linecap: butt;
+    transition: stroke 0.16s ease, opacity 0.16s ease;
+  }
+  .tick-label {
+    text-anchor: middle;
+    font-size: 26px;
+    font-weight: 400;
+    fill: var(--ink);
+    transition: fill 0.16s ease, opacity 0.16s ease;
+  }
+  .leaf-label {
+    font-size: 26px;
+    font-style: italic;
+    font-weight: 400;
+    fill: var(--ink);
+    text-anchor: start;
+    transition: fill 0.16s ease, opacity 0.16s ease;
+  }
+  .ancestor-box { fill: var(--sci); }
+  .ancestor-text {
+    font-size: 19px;
+    font-weight: 700;
+    fill: #ffffff;
+    text-anchor: middle;
+  }
+
+  /* Dimmed / highlighted states */
+  .is-dimmed .seg:not(.is-hl),
+  .is-dimmed .tick:not(.is-hl),
+  .is-dimmed .leaf-label:not(.is-hl) { opacity: 0.16; }
+
+  .seg.is-hl { stroke: var(--hl); stroke-width: 7.5; }
+  .tick.is-hl .tick-mark { stroke: var(--hl); }
+  .tick.is-hl .tick-label { fill: var(--hl-deep); font-weight: 700; }
+  .leaf-label.is-hl { fill: var(--hl-deep); font-weight: 700; }
+
+  /* ===== Source attribution (APA 7 figure note) ===== */
+  .source {
+    margin: 1.35rem auto 0;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--line-soft);
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.6;
+    text-align: center;
+  }
+  .source i, .source cite { font-style: italic; }
+  .source a { color: var(--sci); text-decoration: underline; text-underline-offset: 2px; word-break: break-word; }
+
+  /* ===== Narrow screens: stack matrix -> arrow -> tree ===== */
+  @media (max-width: 600px) {
+    :root { --gutter: 1rem; }
+    .wrap { padding: 1rem var(--gutter) 0; }
+    .diagram { padding: 1.25rem 1rem 1.35rem; }
+    .hint { text-align: left; }
+    .panels {
+      --fs: clamp(13px, 4vw, 18px);
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "matrix" "capm" "arrow" "tree" "capt";
+      justify-items: center;
+      row-gap: 0.9em;
+    }
+    .flow-arrow { width: 3.2em; transform: rotate(90deg); margin: 0.6em 0; }
+    .panel-tree { width: min(100%, 21em); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<button type="button" class="fullscreen-btn" id="fullscreen-btn" title="Open in fullscreen" aria-label="Open this activity in fullscreen in a new tab">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+    <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+    <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+    <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+  </svg>
+  Fullscreen
+</button>
+
+<div class="activity-scroll">
+  <div class="wrap">
+
+    <div class="diagram" id="diagram">
+
+      <p class="hint">Select a <strong>character number</strong> to see where that character state change occurs, or a <strong>taxon name</strong> to trace its lineage back to the common ancestor.</p>
+
+      <div class="panels">
+
+        <!-- ============ MATRIX ============ -->
+        <div class="panel-matrix">
+          <table class="matrix">
+            <thead>
+              <tr>
+                <th class="m-corner" scope="col">Characters</th>
+                <th scope="col"><button type="button" class="col-btn" data-char="1" aria-pressed="false" aria-label="Character 1">1</button></th>
+                <th scope="col"><button type="button" class="col-btn" data-char="2" aria-pressed="false" aria-label="Character 2">2</button></th>
+                <th scope="col"><button type="button" class="col-btn" data-char="3" aria-pressed="false" aria-label="Character 3">3</button></th>
+                <th scope="col"><button type="button" class="col-btn" data-char="4" aria-pressed="false" aria-label="Character 4">4</button></th>
+                <th scope="col"><button type="button" class="col-btn" data-char="5" aria-pressed="false" aria-label="Character 5">5</button></th>
+                <th scope="col"><button type="button" class="col-btn" data-char="6" aria-pressed="false" aria-label="Character 6">6</button></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th class="m-taxa" colspan="7" scope="colgroup">Taxa</th></tr>
+
+              <tr class="m-row" data-row="armata">
+                <th class="m-name" scope="row"><button type="button" class="row-btn" data-taxon="armata" aria-pressed="false">armata</button></th>
+                <td class="m-cell" data-col="1">0</td><td class="m-cell" data-col="2">0</td><td class="m-cell" data-col="3">0</td>
+                <td class="m-cell" data-col="4">0</td><td class="m-cell" data-col="5">0</td><td class="m-cell" data-col="6">0</td>
+              </tr>
+              <tr class="m-row" data-row="binops">
+                <th class="m-name" scope="row"><button type="button" class="row-btn" data-taxon="binops" aria-pressed="false">binops</button></th>
+                <td class="m-cell" data-col="1">1</td><td class="m-cell" data-col="2">0</td><td class="m-cell" data-col="3">0</td>
+                <td class="m-cell" data-col="4">0</td><td class="m-cell" data-col="5">1</td><td class="m-cell" data-col="6">0</td>
+              </tr>
+              <tr class="m-row" data-row="cercis">
+                <th class="m-name" scope="row"><button type="button" class="row-btn" data-taxon="cercis" aria-pressed="false">cercis</button></th>
+                <td class="m-cell" data-col="1">1</td><td class="m-cell" data-col="2">1</td><td class="m-cell" data-col="3">1</td>
+                <td class="m-cell" data-col="4">0</td><td class="m-cell" data-col="5">0</td><td class="m-cell" data-col="6">0</td>
+              </tr>
+              <tr class="m-row" data-row="dispar">
+                <th class="m-name" scope="row"><button type="button" class="row-btn" data-taxon="dispar" aria-pressed="false">dispar</button></th>
+                <td class="m-cell" data-col="1">1</td><td class="m-cell" data-col="2">1</td><td class="m-cell" data-col="3">1</td>
+                <td class="m-cell" data-col="4">0</td><td class="m-cell" data-col="5">0</td><td class="m-cell" data-col="6">0</td>
+              </tr>
+              <tr class="m-row" data-row="elater">
+                <th class="m-name" scope="row"><button type="button" class="row-btn" data-taxon="elater" aria-pressed="false">elater</button></th>
+                <td class="m-cell" data-col="1">1</td><td class="m-cell" data-col="2">1</td><td class="m-cell" data-col="3">0</td>
+                <td class="m-cell" data-col="4">1</td><td class="m-cell" data-col="5">1</td><td class="m-cell" data-col="6">1</td>
+              </tr>
+              <tr class="m-row" data-row="firmus">
+                <th class="m-name" scope="row"><button type="button" class="row-btn" data-taxon="firmus" aria-pressed="false">firmus</button></th>
+                <td class="m-cell" data-col="1">1</td><td class="m-cell" data-col="2">1</td><td class="m-cell" data-col="3">0</td>
+                <td class="m-cell" data-col="4">1</td><td class="m-cell" data-col="5">1</td><td class="m-cell" data-col="6">0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="panel-caption cap-matrix">Taxon - character matrix</p>
+
+        <div class="flow-arrow" aria-hidden="true">
+          <svg viewBox="0 0 100 24" xmlns="http://www.w3.org/2000/svg">
+            <line x1="1" y1="12" x2="80" y2="12" stroke="currentColor" stroke-width="3.2"/>
+            <path d="M76 2.5 L99 12 L76 21.5 Z" fill="currentColor"/>
+          </svg>
+        </div>
+
+        <!-- ============ CLADOGRAM ============ -->
+        <div class="panel-tree">
+          <svg class="tree-svg" id="tree" viewBox="0 0 456 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cladogram of six taxa showing inferred character state changes, rooted at a common ancestor">
+
+            <!-- ===== Branch segments (every line at 45 degrees, as in the source figure) ===== -->
+            <g id="segments">
+              <line class="seg" data-t="armata binops cercis dispar elater firmus" x1="160.3" y1="302.7" x2="201.3" y2="262.1"/>  <!-- root stem -->
+              <line class="seg" data-t="binops cercis dispar elater firmus" x1="201.3" y1="262.1" x2="219.1" y2="244.2"/>  <!-- spine J1-T1 -->
+              <line class="seg" data-c="1" data-t="binops cercis dispar elater firmus" x1="219.1" y1="244.2" x2="237.1" y2="226.3"/>  <!-- spine T1-J2 (1) -->
+              <line class="seg" data-c="1" data-t="cercis dispar elater firmus" x1="237.1" y1="226.3" x2="254.1" y2="209.2"/>  <!-- spine J2-T2 -->
+              <line class="seg" data-c="1 2" data-t="cercis dispar elater firmus" x1="254.1" y1="209.2" x2="272.9" y2="190.5"/>  <!-- spine T2-J3 (2) -->
+              <line class="seg" data-c="1 2" data-t="elater firmus" x1="272.9" y1="190.5" x2="298.3" y2="165"/>  <!-- spine J3-T4 -->
+              <line class="seg" data-c="1 2 4" data-t="elater firmus" x1="298.3" y1="165" x2="320.9" y2="142.4"/>  <!-- spine T4-T5 (4) -->
+              <line class="seg" data-c="1 2 4 5" data-t="elater firmus" x1="320.9" y1="142.4" x2="344.1" y2="119.3"/>  <!-- spine T5-J4 (5) -->
+              <line class="seg" data-c="1 2 4 5" data-t="firmus" x1="344.1" y1="119.3" x2="378.7" y2="84.7"/>  <!-- spine J4-tip -->
+              <line class="seg" data-t="armata" x1="201.3" y1="262.1" x2="23.9" y2="84.7"/>  <!-- armata -->
+              <line class="seg" data-c="1" data-t="binops" x1="237.1" y1="226.3" x2="166.6" y2="155.8"/>  <!-- binops J2-T5 -->
+              <line class="seg" data-c="1 5" data-t="binops" x1="166.6" y1="155.8" x2="95.5" y2="84.7"/>  <!-- binops T5-tip (5) -->
+              <line class="seg" data-c="1 2" data-t="cercis dispar" x1="272.9" y1="190.5" x2="234.4" y2="152"/>  <!-- cercis stem J3-T3 -->
+              <line class="seg" data-c="1 2 3" data-t="cercis dispar" x1="234.4" y1="152" x2="199.5" y2="117.1"/>  <!-- cercis stem T3-ND (3) -->
+              <line class="seg" data-c="1 2 3" data-t="cercis" x1="199.5" y1="117.1" x2="167.1" y2="84.7"/>  <!-- cercis -->
+              <line class="seg" data-c="1 2 3" data-t="dispar" x1="199.5" y1="117.1" x2="231.9" y2="84.7"/>  <!-- dispar -->
+              <line class="seg" data-c="1 2 4 5" data-t="elater" x1="344.1" y1="119.3" x2="325.1" y2="100.3"/>  <!-- elater J4-T6 -->
+              <line class="seg" data-c="1 2 4 5 6" data-t="elater" x1="325.1" y1="100.3" x2="309.5" y2="84.7"/>  <!-- elater T6-tip (6) -->
+            </g>
+
+            <!-- ===== Inferred character state changes ===== -->
+            <g id="ticks">
+              <g class="tick" data-tick="1" data-c="1" data-t="binops cercis dispar elater firmus">
+                <line class="tick-mark" x1="209.4" y1="234.5" x2="228.8" y2="253.9"/>
+                <text class="tick-label" x="240.6" y="263.1">1</text>
+              </g>
+              <g class="tick" data-tick="2" data-c="2" data-t="cercis dispar elater firmus">
+                <line class="tick-mark" x1="244.4" y1="199.5" x2="263.8" y2="218.9"/>
+                <text class="tick-label" x="275.6" y="228.1">2</text>
+              </g>
+              <g class="tick" data-tick="4" data-c="4" data-t="elater firmus">
+                <line class="tick-mark" x1="288.6" y1="155.3" x2="308" y2="174.7"/>
+                <text class="tick-label" x="319.8" y="183.9">4</text>
+              </g>
+              <g class="tick" data-tick="5" data-c="5" data-t="elater firmus">
+                <line class="tick-mark" x1="311.2" y1="132.7" x2="330.6" y2="152.1"/>
+                <text class="tick-label" x="342.4" y="161.3">5</text>
+              </g>
+              <g class="tick" data-tick="5" data-c="5" data-t="binops">
+                <line class="tick-mark" x1="156.9" y1="165.5" x2="176.3" y2="146.1"/>
+                <text class="tick-label" x="189.6" y="155.7">5</text>
+              </g>
+              <g class="tick" data-tick="3" data-c="3" data-t="cercis dispar">
+                <line class="tick-mark" x1="224.7" y1="161.7" x2="244.1" y2="142.3"/>
+                <text class="tick-label" x="257.4" y="151.9">3</text>
+              </g>
+              <g class="tick" data-tick="6" data-c="6" data-t="elater">
+                <line class="tick-mark" x1="315.4" y1="110" x2="334.8" y2="90.6"/>
+                <text class="tick-label" x="348.1" y="100.2">6</text>
+              </g>
+            </g>
+
+            <!-- ===== Taxon labels ===== -->
+            <g id="leaves">
+              <text class="leaf-label" data-t="armata" x="22.6" y="74.9" transform="rotate(-45 22.6 74.9)">armata</text>
+              <text class="leaf-label" data-c="1 5" data-t="binops" x="94.2" y="74.9" transform="rotate(-45 94.2 74.9)">binops</text>
+              <text class="leaf-label" data-c="1 2 3" data-t="cercis" x="165.8" y="74.9" transform="rotate(-45 165.8 74.9)">cercis</text>
+              <text class="leaf-label" data-c="1 2 3" data-t="dispar" x="234.2" y="74.9" transform="rotate(-45 234.2 74.9)">dispar</text>
+              <text class="leaf-label" data-c="1 2 4 5 6" data-t="elater" x="308.2" y="74.9" transform="rotate(-45 308.2 74.9)">elater</text>
+              <text class="leaf-label" data-c="1 2 4 5" data-t="firmus" x="381" y="74.9" transform="rotate(-45 381 74.9)">firmus</text>
+            </g>
+
+            <!-- ===== Common ancestor ===== -->
+            <g id="ancestor">
+              <rect class="ancestor-box" x="62.5" y="313.5" width="192" height="40" rx="7"/>
+              <text class="ancestor-text" x="158.5" y="340.3">Common Ancestor</text>
+            </g>
+          </svg>
+        </div>
+
+        <p class="panel-caption cap-tree">Cladogram with inferred character state changes</p>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-wrap">
+    <footer style="max-width: 100%; margin: 1.75rem auto 0; padding: 1.25rem 0 1rem; border-top: 1px solid #e2e8f0; text-align: center; font-size: 0.78rem; color: #94a3b8; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+      Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au" style="color: #64748b; text-decoration: underline;">Hum-EdTT@curtin.edu.au</a>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function () {
+  var diagram = document.getElementById('diagram');
+  var tree = document.getElementById('tree');
+  var colBtns = Array.prototype.slice.call(diagram.querySelectorAll('.col-btn'));
+  var rowBtns = Array.prototype.slice.call(diagram.querySelectorAll('.row-btn'));
+  var rows = Array.prototype.slice.call(diagram.querySelectorAll('.m-row'));
+  var cells = Array.prototype.slice.call(diagram.querySelectorAll('.m-cell'));
+  var pinned = null; /* { mode: 'char'|'taxon', value: string } */
+
+  function clearAll() {
+    diagram.removeAttribute('data-mode');
+    tree.classList.remove('is-dimmed');
+    tree.querySelectorAll('.is-hl').forEach(function (el) { el.classList.remove('is-hl'); });
+    cells.forEach(function (c) { c.classList.remove('is-hl'); });
+    rows.forEach(function (r) { r.classList.remove('is-hl'); });
+    colBtns.concat(rowBtns).forEach(function (b) { b.classList.remove('is-on'); });
+  }
+
+  function syncPressed() {
+    colBtns.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(!!pinned && pinned.mode === 'char' && pinned.value === b.getAttribute('data-char')));
+    });
+    rowBtns.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(!!pinned && pinned.mode === 'taxon' && pinned.value === b.getAttribute('data-taxon')));
+    });
+  }
+
+  function show(mode, value) {
+    clearAll();
+    if (!mode) { syncPressed(); return; }
+
+    diagram.setAttribute('data-mode', mode);
+    tree.classList.add('is-dimmed');
+
+    var attr = (mode === 'char') ? 'data-c' : 'data-t';
+    tree.querySelectorAll('[' + attr + '~="' + value + '"]').forEach(function (el) {
+      el.classList.add('is-hl');
+    });
+
+    if (mode === 'char') {
+      diagram.querySelectorAll('.m-cell[data-col="' + value + '"]').forEach(function (c) { c.classList.add('is-hl'); });
+      colBtns.forEach(function (b) { if (b.getAttribute('data-char') === value) { b.classList.add('is-on'); } });
+    } else {
+      rows.forEach(function (r) { if (r.getAttribute('data-row') === value) { r.classList.add('is-hl'); } });
+      rowBtns.forEach(function (b) { if (b.getAttribute('data-taxon') === value) { b.classList.add('is-on'); } });
+    }
+    syncPressed();
+  }
+
+  function bind(btn, mode, value) {
+    btn.addEventListener('mouseenter', function () { if (!pinned) { show(mode, value); } });
+    btn.addEventListener('mouseleave', function () { if (!pinned) { show(null); } });
+    btn.addEventListener('focus', function () { if (!pinned) { show(mode, value); } });
+    btn.addEventListener('blur', function () { if (!pinned) { show(null); } });
+    btn.addEventListener('click', function () {
+      var same = pinned && pinned.mode === mode && pinned.value === value;
+      pinned = same ? null : { mode: mode, value: value };
+      show(pinned ? mode : null, value);
+    });
+  }
+
+  colBtns.forEach(function (b) { bind(b, 'char', b.getAttribute('data-char')); });
+  rowBtns.forEach(function (b) { bind(b, 'taxon', b.getAttribute('data-taxon')); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && pinned) { pinned = null; show(null); }
+  });
+})();
+
+(function () {
+  var btn = document.getElementById('fullscreen-btn');
+  var scrollEl = document.querySelector('.activity-scroll');
+
+  function checkOverflow() {
+    btn.style.display = (scrollEl.scrollHeight > scrollEl.clientHeight + 8) ? 'flex' : 'none';
+  }
+
+  btn.addEventListener('click', function () { window.open(window.location.href, '_blank'); });
+  window.addEventListener('load', checkOverflow);
+  window.addEventListener('resize', checkOverflow);
+})();
+</script>
+</body>
+</html>
