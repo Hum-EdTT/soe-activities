@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evidence for Evolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sci: #3E586F;
+    --sci-dark: #354b5e;
+    --sci-deep: #283948;
+    --sci-tint: #e6ecf1;
+    --sci-tint-2: #f2f5f7;
+    --accent: #c5cdd4;
+    --ink: #102528;
+    --ink-soft: #2c4045;
+    --muted: #5a6e71;
+    --line: #d8e3e4;
+    --line-soft: #e8eeef;
+    --bg: #f5f8f8;
+    --card: #ffffff;
+    --shadow-sm: 0 1px 2px rgba(40, 57, 72, 0.04), 0 2px 6px rgba(40, 57, 72, 0.05);
+    --shadow-md: 0 4px 12px rgba(40, 57, 72, 0.08), 0 12px 32px rgba(40, 57, 72, 0.07);
+    --primary-grad: linear-gradient(135deg, #3E586F 0%, #354b5e 100%);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .activity-scroll {
+    height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .wrap {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 1rem;
+  }
+
+  /* ===== Header ===== */
+  .header { text-align: center; margin-bottom: 1rem; }
+  .header-eyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    width: fit-content;
+    margin: 0 auto 0.75rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: var(--sci-tint);
+    color: var(--sci-deep);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .header-eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--sci);
+    flex-shrink: 0;
+  }
+  .header h1 {
+    margin: 0 0 0.6rem;
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  .header p { margin: 0 auto; max-width: 100%; color: var(--ink-soft); font-size: 0.95rem; }
+
+  /* ===== Fullscreen ===== */
+  .fullscreen-btn {
+    position: fixed; top: 1rem; right: 1rem; z-index: 999;
+    display: none; align-items: center; gap: 0.4rem;
+    font-family: inherit; font-size: 0.8rem; font-weight: 600;
+    color: var(--ink); background: var(--card);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 0.5rem 0.9rem; box-shadow: var(--shadow-md); cursor: pointer;
+  }
+  .fullscreen-btn:hover { background: var(--line-soft); }
+  .fullscreen-btn:focus-visible { outline: 2px solid var(--sci); outline-offset: 2px; }
+  .fullscreen-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* ===== Stage pills ===== */
+  .stage-nav {
+    display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 1.25rem;
+  }
+  .stage-pill {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: inherit; font-size: 0.85rem; font-weight: 600;
+    color: var(--ink-soft); background: var(--card);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 0.5rem 1rem 0.5rem 0.55rem; cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+  .stage-pill .num {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700;
+    background: var(--sci-tint); color: var(--sci-deep);
+  }
+  .stage-pill:hover:not(:disabled) { background: var(--sci-tint-2); border-color: var(--accent); }
+  .stage-pill.active { background: var(--sci-tint); border-color: var(--sci); color: var(--sci-deep); }
+  .stage-pill.active .num { background: var(--sci); color: #fff; }
+  .stage-pill:disabled { opacity: 0.5; cursor: not-allowed; }
+  .stage-pill:focus-visible { outline: 2px solid var(--sci); outline-offset: 2px; }
+
+  /* ===== Cards & panels ===== */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    padding: 1.25rem 1.5rem;
+  }
+  .card h2 { margin: 0 0 0.5rem; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
+  .card p { margin: 0 0 0.75rem; color: var(--ink-soft); font-size: 0.93rem; }
+  .card p:last-child { margin-bottom: 0; }
+
+  .intro { margin-bottom: 1rem; padding: 0.8rem 1.25rem; border-left: 3px solid var(--sci); background: var(--sci-tint-2); }
+  .intro .task { font-weight: 600; color: var(--ink); }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ===== Progress ===== */
+  .progress-row { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1rem; }
+  .progress-label { font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
+  .progress-track { flex: 1; height: 8px; border-radius: 999px; background: var(--line-soft); overflow: hidden; }
+  .progress-fill { height: 100%; width: 0; background: var(--primary-grad); border-radius: 999px; transition: width 0.25s ease; }
+
+  /* ===== Flip cards ===== */
+  .flip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+    grid-auto-rows: 1fr;
+    gap: 1rem;
+  }
+  .flip {
+    perspective: 1000px;
+    background: none; border: none; padding: 0; margin: 0;
+    font-family: inherit; text-align: left; cursor: pointer;
+    border-radius: 14px;
+    display: block; width: 100%; height: 100%;
+  }
+  .flip:focus-visible { outline: 2px solid var(--sci); outline-offset: 3px; }
+  .flip-inner {
+    display: grid;
+    height: 100%;
+    min-height: 250px;
+    transition: transform 0.5s ease;
+    transform-style: preserve-3d;
+  }
+  .flip.flipped .flip-inner { transform: rotateY(180deg); }
+  .face {
+    grid-area: 1 / 1;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    padding: 1.1rem 1.1rem 1rem;
+    display: flex; flex-direction: column;
+  }
+  .face-front {
+    background: var(--card);
+    border-top: 4px solid var(--sci);
+    justify-content: space-between;
+  }
+  .face-front .ev-label { font-size: 0.75rem; font-weight: 600; color: var(--muted); margin: 0 0 0.5rem; }
+  .face-front .ev-title { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); margin: 0; }
+  .face-front .hint {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.78rem; font-weight: 600; color: var(--sci);
+    margin-top: 1rem;
+  }
+  .face-front .hint svg, .read-tick svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .face-back {
+    background: var(--sci-tint);
+    border-top: 4px solid var(--sci-deep);
+    transform: rotateY(180deg);
+  }
+  .face-back .ev-title { font-size: 0.9rem; font-weight: 700; color: var(--sci-deep); margin: 0 0 0.5rem; }
+  .face-back .ev-text { font-size: 0.86rem; color: var(--ink-soft); margin: 0; line-height: 1.5; }
+  .face-back .back-hint { margin-top: auto; padding-top: 0.75rem; font-size: 0.75rem; font-weight: 600; color: var(--sci); }
+  .read-tick {
+    display: none; align-items: center; gap: 0.3rem;
+    font-size: 0.72rem; font-weight: 600; color: var(--sci-deep);
+    margin: 0 0 0.35rem;
+  }
+  .flip.seen .read-tick { display: flex; }
+  .flip.seen .face-front .ev-label { display: none; }
+
+  /* ===== Ranking ===== */
+  .rank-end {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.82rem; font-weight: 700; color: var(--sci-deep);
+    background: var(--sci-tint); border-radius: 8px;
+    padding: 0.5rem 0.9rem;
+  }
+  .rank-end svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .rank-list { list-style: none; margin: 0.6rem 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+  .rank-item {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    padding: 0.7rem 0.9rem;
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    align-items: center;
+    column-gap: 0.8rem;
+  }
+  .rank-item.dragging { opacity: 0.45; }
+  .rank-item.drop-before { box-shadow: 0 -3px 0 0 var(--sci), var(--shadow-sm); }
+  .rank-item.drop-after { box-shadow: 0 3px 0 0 var(--sci), var(--shadow-sm); }
+  .rank-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--primary-grad); color: #fff;
+    font-weight: 700; font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .drag-handle {
+    color: var(--muted); cursor: grab; display: flex; align-items: center;
+    padding: 0.2rem; border-radius: 6px;
+  }
+  .drag-handle svg { width: 18px; height: 18px; }
+  .rank-item .rank-title { font-weight: 600; font-size: 0.95rem; color: var(--ink); margin: 0; }
+  .rank-actions { display: flex; gap: 0.35rem; }
+  .icon-btn {
+    width: 34px; height: 34px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+    color: var(--ink); cursor: pointer; font-family: inherit;
+  }
+  .icon-btn svg { width: 16px; height: 16px; }
+  .icon-btn:hover:not(:disabled) { background: var(--sci-tint); border-color: var(--accent); }
+  .icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .icon-btn:focus-visible { outline: 2px solid var(--sci); outline-offset: 2px; }
+  .rank-main { min-width: 0; }
+  .detail-toggle {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    margin: 0.2rem 0 0; padding: 0.15rem 0;
+    background: none; border: none; border-radius: 4px;
+    font-family: inherit; font-size: 0.78rem; font-weight: 600;
+    color: var(--sci); text-decoration: underline; text-underline-offset: 2px;
+    cursor: pointer;
+  }
+  .detail-toggle svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .detail-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .detail-toggle:hover { color: var(--sci-deep); }
+  .detail-toggle:focus-visible { outline: 2px solid var(--sci); outline-offset: 2px; }
+  .rank-detail {
+    grid-column: 1 / -1;
+    margin: 0.7rem 0 0;
+    padding: 0.7rem 0.9rem;
+    background: var(--sci-tint-2);
+    border-left: 3px solid var(--sci);
+    border-radius: 6px;
+    font-size: 0.86rem; color: var(--ink-soft);
+  }
+  .rank-detail[hidden] { display: none; }
+  .tip { font-size: 0.82rem; color: var(--muted); margin: 0.25rem 0 0; }
+
+  /* ===== Summary / export ===== */
+  .summary-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    max-width: 640px;
+    margin: 1rem auto 1.25rem;
+  }
+  .summary-head {
+    background: var(--primary-grad); color: #fff;
+    padding: 1.1rem 1.4rem;
+  }
+  .summary-head h3 { margin: 0; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
+  .summary-head p { margin: 0.2rem 0 0; font-size: 0.82rem; color: var(--accent); }
+  .summary-body { padding: 1rem 1.4rem 1.2rem; }
+  .summary-scale {
+    font-size: 0.76rem; font-weight: 600; color: var(--sci-deep);
+    background: var(--sci-tint); border-radius: 6px; padding: 0.35rem 0.7rem;
+  }
+  .summary-scale.top { margin-bottom: 0.4rem; }
+  .summary-scale.bottom { margin-top: 0.4rem; }
+  .summary-list { list-style: none; margin: 0; padding: 0; }
+  .summary-list li {
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: 0.5rem 0; border-bottom: 1px solid var(--line-soft);
+    font-size: 0.93rem; font-weight: 500;
+  }
+  .summary-list li:last-child { border-bottom: none; }
+  .summary-list .n {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--sci-tint); color: var(--sci-deep);
+    font-size: 0.8rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .name-row { max-width: 640px; margin: 0 auto 0.5rem; }
+  .name-row label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--ink-soft); margin-bottom: 0.3rem; }
+  .name-row input {
+    width: 100%; font-family: inherit; font-size: 0.93rem; color: var(--ink);
+    padding: 0.6rem 0.8rem; border: 1px solid var(--line); border-radius: 10px; background: var(--card);
+  }
+  .name-row input:focus { outline: none; border-color: var(--sci); box-shadow: 0 0 0 3px rgba(62, 88, 111, 0.15); }
+
+  /* ===== Buttons ===== */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    font-family: inherit; font-size: 0.9rem; font-weight: 600;
+    border-radius: 10px; padding: 0.75rem 1.2rem; cursor: pointer;
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    transition: background-color 0.15s ease;
+  }
+  .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .btn:hover:not(:disabled) { background: var(--line-soft); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn:focus-visible { outline: 2px solid var(--sci); outline-offset: 2px; }
+  .btn-primary {
+    background: var(--primary-grad); color: #fff; border-color: transparent;
+    box-shadow: 0 4px 12px rgba(62, 88, 111, 0.22);
+  }
+  .btn-primary:hover:not(:disabled) { background: linear-gradient(135deg, #354b5e 0%, #283948 100%); }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+  .save-note { text-align: center; font-style: italic; font-size: 0.82rem; color: var(--muted); margin: 0.9rem 0 0; }
+  .copy-status { text-align: center; font-size: 0.82rem; font-weight: 600; color: var(--sci-deep); min-height: 1.2rem; margin: 0.6rem 0 0; }
+
+  .stage-footer {
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    margin-top: 1.5rem; padding: 0 0.25rem;
+  }
+  .stage-footer .spacer { flex: 1; }
+  .gate-note { font-size: 0.82rem; color: var(--muted); text-align: center; flex: 1; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
+  @media (max-width: 560px) {
+    .rank-item { grid-template-columns: auto 1fr auto; }
+    .drag-handle { display: none; }
+    .header h1 { font-size: 1.5rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="activity-scroll">
+  <div class="wrap">
+
+    <button type="button" class="fullscreen-btn" id="fullscreen-btn" title="Open in fullscreen" aria-label="Open this activity in fullscreen in a new tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+        <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+        <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+        <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+      </svg>
+      Fullscreen
+    </button>
+
+    <header class="header">
+      <span class="header-eyebrow">Flip, order and share</span>
+      <h1>Evidence for Evolution</h1>
+      <p>Read each piece of evidence, order them, then save a summary card to post in your Canvas Discussion.</p>
+    </header>
+
+    <section class="card intro" aria-label="Activity introduction">
+      <p class="task">Order the evidence based on which you find most convincing to which you find most challenging to explain to your students?</p>
+    </section>
+
+    <nav class="stage-nav" aria-label="Activity stages">
+      <button type="button" class="stage-pill active" id="pill-1" data-stage="1"><span class="num">1</span>Read the evidence</button>
+      <button type="button" class="stage-pill" id="pill-2" data-stage="2" disabled><span class="num">2</span>Order the evidence</button>
+      <button type="button" class="stage-pill" id="pill-3" data-stage="3" disabled><span class="num">3</span>Share your summary</button>
+    </nav>
+
+    <!-- STAGE 1 -->
+    <section class="panel active" id="panel-1" aria-label="Stage 1: Read the evidence">
+      <div class="progress-row">
+        <span class="progress-label" id="read-label">0 of 8 cards read</span>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0" id="read-track"><div class="progress-fill" id="read-fill"></div></div>
+      </div>
+      <div class="flip-grid" id="flip-grid"></div>
+      <div class="stage-footer">
+        <span class="spacer"></span>
+        <span class="gate-note" id="gate-note">Select each card to flip it and read the evidence. Ordering unlocks once all 8 are read.</span>
+        <button type="button" class="btn btn-primary" id="to-stage-2" disabled>Continue to ordering</button>
+      </div>
+    </section>
+
+    <!-- STAGE 2 -->
+    <section class="panel" id="panel-2" aria-label="Stage 2: Order the evidence">
+      <div class="card" style="margin-bottom:1rem;">
+        <h2>Order the evidence</h2>
+        <p>Drag each item, or use the arrow buttons, to place the evidence from the one you find most convincing (top) to the one you find most challenging to explain to your students (bottom). Use “Show description” under any item to re-read it.</p>
+      </div>
+      <div class="rank-end">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
+        Most convincing
+      </div>
+      <ol class="rank-list" id="rank-list" aria-label="Evidence in your order"></ol>
+      <div class="rank-end">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        Most challenging to explain to your students
+      </div>
+      <p class="tip">Tip: on a touch screen, use the arrow buttons to move items.</p>
+      <div class="sr-only" aria-live="polite" id="live"></div>
+      <div class="stage-footer">
+        <button type="button" class="btn" id="back-to-1">Back to the cards</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" id="to-stage-3">Continue to summary</button>
+      </div>
+    </section>
+
+    <!-- STAGE 3 -->
+    <section class="panel" id="panel-3" aria-label="Stage 3: Share your summary">
+      <div class="card">
+        <h2>Share your summary</h2>
+        <p>This is your summary card. Save it as a PDF and attach it to your post in the Canvas Discussion, or copy the list as text and paste it straight into your post.</p>
+      </div>
+
+      <div class="summary-card" id="summary-card" aria-label="Summary card preview">
+        <div class="summary-head">
+          <h3>Evidence for Evolution</h3>
+          <p id="summary-meta">Ordered from most convincing to most challenging to explain</p>
+        </div>
+        <div class="summary-body">
+          <div class="summary-scale top">Most convincing</div>
+          <ol class="summary-list" id="summary-list"></ol>
+          <div class="summary-scale bottom">Most challenging to explain</div>
+        </div>
+      </div>
+
+      <div class="name-row">
+        <label for="student-name">Your name (optional, shown on the card)</label>
+        <input type="text" id="student-name" autocomplete="name">
+      </div>
+
+      <div class="actions" style="margin-top:1rem;">
+        <button type="button" class="btn btn-primary" id="save-pdf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Save summary as PDF
+        </button>
+        <button type="button" class="btn" id="copy-text">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy as text
+        </button>
+        <button type="button" class="btn" id="back-to-2">Change my order</button>
+        <button type="button" class="btn" id="reset-btn">Reset</button>
+      </div>
+      <p class="copy-status" id="copy-status" role="status"></p>
+      <p class="save-note">Your responses are not saved automatically. Use the button above to download a PDF record of your completed summary.</p>
+    </section>
+
+    <footer style="max-width: 1000px; margin: 3rem auto 0; padding: 1.25rem 1.5rem 1rem; border-top: 1px solid #e2e8f0; text-align: center; font-size: 0.78rem; color: #94a3b8; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+      Created by the School of Education's EdTech Team. For enquiries, contact <a href="mailto:Hum-EdTT@curtin.edu.au" style="color: #64748b; text-decoration: underline;">Hum-EdTT@curtin.edu.au</a>
+    </footer>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var ITEMS = [
+    { title: 'The hierarchical organisation of life', text: 'based on Linnaeus\u2019 discovery that organisms fit \u201Cnaturally\u201D into the hierarchical system of groups within groups (taxonomy - classification system used down to species level)' },
+    { title: 'Homology', text: 'similarity of structure despite differences in function, follows hypothesis that characteristics of organisms have been modified from characteristics of their ancestors' },
+    { title: 'Embryological similarities', text: 'homologous characters that appear during development, following the theory that it has been modified from its ancestors' },
+    { title: 'Vestigial characteristics', text: 'include characters that organisms have that no longer serve a function but maybe once did serve a function in the ancestor; eg: appendix and coccyx in humans' },
+    { title: 'Convergence', text: 'different organisms use very different structures for the same function which would be expected if structures are modified from very different ancestral features (eg: eyes of vertebrates and molluscs serve the same function but differ structurally)' },
+    { title: 'Suboptimal design', text: 'these include \u201Cdesign flaws\u201D such as the blind spot in a human\u2019s eye' },
+    { title: 'Geographic distributions', text: 'Biogeography which states that distributions of many taxa makes sense only if they have arisen from common ancestors' },
+    { title: 'Intermediate forms', text: 'characteristics vary by degrees which are smaller to organisms more closely related to larger for those less closely related' }
+  ];
+
+  var ICON_FLIP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';
+  var ICON_TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+  var ICON_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>';
+  var ICON_DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
+  var ICON_GRIP = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>';
+
+  var seen = ITEMS.map(function () { return false; });
+  var order = ITEMS.map(function (_, i) { return i; }); // array of item indices in current rank order
+  var reordered = false;
+  var openDetails = {};
+  var dragIndex = null;
+  var currentStage = 1;
+
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+  /* ---------- Stage 1: flip cards ---------- */
+  function buildCards() {
+    var grid = $('flip-grid');
+    grid.innerHTML = '';
+    ITEMS.forEach(function (it, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'flip';
+      b.setAttribute('aria-pressed', 'false');
+      b.setAttribute('aria-label', it.title + '. Select to read the evidence.');
+      b.innerHTML =
+        '<span class="flip-inner">' +
+          '<span class="face face-front">' +
+            '<span>' +
+              '<span class="ev-label">Evidence ' + (i + 1) + ' of 8</span>' +
+              '<span class="read-tick">' + ICON_TICK + 'Read</span>' +
+              '<span class="ev-title" style="display:block;">' + esc(it.title) + '</span>' +
+            '</span>' +
+            '<span class="hint">' + ICON_FLIP + 'Select to flip</span>' +
+          '</span>' +
+          '<span class="face face-back" aria-hidden="true">' +
+            '<span class="ev-title" style="display:block;">' + esc(it.title) + '</span>' +
+            '<span class="ev-text" style="display:block;">' + esc(it.text) + '</span>' +
+            '<span class="back-hint">Select to flip back</span>' +
+          '</span>' +
+        '</span>';
+      b.addEventListener('click', function () { toggleCard(i, b); });
+      grid.appendChild(b);
+    });
+  }
+
+  function toggleCard(i, el) {
+    var flipped = el.classList.toggle('flipped');
+    el.setAttribute('aria-pressed', flipped ? 'true' : 'false');
+    el.setAttribute('aria-label', flipped
+      ? ITEMS[i].title + '. ' + ITEMS[i].text + '. Select to flip back.'
+      : ITEMS[i].title + '. Select to read the evidence.');
+    el.querySelector('.face-front').setAttribute('aria-hidden', flipped ? 'true' : 'false');
+    el.querySelector('.face-back').setAttribute('aria-hidden', flipped ? 'false' : 'true');
+    if (flipped) { seen[i] = true; el.classList.add('seen'); }
+    updateProgress();
+  }
+
+  function seenCount() { return seen.filter(Boolean).length; }
+
+  function updateProgress() {
+    var n = seenCount();
+    $('read-label').textContent = n + ' of 8 cards read';
+    $('read-fill').style.width = (n / 8 * 100) + '%';
+    $('read-track').setAttribute('aria-valuenow', n);
+    var done = n === 8;
+    $('to-stage-2').disabled = !done;
+    $('pill-2').disabled = !done;
+    $('pill-3').disabled = !done;
+    $('gate-note').textContent = done
+      ? 'All 8 cards read. You can now order the evidence.'
+      : 'Select each card to flip it and read the evidence. Ordering unlocks once all 8 are read.';
+  }
+
+  /* ---------- Stage 2: ranking ---------- */
+  function renderRank(focusKey) {
+    var list = $('rank-list');
+    list.innerHTML = '';
+    order.forEach(function (itemIdx, pos) {
+      var it = ITEMS[itemIdx];
+      var li = document.createElement('li');
+      li.className = 'rank-item';
+      li.setAttribute('draggable', 'true');
+      li.dataset.pos = pos;
+      var open = !!openDetails[itemIdx];
+      li.innerHTML =
+        '<span class="rank-num" aria-hidden="true">' + (pos + 1) + '</span>' +
+        '<span class="drag-handle" aria-hidden="true">' + ICON_GRIP + '</span>' +
+        '<div class="rank-main">' +
+          '<p class="rank-title"><span class="sr-only">Rank ' + (pos + 1) + ': </span>' + esc(it.title) + '</p>' +
+          '<button type="button" class="detail-toggle" data-act="info" aria-expanded="' + open + '" aria-label="' + (open ? 'Hide' : 'Show') + ' description for ' + esc(it.title) + '">' +
+            '<span>' + (open ? 'Hide description' : 'Show description') + '</span>' + ICON_DOWN +
+          '</button>' +
+        '</div>' +
+        '<span class="rank-actions">' +
+          '<button type="button" class="icon-btn" data-act="up" aria-label="Move ' + esc(it.title) + ' up"' + (pos === 0 ? ' disabled' : '') + '>' + ICON_UP + '</button>' +
+          '<button type="button" class="icon-btn" data-act="down" aria-label="Move ' + esc(it.title) + ' down"' + (pos === order.length - 1 ? ' disabled' : '') + '>' + ICON_DOWN + '</button>' +
+        '</span>' +
+        '<p class="rank-detail"' + (open ? '' : ' hidden') + '>' + esc(it.text) + '</p>';
+
+      li.querySelector('[data-act="info"]').addEventListener('click', function () {
+        openDetails[itemIdx] = !openDetails[itemIdx];
+        renderRank(itemIdx + ':info');
+        checkOverflow();
+      });
+      li.querySelector('[data-act="up"]').addEventListener('click', function () { move(pos, pos - 1, itemIdx, 'up'); });
+      li.querySelector('[data-act="down"]').addEventListener('click', function () { move(pos, pos + 1, itemIdx, 'down'); });
+
+      li.addEventListener('dragstart', function (e) {
+        dragIndex = pos;
+        li.classList.add('dragging');
+        if (e.dataTransfer) { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(pos)); }
+      });
+      li.addEventListener('dragend', function () { dragIndex = null; clearDropMarks(); li.classList.remove('dragging'); });
+      li.addEventListener('dragover', function (e) {
+        if (dragIndex === null) { return; }
+        e.preventDefault();
+        clearDropMarks();
+        var r = li.getBoundingClientRect();
+        li.classList.add(e.clientY < r.top + r.height / 2 ? 'drop-before' : 'drop-after');
+      });
+      li.addEventListener('drop', function (e) {
+        if (dragIndex === null) { return; }
+        e.preventDefault();
+        var r = li.getBoundingClientRect();
+        var after = e.clientY >= r.top + r.height / 2;
+        var target = pos + (after ? 1 : 0);
+        var from = dragIndex;
+        dragIndex = null;
+        clearDropMarks();
+        var moved = order.splice(from, 1)[0];
+        if (from < target) { target -= 1; }
+        order.splice(target, 0, moved);
+        if (target !== from) { reordered = true; }
+        renderRank();
+        $('live').textContent = ITEMS[moved].title + ' moved to position ' + (target + 1) + ' of 8.';
+      });
+
+      list.appendChild(li);
+    });
+
+    if (focusKey) {
+      var parts = String(focusKey).split(':');
+      var idx = parseInt(parts[0], 10);
+      var act = parts[1];
+      var pos2 = order.indexOf(idx);
+      var row = list.children[pos2];
+      if (row) {
+        var target = row.querySelector('[data-act="' + act + '"]:not(:disabled)') || row.querySelector('[data-act="info"]');
+        if (target) { target.focus(); }
+      }
+    }
+  }
+
+  function clearDropMarks() {
+    var els = document.querySelectorAll('.drop-before, .drop-after');
+    for (var i = 0; i < els.length; i++) { els[i].classList.remove('drop-before', 'drop-after'); }
+  }
+
+  function move(from, to, itemIdx, act) {
+    if (to < 0 || to >= order.length) { return; }
+    var m = order.splice(from, 1)[0];
+    order.splice(to, 0, m);
+    reordered = true;
+    renderRank(itemIdx + ':' + act);
+    $('live').textContent = ITEMS[itemIdx].title + ' moved to position ' + (to + 1) + ' of 8.';
+  }
+
+  /* ---------- Stage 3: summary ---------- */
+  function renderSummary() {
+    var ol = $('summary-list');
+    ol.innerHTML = '';
+    order.forEach(function (itemIdx, pos) {
+      var li = document.createElement('li');
+      li.innerHTML = '<span class="n">' + (pos + 1) + '</span><span>' + esc(ITEMS[itemIdx].title) + '</span>';
+      ol.appendChild(li);
+    });
+  }
+
+  function summaryText() {
+    var name = $('student-name').value.trim();
+    var lines = ['Evidence for Evolution'];
+    if (name) { lines.push(name); }
+    lines.push('Ordered from most convincing (1) to most challenging to explain to my students (8):', '');
+    order.forEach(function (itemIdx, pos) { lines.push((pos + 1) + '. ' + ITEMS[itemIdx].title); });
+    return lines.join('\n');
+  }
+
+  $('copy-text').addEventListener('click', function () {
+    var txt = summaryText();
+    var status = $('copy-status');
+    function ok() { status.textContent = 'Copied. Paste it into your Canvas Discussion post.'; }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = txt; ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var done = false;
+      try { done = document.execCommand('copy'); } catch (e) { done = false; }
+      document.body.removeChild(ta);
+      if (done) { ok(); } else { status.textContent = 'Copy was blocked by your browser. Use Save summary as PDF instead.'; }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(ok, fallback);
+    } else { fallback(); }
+  });
+
+  $('save-pdf').addEventListener('click', function () {
+    var name = $('student-name').value.trim();
+    var dateStr = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+    var rows = order.map(function (itemIdx, pos) {
+      return '<li><span class="n">' + (pos + 1) + '</span><span class="t">' + esc(ITEMS[itemIdx].title) + '</span></li>';
+    }).join('');
+    var printHtml = '<!DOCTYPE html><html lang="en-AU"><head><meta charset="UTF-8"><title>Evidence for Evolution - Summary</title><style>' +
+      '@page { size: A4; margin: 0; }' +
+      '* { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }' +
+      'body { margin: 0; padding: 16mm; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #102528; }' +
+      '.card { border: 1px solid #d8e3e4; border-radius: 14px; overflow: hidden; max-width: 150mm; margin: 0 auto; }' +
+      '.head { background: #3E586F; color: #fff; padding: 8mm 8mm 7mm; }' +
+      '.head h1 { margin: 0; font-size: 22pt; letter-spacing: -0.02em; }' +
+      '.head p { margin: 2mm 0 0; font-size: 10pt; color: #c5cdd4; }' +
+      '.body { padding: 6mm 8mm 8mm; }' +
+      '.meta { display: flex; justify-content: space-between; font-size: 10pt; color: #5a6e71; margin-bottom: 5mm; }' +
+      '.scale { font-size: 9pt; font-weight: 700; color: #283948; background: #e6ecf1; border-radius: 6px; padding: 2mm 3mm; }' +
+      '.scale.top { margin-bottom: 2mm; } .scale.bottom { margin-top: 2mm; }' +
+      'ol { list-style: none; margin: 0; padding: 0; }' +
+      'li { display: flex; align-items: center; gap: 4mm; padding: 3.2mm 0; border-bottom: 1px solid #e8eeef; font-size: 12pt; font-weight: 500; }' +
+      'li:last-child { border-bottom: none; }' +
+      '.n { width: 8mm; height: 8mm; border-radius: 50%; background: #3E586F; color: #fff; font-weight: 700; font-size: 11pt; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }' +
+      '.foot { text-align: center; font-size: 8pt; color: #94a3b8; margin-top: 8mm; }' +
+      '</style></head><body>' +
+      '<div class="card"><div class="head"><h1>Evidence for Evolution</h1><p>Ordered from most convincing to most challenging to explain to my students</p></div>' +
+      '<div class="body"><div class="meta"><span>' + (name ? esc(name) : '') + '</span><span>' + esc(dateStr) + '</span></div>' +
+      '<div class="scale top">Most convincing</div>' +
+      '<ol>' + rows + '</ol>' +
+      '<div class="scale bottom">Most challenging to explain</div></div></div>' +
+      '<div class="foot">Created by the School of Education\u2019s EdTech Team</div>' +
+      '<script>window.addEventListener("load", function () { setTimeout(function () { window.print(); }, 150); });<\/script>' +
+      '</body></html>';
+
+    var w = window.open('', '_blank');
+    if (!w) { alert('Please allow pop-ups to generate the PDF record.'); return; }
+    w.document.open();
+    w.document.write(printHtml);
+    w.document.close();
+  });
+
+  /* ---------- Navigation ---------- */
+  function showStage(n) {
+    currentStage = n;
+    [1, 2, 3].forEach(function (i) {
+      $('panel-' + i).classList.toggle('active', i === n);
+      var p = $('pill-' + i);
+      p.classList.toggle('active', i === n);
+      if (i === n) { p.setAttribute('aria-current', 'step'); } else { p.removeAttribute('aria-current'); }
+    });
+    if (n === 2) { renderRank(); }
+    if (n === 3) { renderSummary(); }
+    $('copy-status').textContent = '';
+    var sc = document.querySelector('.activity-scroll');
+    if (sc) { sc.scrollTop = 0; }
+    checkOverflow();
+  }
+
+  document.querySelectorAll('.stage-pill').forEach(function (p) {
+    p.addEventListener('click', function () { if (!p.disabled) { showStage(parseInt(p.dataset.stage, 10)); } });
+  });
+  $('to-stage-2').addEventListener('click', function () { showStage(2); });
+  $('back-to-1').addEventListener('click', function () { showStage(1); });
+  $('to-stage-3').addEventListener('click', function () { showStage(3); });
+  $('back-to-2').addEventListener('click', function () { showStage(2); });
+
+  /* ---------- Reset ---------- */
+  $('reset-btn').addEventListener('click', function () {
+    var hasContent = seenCount() > 0 || reordered || $('student-name').value.trim() !== '';
+    if (hasContent && !confirm('Reset your cards, your order and your name?')) { return; }
+    seen = ITEMS.map(function () { return false; });
+    order = ITEMS.map(function (_, i) { return i; });
+    reordered = false;
+    openDetails = {};
+    $('student-name').value = '';
+    buildCards();
+    updateProgress();
+    showStage(1);
+  });
+
+  /* ---------- Fullscreen check ---------- */
+  var HEIGHT_THRESHOLD = 637;
+  var WIDTH_THRESHOLD = 1088;
+  var fsBtn = $('fullscreen-btn');
+  var scrollEl = document.querySelector('.activity-scroll');
+  function checkOverflow() {
+    var exceeds = scrollEl.scrollHeight > HEIGHT_THRESHOLD || scrollEl.scrollWidth > WIDTH_THRESHOLD;
+    fsBtn.style.display = exceeds ? 'flex' : 'none';
+  }
+  fsBtn.addEventListener('click', function () { window.open(window.location.href, '_blank'); });
+  window.addEventListener('load', checkOverflow);
+  window.addEventListener('resize', checkOverflow);
+
+  /* ---------- Init ---------- */
+  buildCards();
+  updateProgress();
+  showStage(1);
+})();
+</script>
+</body>
+</html>
